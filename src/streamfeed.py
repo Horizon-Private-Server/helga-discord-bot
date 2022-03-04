@@ -1,8 +1,6 @@
 from glob import glob
 import os
 import string
-import threading
-from turtle import update
 import discord
 import asyncio
 import urllib.parse

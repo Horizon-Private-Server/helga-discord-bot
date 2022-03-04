@@ -4,6 +4,7 @@ import string
 import discord
 import asyncio
 import urllib.parse
+import random
 from datetime import datetime
 from twitchAPI.twitch import Twitch
 from pprint import pprint
@@ -21,8 +22,18 @@ SupportedGames = [
   "Ratchet and Clank: Up Your Arsenal",
 ]
 
+GameColors = {
+  "Ratchet: Deadlocked": 0xFF0000,
+  "Ratchet and Clank: Up Your Arsenal": 0xFFFF00
+}
+
 TitleWhitelistFilters = [
   "online"
+]
+
+Phrases = [
+  "*I've seen baby tyhrranoids with better sniping skills than you.*",
+  "*This sissy ninny just went live, watching them struggle should be fun!*"
 ]
 
 # initialize twitch and get list of games
@@ -48,7 +59,10 @@ def update_embed(stream, embed: discord.Embed):
   if stream is not None:
     thumbnail: string = stream["thumbnail_url"].replace("{width}", "360").replace("{height}", "240")
 
-    embed.color = 0xFFFF00
+    if stream["game_name"] in GameColors:
+      embed.color = GameColors[stream["game_name"]]
+    else:
+      embed.color = 0xFFFF00
     embed.description = stream["title"]
     embed.url = f'https://twitch.tv/{stream["user_name"]}'
     embed.timestamp = datetime.utcnow()
@@ -86,7 +100,7 @@ async def streamfeed_task(client: discord.Client):
         # create new
         if not id in live_channels:
           embed = update_embed(stream, discord.Embed())
-          message = await channel.send(content= '', embed= embed)
+          message = await channel.send(content= random.choice(Phrases), embed= embed)
           if message is not None:
             live_channels[id] = {
               "message": message,

@@ -88,6 +88,7 @@ async def streamfeed_task(client: discord.Client):
   while not client.is_closed():
     if not client.is_ws_ratelimited():
       leftover_ids = list(live_channels.keys())
+      is_update = update_ticker >= STREAMFEED_UPDATE_EXISTING_DELAY
           
       # get latest list of streamers
       response = twitch.get_streams(game_id= [game['id'] for game in games['data']], first= 6)
@@ -115,7 +116,7 @@ async def streamfeed_task(client: discord.Client):
             live_channels.pop(id)
 
           # only run update periodically to prioritize new streams
-          elif update_ticker > STREAMFEED_UPDATE_EXISTING_DELAY:
+          elif is_update:
             embed = update_embed(stream, live_channels[id]["embed"])
             await message.edit(embed= embed)
         
@@ -127,7 +128,7 @@ async def streamfeed_task(client: discord.Client):
           embed = update_embed(None, data["embed"])
           await message.edit(embed= embed)
 
-      if update_ticker > STREAMFEED_UPDATE_EXISTING_DELAY:
+      if is_update:
         update_ticker = 0
       else:
         update_ticker += STREAMFEED_POLL_DELAY

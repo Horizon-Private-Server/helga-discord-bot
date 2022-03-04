@@ -32,8 +32,8 @@ TitleWhitelistFilters = [
 ]
 
 Phrases = [
-  "*I've seen baby tyhrranoids with better sniping skills than you.*",
-  "*This sissy ninny just went live, watching them struggle should be fun!*"
+  "I've seen baby tyhrranoids with better sniping skills than you.",
+  "This sissy ninny just went live, watching them struggle should be fun!"
 ]
 
 # initialize twitch and get list of games

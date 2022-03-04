@@ -77,15 +77,14 @@ async def streamfeed_task(client: discord.Client):
           
       # get latest list of streamers
       response = twitch.get_streams(game_id= [game['id'] for game in games['data']], first= 6)
-      streams = list(response['data'])
+      streams = filter(is_match, list(response['data']))
 
       # update or create stream messages
       for stream in streams:
         id = stream['id']
-        match = is_match(stream)
-
+      
         # create new
-        if not id in live_channels and match:
+        if not id in live_channels:
           embed = update_embed(stream, discord.Embed())
           message = await channel.send(content= '', embed= embed)
           if message is not None:
@@ -102,7 +101,7 @@ async def streamfeed_task(client: discord.Client):
             live_channels.pop(id)
 
           # only run update periodically to prioritize new streams
-          elif match and update_ticker > STREAMFEED_UPDATE_EXISTING_DELAY:
+          elif update_ticker > STREAMFEED_UPDATE_EXISTING_DELAY:
             embed = update_embed(stream, live_channels[id]["embed"])
             await message.edit(embed= embed)
         

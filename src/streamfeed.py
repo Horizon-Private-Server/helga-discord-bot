@@ -6,6 +6,7 @@ import asyncio
 import urllib.parse
 import random
 import constants
+import traceback
 from datetime import datetime
 from twitchAPI.twitch import Twitch
 from pprint import pprint
@@ -83,57 +84,60 @@ async def streamfeed_task(client: discord.Client):
 
   while not client.is_closed():
     if not client.is_ws_ratelimited():
-      leftover_ids = list(live_channels.keys())
-      is_update = update_ticker >= STREAMFEED_UPDATE_EXISTING_DELAY
-          
-      # get latest list of streamers
-      response = twitch.get_streams(game_id= [game['id'] for game in games['data']], first= 6)
-      streams = filter(is_match, list(response['data']))
+      try:
+        leftover_ids = list(live_channels.keys())
+        is_update = update_ticker >= STREAMFEED_UPDATE_EXISTING_DELAY
+            
+        # get latest list of streamers
+        response = twitch.get_streams(game_id= [game['id'] for game in games['data']], first= 6)
+        streams = filter(is_match, list(response['data']))
 
-      # update or create stream messages
-      for stream in streams:
-        id = stream['id']
-      
-        # create new
-        if not id in live_channels:
-          embed = update_embed(stream, discord.Embed())
-          message = await channel.send(content= random.choice(constants.StreamPhrases), embed= embed)
-          if message is not None:
-            live_channels[id] = {
-              "message": message,
-              "embed": embed
-            }
-
-        # update existing
-        else:
-          leftover_ids.remove(id)
-          message: discord.Message = live_channels[id]["message"]
-          if message is None:
-            live_channels.pop(id)
-
-          # only run update periodically to prioritize new streams
-          elif is_update:
-            try:
-              embed = update_embed(stream, live_channels[id]["embed"])
-              await message.edit(embed= embed)
-            except:
-              live_channels.pop(id) # couldn't update message, so just remove
+        # update or create stream messages
+        for stream in streams:
+          id = stream['id']
         
-      # remove streams if they are no longer live
-      for id in leftover_ids:
-        data = live_channels.pop(id)
-        message: discord.Message = data["message"]
-        try:
-          if message is not None:
-            embed = update_embed(None, data["embed"])
-            await message.edit(embed= embed)
-        except:
-          pass
+          # create new
+          if not id in live_channels:
+            embed = update_embed(stream, discord.Embed())
+            message = await channel.send(content= random.choice(constants.StreamPhrases), embed= embed)
+            if message is not None:
+              live_channels[id] = {
+                "message": message,
+                "embed": embed
+              }
 
-      if is_update:
-        update_ticker = 0
-      else:
-        update_ticker += STREAMFEED_POLL_DELAY
+          # update existing
+          else:
+            leftover_ids.remove(id)
+            message: discord.Message = live_channels[id]["message"]
+            if message is None:
+              live_channels.pop(id)
+
+            # only run update periodically to prioritize new streams
+            elif is_update:
+              try:
+                embed = update_embed(stream, live_channels[id]["embed"])
+                await message.edit(embed= embed)
+              except:
+                live_channels.pop(id) # couldn't update message, so just remove
+          
+        # remove streams if they are no longer live
+        for id in leftover_ids:
+          data = live_channels.pop(id)
+          message: discord.Message = data["message"]
+          try:
+            if message is not None:
+              embed = update_embed(None, data["embed"])
+              await message.edit(embed= embed)
+          except:
+            pass
+
+        if is_update:
+          update_ticker = 0
+        else:
+          update_ticker += STREAMFEED_POLL_DELAY
+      except Exception as e:
+        print(traceback.format_exc())
     await asyncio.sleep(STREAMFEED_POLL_DELAY)
 
 #

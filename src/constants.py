@@ -18,7 +18,7 @@ StreamPhrases = [
 ]
 
 StatsPhrases = [
-  "You should reflect on how terrible you are."
+  "Listen up, you lardballs! These stats are the most pathetic display of skill level I have ever seen in {STATNAME}!"
 ]
 
 

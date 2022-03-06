@@ -1,6 +1,5 @@
-from datetime import date
+
 import os
-from venv import create
 import discord
 import requests
 import random
@@ -8,6 +7,7 @@ import json
 import datetime
 import traceback
 import constants
+import urllib3
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -119,6 +119,10 @@ def create_embed(account, fields):
   
   return embed
 
+def get_phrase(stat_name, account_name):
+  return random.choice(constants.StatsPhrases) \
+      .replace("{STATNAME}", stat_name) \
+      .replace("{USERNAME}", account_name)
 
 #
 async def get_dl_overall_stats(ctx: discord.ApplicationContext, account):
@@ -201,7 +205,7 @@ async def get_dl_overall_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Overall Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('deadlocked', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_cq_stats(ctx: discord.ApplicationContext, account):
@@ -244,7 +248,7 @@ async def get_dl_cq_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Conquest Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('conquest', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_ctf_stats(ctx: discord.ApplicationContext, account):
@@ -287,7 +291,7 @@ async def get_dl_ctf_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'CTF Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('capture the flag', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_dm_stats(ctx: discord.ApplicationContext, account):
@@ -326,7 +330,7 @@ async def get_dl_dm_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Deathmatch Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('deathmatch', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_koth_stats(ctx: discord.ApplicationContext, account):
@@ -369,7 +373,7 @@ async def get_dl_koth_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'KOTH Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('king of the hill', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_juggy_stats(ctx: discord.ApplicationContext, account):
@@ -412,7 +416,7 @@ async def get_dl_juggy_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Juggernaut Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('juggernaut', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_weapons_stats(ctx: discord.ApplicationContext, account):
@@ -580,7 +584,7 @@ async def get_dl_weapons_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Weapon Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('deadlocked', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_spleef_stats(ctx: discord.ApplicationContext, account):
@@ -602,7 +606,7 @@ async def get_dl_spleef_stats(ctx: discord.ApplicationContext, account):
         },
         {
           'Name': 'Time Played',
-          'Value': lambda : f'{seconds_tostr(stats_custom[constants.CUSTOM_STAT_SND_TIME_PLAYED])}'
+          'Value': lambda : f'{seconds_tostr(stats_custom[constants.CUSTOM_STAT_SPLEEF_TIME_PLAYED])}'
         },
         {
           'Name': 'Wins',
@@ -627,7 +631,7 @@ async def get_dl_spleef_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Spleef Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('spleef', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_climber_stats(ctx: discord.ApplicationContext, account):
@@ -670,7 +674,7 @@ async def get_dl_climber_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Climber Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('climber', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_gungame_stats(ctx: discord.ApplicationContext, account):
@@ -729,7 +733,7 @@ async def get_dl_gungame_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Gun Game Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('gun game', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_infected_stats(ctx: discord.ApplicationContext, account):
@@ -788,7 +792,7 @@ async def get_dl_infected_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Infected Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('infected', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_payload_stats(ctx: discord.ApplicationContext, account):
@@ -847,7 +851,7 @@ async def get_dl_payload_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Payload Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('payload', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_snd_stats(ctx: discord.ApplicationContext, account):
@@ -914,7 +918,7 @@ async def get_dl_snd_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'SND Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('search and destroy', account["AccountName"]), embed=embed)
 
 #
 async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
@@ -1038,7 +1042,7 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
   embed = create_embed(account, fields)
   embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
   embed.title = f'Survival Stats for {account_name}'
-  await ctx.respond(content=random.choice(constants.StatsPhrases), embed=embed)
+  await ctx.respond(content=get_phrase('survival', account["AccountName"]), embed=embed)
 
 
 #
@@ -1071,3 +1075,4 @@ async def get_dl_stats(ctx: discord.ApplicationContext, stat: str, name: str):
     print(traceback.format_exc())
     await ctx.respond(f'Account `{name}` not found.')
   
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

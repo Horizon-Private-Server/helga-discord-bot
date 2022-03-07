@@ -5,6 +5,8 @@ import discord
 import asyncio
 import urllib.parse
 import random
+import constants
+import traceback
 from datetime import datetime
 from twitchAPI.twitch import Twitch
 from pprint import pprint
@@ -29,11 +31,6 @@ GameColors = {
 
 TitleWhitelistFilters = [
   "online"
-]
-
-Phrases = [
-  "I've seen baby tyhrranoids with better sniping skills than you.",
-  "This sissy ninny just went live, watching them struggle should be fun!"
 ]
 
 # initialize twitch and get list of games
@@ -65,7 +62,7 @@ def update_embed(stream, embed: discord.Embed):
       embed.color = 0xFFFF00
     embed.description = stream["title"]
     embed.url = f'https://twitch.tv/{stream["user_name"]}'
-    embed.timestamp = datetime.utcnow()
+    embed.timestamp = datetime.now()
     embed.set_author(name= f'{stream["user_name"]} is now streaming [{stream["language"].upper()}]', url= f'https://twitch.tv/{stream["user_name"]}', icon_url= f'https://avatar.glue-bot.xyz/twitch/{urllib.parse.quote(stream["user_name"])}')
     embed.set_thumbnail(url= f'https://avatar.glue-bot.xyz/twitch-boxart/{urllib.parse.quote(stream["game_name"])}')
     embed.set_image(url=thumbnail)
@@ -81,57 +78,66 @@ def update_embed(stream, embed: discord.Embed):
 # background task that polls twitch and creates/updates stream messages in discord
 async def streamfeed_task(client: discord.Client):
   await client.wait_until_ready()
-  channel: discord.TextChannel = client.get_channel(id=STREAMFEED_CHANNEL_ID)
+  channel: discord.TextChannel = client.get_channel(STREAMFEED_CHANNEL_ID)
   live_channels = {}
   update_ticker = 0
 
   while not client.is_closed():
     if not client.is_ws_ratelimited():
-      leftover_ids = list(live_channels.keys())
-      is_update = update_ticker >= STREAMFEED_UPDATE_EXISTING_DELAY
-          
-      # get latest list of streamers
-      response = twitch.get_streams(game_id= [game['id'] for game in games['data']], first= 6)
-      streams = filter(is_match, list(response['data']))
+      try:
+        leftover_ids = list(live_channels.keys())
+        is_update = update_ticker >= STREAMFEED_UPDATE_EXISTING_DELAY
+            
+        # get latest list of streamers
+        response = twitch.get_streams(game_id= [game['id'] for game in games['data']], first= 6)
+        streams = filter(is_match, list(response['data']))
 
-      # update or create stream messages
-      for stream in streams:
-        id = stream['id']
-      
-        # create new
-        if not id in live_channels:
-          embed = update_embed(stream, discord.Embed())
-          message = await channel.send(content= random.choice(Phrases), embed= embed)
-          if message is not None:
-            live_channels[id] = {
-              "message": message,
-              "embed": embed
-            }
-
-        # update existing
-        else:
-          leftover_ids.remove(id)
-          message: discord.Message = live_channels[id]["message"]
-          if message is None:
-            live_channels.pop(id)
-
-          # only run update periodically to prioritize new streams
-          elif is_update:
-            embed = update_embed(stream, live_channels[id]["embed"])
-            await message.edit(embed= embed)
+        # update or create stream messages
+        for stream in streams:
+          id = stream['id']
         
-      # remove streams if they are no longer live
-      for id in leftover_ids:
-        data = live_channels.pop(id)
-        message: discord.Message = data["message"]
-        if message is not None:
-          embed = update_embed(None, data["embed"])
-          await message.edit(embed= embed)
+          # create new
+          if not id in live_channels:
+            embed = update_embed(stream, discord.Embed())
+            message = await channel.send(content= random.choice(constants.StreamPhrases), embed= embed)
+            if message is not None:
+              live_channels[id] = {
+                "message": message,
+                "embed": embed
+              }
 
-      if is_update:
-        update_ticker = 0
-      else:
-        update_ticker += STREAMFEED_POLL_DELAY
+          # update existing
+          else:
+            leftover_ids.remove(id)
+            message: discord.Message = live_channels[id]["message"]
+            if message is None:
+              live_channels.pop(id)
+
+            # only run update periodically to prioritize new streams
+            elif is_update:
+              try:
+                embed = update_embed(stream, live_channels[id]["embed"])
+                await message.edit(embed= embed)
+              except:
+                live_channels.pop(id) # couldn't update message, so just remove
+          
+        # remove streams if they are no longer live
+        for id in leftover_ids:
+          data = live_channels.pop(id)
+          message: discord.Message = data["message"]
+          try:
+            if message is not None:
+              embed = update_embed(None, data["embed"])
+              await message.edit(embed= embed)
+          except:
+            pass
+
+        if is_update:
+          update_ticker = 0
+        else:
+          update_ticker += STREAMFEED_POLL_DELAY
+      except Exception as e:
+        print(traceback.format_exc())
     await asyncio.sleep(STREAMFEED_POLL_DELAY)
 
 #

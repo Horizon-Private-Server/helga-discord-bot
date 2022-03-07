@@ -11,7 +11,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = discord.Bot()
-stats = SlashCommandGroup("stats", "Commands related to game stats.", guild_ids=[379350241222197249])
+stats = SlashCommandGroup("stats", "Commands related to game stats.")
 
 @client.event
 async def on_ready():

@@ -4,14 +4,18 @@ import discord
 from discord.commands import Option, SlashCommandGroup
 from dotenv import load_dotenv
 
+from config import *
+from smoke import smoke
 from streamfeed import streamfeed
 from stats import get_dl_stats, DEADLOCKED_GET_STATS_CHOICES
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
+config_load()
+
 client = discord.Bot()
-stats = SlashCommandGroup("stats", "Commands related to game stats.", guild_ids=[936413500408995850])
+stats = SlashCommandGroup("stats", "Commands related to game stats.", guild_ids=config_get(['Stats', 'GuildIds']))
 
 @client.event
 async def on_ready():
@@ -26,5 +30,6 @@ async def cmd_stats(
   await get_dl_stats(ctx, stat, name)
 
 streamfeed(client)
+smoke(client)
 client.add_application_command(stats)
 client.run(TOKEN)

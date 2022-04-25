@@ -992,6 +992,25 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
 
 
 #
+async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, leaderboard):
+  
+  lb_str = ''
+  pad_str = ' '
+  for i in range(0, len(leaderboard)):
+    s = f'{i+1}. {leaderboard[i]["AccountName"]}'
+    while len(s) < 24:
+      s += pad_str
+    lb_str += f'{s}{leaderboard[i]["StatValue"]}\n'
+
+
+  embed = discord.Embed()
+  embed.add_field(name= f'Top 5', value=f'```\n{lb_str}```', inline=True)
+  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.title = f'{group} {stat}'
+  await ctx.respond(content='', embed=embed)
+
+
+#
 DEADLOCKED_GET_STATS_CHOICES = {
   "Overall": get_dl_overall_stats,
   "Conquest": get_dl_cq_stats,
@@ -1010,6 +1029,173 @@ DEADLOCKED_GET_STATS_CHOICES = {
 }
 
 #
+DEADLOCKED_STATS = {
+  "Capture the Flag": {
+    "Rank": 25,
+    "Wins": 26,
+    "Losses": 27,
+    "Kills": 29,
+    "Deaths": 30,
+    "Flags Captured": 31,
+  },
+  "Conquest": {
+    "Rank": 18,
+    "Wins": 19,
+    "Losses": 20,
+    "Kills": 22,
+    "Deaths": 23,
+    "Nodes Taken": 24,
+  },
+  "Deathmatch": {
+    "Rank": 12,
+    "Wins": 13,
+    "Losses": 14,
+    "Kills": 16,
+    "Deaths": 17,
+  },
+  "Gun Game": {
+    "Rank": 231,
+    "Wins": 232,
+    "Losses": 233,
+    "Games Played": 234,
+    "Kills": 235,
+    "Deaths": 236,
+    "Demotions": 237,
+    "Times Demoted": 238,
+    "Times Promoted": 239,
+    "Time Played": 240,
+  },
+  "Infected": {
+    "Rank": 211,
+    "Wins": 212,
+    "Losses": 213,
+    "Games Played": 214,
+    "Kills": 215,
+    "Deaths": 216,
+    "Infections": 217,
+    "Times Infected": 218,
+    "Time Played": 219,
+    "Wins as Survivor": 220,
+    "Wins as First Infected": 221,
+  },
+  "Infinite Climber": {
+    "Rank": 251,
+    "Wins": 252,
+    "Losses": 253,
+    "Games Played": 254,
+    "High Score": 255,
+    "Time Played": 256,
+  },
+  "Juggernaut": {
+    "Rank": 39,
+    "Wins": 40,
+    "Losses": 41,
+    "Kills": 43,
+    "Deaths": 44,
+    "Time": 45,
+  },
+  "King of the Hill": {
+    "Rank": 32,
+    "Wins": 33,
+    "Losses": 34,
+    "Kills": 36,
+    "Deaths": 37,
+    "Time": 38,
+  },
+  "Overall": {
+    "Rank": 3,
+    "Wins": 4,
+    "Losses": 5,
+    "Disconnects": 6,
+    "Kills": 7,
+    "Deaths": 8,
+    "Games Played": 9
+  },
+  "Payload": {
+    "Rank": 171,
+    "Wins": 172,
+    "Losses": 173,
+    "Games Played": 174,
+    "Kills": 175,
+    "Deaths": 176,
+    "Points": 177,
+    "Kills while Hot": 178,
+    "Kills on Hot": 179,
+    "Time Played": 180,
+  },
+  "Search and Destroy": {
+    "Rank": 151,
+    "Wins": 152,
+    "Losses": 153,
+    "Games Played": 154,
+    "Kills": 155,
+    "Deaths": 156,
+    "Plants": 157,
+    "Defuses": 158,
+    "Ninja Defuses": 159,
+    "Wins Attacking": 160,
+    "Wins Defending": 161,
+    "Time Played": 162,
+  },
+  "Spleef": {
+    "Rank": 191,
+    "Wins": 192,
+    "Losses": 193,
+    "Games Played": 194,
+    "Rounds Played": 195,
+    "Points": 196,
+    "Time Played": 197,
+    "Boxes Broken": 198,
+  },
+  "Survival": {
+    "Rank": 271,
+    "XP": 291,
+    "Couch Potato High Score": 278,
+    "Contestant High Score": 279,
+    "Gladiator High Score": 280,
+    "Hero High Score": 281,
+    "Exterminator High Score": 282,
+    "Games Played": 272,
+    "Time Played": 273,
+    "Kills": 274,
+    "Deaths": 275,
+    "Revives": 276,
+    "Times Revived": 277,
+    "Wrench Kills": 283,
+    "Dual Viper Kills": 284,
+    "Magma Cannon Kills": 285,
+    "Arbiter Kills": 286,
+    "Fusion Rifle Kills": 287,
+    "Mine Launcher Kills": 288,
+    "B6 Obliterator Kills": 289,
+    "Scorpion Flail Kills": 290,
+  },
+  "Weapons": {
+    "Wrench Kills": 46,
+    "Wrench Deaths": 47,
+    "Dual Viper Kills": 49,
+    "Dual Viper Deaths": 50,
+    "Magma Cannon Kills": 52,
+    "Magma Cannon Deaths": 53,
+    "Arbiter Kills": 55,
+    "Arbiter Deaths": 56,
+    "Fusion Rifle Kills": 58,
+    "Fusion Rifle Deaths": 59,
+    "Hunter Mine Kills": 61,
+    "Hunter Mine Deaths": 62,
+    "B6 Obliterator Kills": 64,
+    "B6 Obliterator Deaths": 65,
+    "Scorpion Flail Kills": 67,
+    "Scorpion Flail Deaths": 68,
+    "Roadkills": 71,
+    "Vehicle Squats": 72,
+    "Squats": 73,
+    "Holoshield Kills": 74,
+    "Holoshield Deaths": 75,
+  },
+}
+
+#
 async def get_dl_stats(ctx: discord.ApplicationContext, stat: str, name: str):
   try:
     account = get_account(11184, name)
@@ -1020,4 +1206,23 @@ async def get_dl_stats(ctx: discord.ApplicationContext, stat: str, name: str):
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Account `{name}` not found.')
+  
+#
+async def get_dl_leaderboard(ctx: discord.ApplicationContext, group: str, stat: str):
+  try:
+    if group in DEADLOCKED_STATS:
+      group_values = DEADLOCKED_STATS[group]
+      if stat in group_values:
+        stat_id = group_values[stat]
+        if stat_id > 100:
+          leaderboard = get_leaderboard_top5(stat_id - 100, custom=True)
+        else:
+          leaderboard = get_leaderboard_top5(stat_id, custom=False)
+
+        await build_dl_leaderboard(ctx, group, stat, leaderboard)
+    else:
+      await ctx.respond('Invalid stat.')
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Leaderboard `{leaderboard}` not found.')
   

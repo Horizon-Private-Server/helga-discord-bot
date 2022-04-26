@@ -1109,7 +1109,9 @@ DEADLOCKED_STATS = {
     "Disconnects": 6,
     "Kills": 7,
     "Deaths": 8,
-    "Games Played": 9
+    "Games Played": 9,
+    "Vehicle Squats": 72,
+    "Squats": 73,
   },
   "Payload": {
     "Rank": 171,
@@ -1188,8 +1190,6 @@ DEADLOCKED_STATS = {
     "Scorpion Flail Kills": 67,
     "Scorpion Flail Deaths": 68,
     "Roadkills": 71,
-    "Vehicle Squats": 72,
-    "Squats": 73,
     "Holoshield Kills": 74,
     "Holoshield Deaths": 75,
   },

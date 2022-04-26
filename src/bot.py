@@ -121,12 +121,12 @@ async def cmd_survival_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Survival", stat)
 
-@leaderboard.command(name="weapon", description="See the Top 5 in any Weapon stat.")
+@leaderboard.command(name="weapons", description="See the Top 5 in any Weapon stat.")
 async def cmd_weapon_leaderboard(
   ctx: discord.ApplicationContext,
-  stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Weapon"].keys()))
+  stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Weapons"].keys()))
   ):
-  await get_dl_leaderboard(ctx, "Weapon", stat)
+  await get_dl_leaderboard(ctx, "Weapons", stat)
 
 streamfeed(client)
 smoke(client)

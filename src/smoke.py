@@ -102,7 +102,7 @@ def update_embed(smoke_config, players, games, embed: discord.Embed):
       
       # game info
       if metadata["GameInfo"] is not None:
-        embed_value += metadata["GameInfo"]
+        embed_value += "\n" + metadata["GameInfo"]
 
       embed_value += '\n```\n'
       embed_value += '```\n'

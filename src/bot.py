@@ -131,7 +131,7 @@ async def cmd_weapon_leaderboard(
 
 streamfeed(client)
 youtubefeed(client)
-#smoke(client)
+smoke(client)
 client.remove_application_command(deadlocked)
 client.add_application_command(deadlocked)
 client.run(TOKEN)

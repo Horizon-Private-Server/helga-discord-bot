@@ -128,7 +128,7 @@ async def youtubefeed_task(client: discord.Client):
             kind = item['id']['kind']
             if kind != 'youtube#video':
               continue
-          
+
             # create new
             embed = update_embed(item, discord.Embed())
             await channel.send(content= embed.url, embed= embed)

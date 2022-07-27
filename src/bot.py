@@ -8,6 +8,7 @@ from config import *
 from smoke import smoke
 from streamfeed import streamfeed
 from stats import get_dl_stats, get_dl_leaderboard, DEADLOCKED_GET_STATS_CHOICES, DEADLOCKED_STATS
+from youtubefeed import youtubefeed
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -129,7 +130,8 @@ async def cmd_weapon_leaderboard(
   await get_dl_leaderboard(ctx, "Weapons", stat)
 
 streamfeed(client)
-smoke(client)
+youtubefeed(client)
+#smoke(client)
 client.remove_application_command(deadlocked)
 client.add_application_command(deadlocked)
 client.run(TOKEN)

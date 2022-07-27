@@ -8,6 +8,27 @@ _config_path = 'config.json'
 # Config object
 _config = {}
 _config_default = {
+  "YoutubeFeed": {
+    "LastUpdated": None
+  },
+  "Games": [
+    {
+      "Game": "Ratchet: Deadlocked",
+      "Color": "0xFF0000",
+      "Filters": [
+        "#ratchetdeadlocked",
+        "Deadlocked"
+      ]
+    },
+    {
+      "Game": "Ratchet and Clank: Up Your Arsenal",
+      "Color": "0xFFFF00",
+      "Filters": [
+        "UYA",
+        "Up Your Arsenal"
+      ]
+    }
+  ],
   "Stats": {
     "GuildIds": []
   },
@@ -60,8 +81,9 @@ def config_save():
   global _config
   global _config_default
 
+  config_json = json.dumps(_config, indent=4)
   with open(_config_path, 'w') as w:
-    w.write(json.dumps(_config, indent=4))
+    w.write(config_json)
 
 # returns the config value at path
 def config_get(path: List[str]):

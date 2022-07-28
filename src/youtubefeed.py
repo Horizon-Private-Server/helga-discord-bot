@@ -97,20 +97,23 @@ def update_embed(item, embed: discord.Embed):
     videoThumbnailUrl = item['snippet']['thumbnails']['high']['url']
     game = parse_gamename(videoTitle)
     if game is None:
-      return embed
+      return None
     
     gamename = game['Game']
     embed.color = int(game['Color'], 16)
-    embed.description = videoDescription
+    embed.description = f'{videoDescription}\n[youtube.com/watch?v={videoId}]({videoUrl})'
     embed.url = videoUrl
     embed.timestamp = datetime.now()
     embed.set_author(name= videoTitle, icon_url= f'https://avatar.glue-bot.xyz/youtube-avatar/q?url={urllib.parse.quote(videoUrl)}')
-    embed.set_thumbnail(url= f'https://avatar.glue-bot.xyz/twitch-boxart/{urllib.parse.quote(gamename)}')
-    embed.set_image(url=videoThumbnailUrl)
+    #embed.set_thumbnail(url= f'https://avatar.glue-bot.xyz/twitch-boxart/{urllib.parse.quote(gamename)}')
+    #embed.set_image(url=videoThumbnailUrl)
+    embed.set_thumbnail(url=videoThumbnailUrl)
     embed.clear_fields()
     embed.set_footer(text= 'Posted')
   
-  return embed
+    return videoUrl
+
+  return None
 
 # background task that polls youtube and creates video embed messages in discord
 async def youtubefeed_task(client: discord.Client):
@@ -123,15 +126,23 @@ async def youtubefeed_task(client: discord.Client):
         # get latest list of videos
         response = get_latest_videos()
         if response is not None:
-          # update or create video embed messages
           for item in response['items']:
             kind = item['id']['kind']
             if kind != 'youtube#video':
               continue
 
-            # create new
-            embed = update_embed(item, discord.Embed())
-            await channel.send(content= embed.url, embed= embed)
+            # create message
+            if False:
+              embed = discord.Embed()
+              content = update_embed(item, embed)
+              if content is not None:
+                await channel.send(content= content, embed= embed)
+            else:
+              videoId = item['id']['videoId']
+              videoUrl = f'https://www.youtube.com/watch?v={videoId}'
+              videoTitle = item['snippet']['title']
+              videoDescription = item['snippet']['description']
+              await channel.send(content= f'**New Youtube Video!**\n{videoUrl}\n\n*{videoDescription}*')
 
       except Exception as e:
         print(traceback.format_exc())

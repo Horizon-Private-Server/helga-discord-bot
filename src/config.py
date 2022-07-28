@@ -8,9 +8,6 @@ _config_path = 'config.json'
 # Config object
 _config = {}
 _config_default = {
-  "YoutubeFeed": {
-    "LastUpdated": None
-  },
   "Games": [
     {
       "Game": "Ratchet: Deadlocked",

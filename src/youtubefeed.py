@@ -20,7 +20,8 @@ YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 YOUTUBEFEED_POLL_DELAY = int(os.getenv('YOUTUBEFEED_POLL_DELAY'))
 YOUTUBEFEED_CHANNEL_ID = int(os.getenv('YOUTUBEFEED_CHANNEL_ID'))
 
-# 
+#
+last_query_date = datetime.utcnow() 
 youtube = None
 
 # API information
@@ -51,14 +52,7 @@ def parse_gamename(string):
 
 # returns latest youtube videos since last request
 def get_latest_videos():
-  feed_settings = config_get(['YoutubeFeed'])
-  last_query_date = feed_settings['LastUpdated']
-
-  # if first time running, initialize to now
-  if last_query_date is None:
-    last_query_date = datetime.utcnow()
-  else:
-    last_query_date = datetime.fromisoformat(last_query_date)
+  global last_query_date
 
   try:
     # build query
@@ -75,8 +69,6 @@ def get_latest_videos():
 
     # update last date
     last_query_date = datetime.utcnow()
-    config_get(['YoutubeFeed'])['LastUpdated'] = last_query_date.isoformat()
-    config_save()
 
     # return response
     return response

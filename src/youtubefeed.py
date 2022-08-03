@@ -21,7 +21,7 @@ YOUTUBEFEED_POLL_DELAY = int(os.getenv('YOUTUBEFEED_POLL_DELAY'))
 YOUTUBEFEED_CHANNEL_ID = int(os.getenv('YOUTUBEFEED_CHANNEL_ID'))
 
 #
-last_query_date = datetime.utcnow() 
+last_query_date = datetime.utcnow()
 youtube = None
 
 # API information

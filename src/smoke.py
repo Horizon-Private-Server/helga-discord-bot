@@ -26,27 +26,43 @@ def parse_icon(icon, object):
 
   return None
 
+def get_player_region(smoke_config, app_id):
+  app_id_key = str(app_id)
+  if app_id_key in smoke_config["AppIds"]:
+    return f'[{smoke_config["AppIds"][app_id_key]}]'.ljust(6, ' ')
+
+  return None
+
+def filter_by_config(smoke_config, game_or_player):
+  return str(game_or_player["AppId"]) in smoke_config["AppIds"] and game_or_player["DatabaseUser"] in smoke_config["Servers"]
+
 # creates a discord embed from a twitch stream
 def update_embed(smoke_config, players, games, embed: discord.Embed):
   
   # base
   embed.color = int(smoke_config["Color"], 0)
   embed.description = ' '
-  embed.title = f'Players Online - {len(players)}'
+  embed.title = f'{smoke_config["Name"]} Server'
   embed.timestamp = datetime.now()
+  embed.description = '' #f'Players Online - {len(players)}'
   embed.set_thumbnail(url=smoke_config['Thumbnail'])
   embed.clear_fields()
   embed.set_footer(text= 'Last Updated')
 
+  # filter players by appid and server
+  players = list(filter(lambda x: filter_by_config(smoke_config, x), players))
+  games = list(filter(lambda x: filter_by_config(smoke_config, x), games))
+
   # description
   if len(players) > 0:
-    names = [x["AccountName"] for x in players]
-    names.sort()
-    names = [f'\n  {x}  ' for x in names]
-    embed.description = '```'
+    players.sort(key=lambda x: x["AccountName"])
+    names = [f'\n{get_player_region(smoke_config, player["AppId"])}  {player["AccountName"]}  ' for player in players]
+    embed_value = '```'
     for name in names:
-      embed.description += name
-    embed.description += '```'
+      embed_value += name
+    embed_value += '```'
+
+    embed.add_field(name= f'Players Online - {len(players)}', value= embed_value, inline= False)
 
   # games
   embed.add_field(name= '\u200B', value= 'Active Games:', inline= False)
@@ -55,7 +71,9 @@ def update_embed(smoke_config, players, games, embed: discord.Embed):
   games.sort(key=lambda x: x["GameName"])
   for game in games:
     if game["WorldStatus"] == 'WorldActive' or game["WorldStatus"] == 'WorldStaging':
-      metadata = json.loads(game["Metadata"])
+      metadata = None
+      if game["Metadata"] is not None:
+        metadata = json.loads(game["Metadata"])
       in_game = game["WorldStatus"] == 'WorldActive'
       time_started: datetime = datetime.strptime(game["GameStartDt"][:26], '%Y-%m-%dT%H:%M:%S.%f') if in_game and game["GameStartDt"] is not None else None
       seconds_since_started: datetime = (datetime.utcnow() - time_started).total_seconds() if time_started is not None else None
@@ -89,24 +107,24 @@ def update_embed(smoke_config, players, games, embed: discord.Embed):
       
       # game mode
       embed_value += '```\n'
-      if metadata["CustomGameMode"] is not None:
+      if metadata is not None and metadata["CustomGameMode"] is not None:
         embed_value += metadata["CustomGameMode"] + ' at '
       elif str(game["RuleSet"]) in smoke_config["Rulesets"]:
         embed_value += smoke_config["Rulesets"][str(game["RuleSet"])] + ' at '
 
       # level
-      if metadata["CustomMap"] is not None:
+      if metadata is not None and metadata["CustomMap"] is not None:
         embed_value += metadata["CustomMap"]
       elif str(game["GameLevel"]) in smoke_config["Levels"]:
         embed_value += smoke_config["Levels"][str(game["GameLevel"])]
       
       # game info
-      if metadata["GameInfo"] is not None:
+      if metadata is not None and metadata["GameInfo"] is not None:
         embed_value += "\n" + metadata["GameInfo"]
 
       embed_value += '\n```\n'
       embed_value += '```\n'
-      if "GameState" in metadata and "Teams" in metadata["GameState"] and metadata["GameState"]["Teams"] is not None:
+      if metadata is not None and "GameState" in metadata and "Teams" in metadata["GameState"] and metadata["GameState"]["Teams"] is not None:
         teams = metadata["GameState"]["Teams"]
         teams.sort(key= lambda x: x["Score"], reverse= True)
         teams_enabled = metadata["GameState"]["TeamsEnabled"]
@@ -139,11 +157,14 @@ def update_embed(smoke_config, players, games, embed: discord.Embed):
   return embed
 
 # background task that polls api and creates/updates respective smoke messages in discord
-async def smoke_task(client: discord.Client, smoke_config):
+async def smoke_task(client: discord.Client, smoke_config, index):
   await client.wait_until_ready()
   channel: discord.TextChannel = client.get_channel(smoke_config["ChannelId"])
   message: discord.Message = None
   embed: discord.Embed = discord.Embed()
+
+  # stagger smokes
+  await asyncio.sleep(5 * index)
 
   # try and get message to reuse
   if "MessageId" in smoke_config and smoke_config["MessageId"] > 0:
@@ -166,8 +187,10 @@ async def smoke_task(client: discord.Client, smoke_config):
 
 #
 def smoke(client):
+  i = 0
   smokes = config_get(['Smoke'])
   for smoke in smokes:
     if smoke["Enabled"]:
-      client.loop.create_task(smoke_task(client, smoke))
+      client.loop.create_task(smoke_task(client, smoke, i))
+      i += 1
 

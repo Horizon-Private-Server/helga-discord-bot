@@ -32,11 +32,13 @@ _config_default = {
   "Smoke": [
     {
       "Enabled": False,
+      "Name": None,
       "ChannelId": 0,
       "MessageId": 0,
       "Thumbnail": None,
       "Color": None,
-      "AppIds": [],
+      "AppIds": {},
+      "Servers": [],
       "Interval": 10,
       "Rulesets": {},
       "Levels": {},

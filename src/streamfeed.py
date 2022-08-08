@@ -52,7 +52,7 @@ def is_match(stream):
   return False
 
 # creates a discord embed from a twitch stream
-def update_embed(stream, embed: discord.Embed):
+def update_embed(stream, embed: discord.Embed, peak_viewer_count = 0):
   if stream is not None:
     thumbnail: string = stream["thumbnail_url"].replace("{width}", "360").replace("{height}", "240")
 
@@ -71,6 +71,7 @@ def update_embed(stream, embed: discord.Embed):
     embed.add_field(name= ':busts_in_silhouette: Viewers', value= f'{stream["viewer_count"]}', inline= True)
     embed.set_footer(text= 'Live')
   else:
+    embed.set_field_at(index= 1, name= ':busts_in_silhouette: Peak Viewers', value= f'{peak_viewer_count}', inline= True)
     embed.set_footer(text= 'Offline')
   
   return embed
@@ -103,7 +104,8 @@ async def streamfeed_task(client: discord.Client):
             if message is not None:
               live_channels[id] = {
                 "message": message,
-                "embed": embed
+                "embed": embed,
+                "peak_viewers": stream["viewer_count"]
               }
 
           # update existing
@@ -112,9 +114,12 @@ async def streamfeed_task(client: discord.Client):
             message: discord.Message = live_channels[id]["message"]
             if message is None:
               live_channels.pop(id)
+            elif id in live_channels:
+              # compute peak viewer count
+              live_channels[id]["peak_viewers"] = max(live_channels[id]["peak_viewers"], stream["viewer_count"])
 
             # only run update periodically to prioritize new streams
-            elif is_update:
+            if message is not None and is_update:
               try:
                 embed = update_embed(stream, live_channels[id]["embed"])
                 await message.edit(embed= embed)
@@ -127,7 +132,7 @@ async def streamfeed_task(client: discord.Client):
           message: discord.Message = data["message"]
           try:
             if message is not None:
-              embed = update_embed(None, data["embed"])
+              embed = update_embed(None, data["embed"], peak_viewer_count= data["peak_viewers"])
               await message.edit(embed= embed)
           except:
             pass

@@ -43,7 +43,7 @@ def create_embed(account, fields):
   for stat_field in fields:
     value = ''
     if 'StatId' in stat_field:
-      leaderboard = get_leaderboard(account_id, stat_field['StatId'], stat_field['Custom'])
+      leaderboard = get_leaderboard(account["AppId"], account_id, stat_field['StatId'], stat_field['Custom'])
       value = leaderboard["StatValue"]
       if not 'FormatValue' in stat_field:
         value = f'{get_dl_skill_level(value):.2f}'
@@ -1215,9 +1215,9 @@ async def get_dl_leaderboard(ctx: discord.ApplicationContext, group: str, stat: 
       if stat in group_values:
         stat_id = group_values[stat]
         if stat_id > 100:
-          leaderboard = get_leaderboard_top5(stat_id - 100, custom=True)
+          leaderboard = get_leaderboard_top5(11184, stat_id - 100, custom=True)
         else:
-          leaderboard = get_leaderboard_top5(stat_id, custom=False)
+          leaderboard = get_leaderboard_top5(11184, stat_id, custom=False)
 
         await build_dl_leaderboard(ctx, group, stat, leaderboard)
     else:

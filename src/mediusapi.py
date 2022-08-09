@@ -50,14 +50,14 @@ def get_account(app_id, account_name):
     raise ValueError(f"{route} returned {response.status_code}")
 
 #
-def get_leaderboard(account_id, stat_id, custom = False):
+def get_leaderboard(app_id, account_id, stat_id, custom = False):
   global headers
   if headers is None:
     authenticate()
   
   optional_custom = 'Custom' if custom else ''
 
-  route =  f"Stats/getPlayerLeaderboardIndex{optional_custom}?AccountId={account_id}&{optional_custom}StatId={stat_id+1}"
+  route =  f"Stats/getPlayerLeaderboardIndex{optional_custom}?AccountId={account_id}&{optional_custom}StatId={stat_id+1}&AppId={app_id}"
   response = requests.get(MIDDLEWARE_ENDPOINT + route, headers=headers, verify=False)
 
   if response.status_code == 200:
@@ -66,14 +66,14 @@ def get_leaderboard(account_id, stat_id, custom = False):
     raise ValueError(f"{route} returned {response.status_code}")
 
 #
-def get_leaderboard_top5(stat_id, custom = False):
+def get_leaderboard_top5(app_id, stat_id, custom = False):
   global headers
   if headers is None:
     authenticate()
   
   optional_custom = 'Custom' if custom else ''
 
-  route =  f"Stats/getLeaderboard{optional_custom}?{optional_custom}StatId={stat_id}&StartIndex={0}&Size={5}&AppId={11184}"
+  route =  f"Stats/getLeaderboard{optional_custom}?{optional_custom}StatId={stat_id}&StartIndex={0}&Size={5}&AppId={app_id}"
   response = requests.get(MIDDLEWARE_ENDPOINT + route, headers=headers, verify=False)
 
   if response.status_code == 200:

@@ -69,6 +69,10 @@ def get_latest_videos():
 
     # update last date
     last_query_date = datetime.utcnow()
+    last_query_date_str = last_query_date.isoformat()
+    config_get(['YoutubeFeed'])['LastUpdated'] = last_query_date_str
+    config_save()
+
 
     # return response
     return response
@@ -109,8 +113,13 @@ def update_embed(item, embed: discord.Embed):
 
 # background task that polls youtube and creates video embed messages in discord
 async def youtubefeed_task(client: discord.Client):
+  global last_query_date
   await client.wait_until_ready()
   channel: discord.TextChannel = client.get_channel(YOUTUBEFEED_CHANNEL_ID)
+  last_updated = config_get(['YoutubeFeed'])['LastUpdated']
+
+  if last_updated is not None:
+    last_query_date = datetime.fromisoformat(last_updated)
 
   while not client.is_closed():
     if not client.is_ws_ratelimited():

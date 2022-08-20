@@ -3,7 +3,7 @@ import os
 from typing import List
 
 # Config path
-_config_path = 'config.json'
+_config_path = 'config/config.json'
 
 # Config object
 _config = {}
@@ -81,6 +81,8 @@ def config_save():
   global _config_default
 
   config_json = json.dumps(_config, indent=4)
+  if not os.path.exists('./config'):
+    os.makedirs('./config')
   with open(_config_path, 'w') as w:
     w.write(config_json)
 

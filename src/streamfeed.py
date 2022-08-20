@@ -54,7 +54,7 @@ def is_match(stream):
 # creates a discord embed from a twitch stream
 def update_embed(stream, embed: discord.Embed, peak_viewer_count = 0):
   if stream is not None:
-    thumbnail: string = stream["thumbnail_url"].replace("{width}", "360").replace("{height}", "240")
+    thumbnail: string = stream["thumbnail_url"].replace("{width}", "360").replace("{height}", "240") + f'?v={random.randrange(10000000)}'
 
     if stream["game_name"] in GameColors:
       embed.color = GameColors[stream["game_name"]]

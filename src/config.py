@@ -70,9 +70,11 @@ def config_load():
 
   # if config file doesn't exist, create new with defaults
   if os.path.exists(_config_path):
+    print("Found a config file!!! ")
     with open(_config_path, 'r') as f:
       _config.update(json.load(f))
   else:
+    print("No config found!")
     config_save()
 
 # saves configuration to config file
@@ -96,5 +98,5 @@ def config_get(path: List[str]):
     if field not in item:
       return None
     item = item[field]
-  
+
   return item

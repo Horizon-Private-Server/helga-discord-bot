@@ -15,12 +15,12 @@ from dotenv import load_dotenv
 load_dotenv()
 TWITCH_APPKEY = os.getenv('TWITCH_APPKEY')
 TWITCH_SECRET = os.getenv('TWITCH_SECRET')
-STREAMFEED_CHANNEL_ID = int(os.getenv('STREAMFEED_CHANNEL_ID'))
+STREAMFEED_CHANNEL_ID = os.getenv('STREAMFEED_CHANNEL_ID')
 STREAMFEED_POLL_DELAY = int(os.getenv('STREAMFEED_POLL_DELAY'))
 STREAMFEED_UPDATE_EXISTING_DELAY = int(os.getenv('STREAMFEED_UPDATE_EXISTING_DELAY'))
 
 SupportedGames = [
-  "Ratchet: Deadlocked", 
+  "Ratchet: Deadlocked",
   "Ratchet and Clank: Up Your Arsenal",
 ]
 
@@ -73,13 +73,17 @@ def update_embed(stream, embed: discord.Embed, peak_viewer_count = 0):
   else:
     embed.set_field_at(index= 1, name= ':busts_in_silhouette: Peak Viewers', value= f'{peak_viewer_count}', inline= True)
     embed.set_footer(text= 'Offline')
-  
+
   return embed
 
 # background task that polls twitch and creates/updates stream messages in discord
 async def streamfeed_task(client: discord.Client):
   await client.wait_until_ready()
-  channel: discord.TextChannel = client.get_channel(STREAMFEED_CHANNEL_ID)
+
+  if STREAMFEED_CHANNEL_ID is None:
+    return
+
+  channel: discord.TextChannel = client.get_channel(int(STREAMFEED_CHANNEL_ID))
   live_channels = {}
   update_ticker = 0
 
@@ -88,7 +92,7 @@ async def streamfeed_task(client: discord.Client):
       try:
         leftover_ids = list(live_channels.keys())
         is_update = update_ticker >= STREAMFEED_UPDATE_EXISTING_DELAY
-            
+
         # get latest list of streamers
         response = twitch.get_streams(game_id= [game['id'] for game in games['data']], first= 6)
         streams = filter(is_match, list(response['data']))
@@ -96,7 +100,7 @@ async def streamfeed_task(client: discord.Client):
         # update or create stream messages
         for stream in streams:
           id = stream['id']
-        
+
           # create new
           if not id in live_channels:
             embed = update_embed(stream, discord.Embed())
@@ -125,7 +129,7 @@ async def streamfeed_task(client: discord.Client):
                 await message.edit(embed= embed)
               except:
                 live_channels.pop(id) # couldn't update message, so just remove
-          
+
         # remove streams if they are no longer live
         for id in leftover_ids:
           data = live_channels.pop(id)
@@ -151,4 +155,3 @@ def streamfeed(client):
     return
 
   client.loop.create_task(streamfeed_task(client))
-  

@@ -18,8 +18,7 @@ from config import *
 load_dotenv()
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 YOUTUBEFEED_POLL_DELAY = int(os.getenv('YOUTUBEFEED_POLL_DELAY'))
-YOUTUBEFEED_CHANNEL_ID = int(os.getenv('YOUTUBEFEED_CHANNEL_ID'))
-
+YOUTUBEFEED_CHANNEL_ID = os.getenv('YOUTUBEFEED_CHANNEL_ID')
 #
 last_query_date = datetime.utcnow()
 youtube = None
@@ -36,18 +35,18 @@ except Exception as e:
   logging.error(traceback.format_exc())
   pass
 
-# 
+#
 def parse_gamename(string):
   lower_string = string.lower()
   games = config_get(['Games'])
   for game in games:
     if game['Game'].lower() in lower_string:
       return game
-    
+
     for filter in game['Filters']:
       if filter.lower() == lower_string:
         return game
-  
+
   return None
 
 # returns latest youtube videos since last request
@@ -94,7 +93,7 @@ def update_embed(item, embed: discord.Embed):
     game = parse_gamename(videoTitle)
     if game is None:
       return None
-    
+
     gamename = game['Game']
     embed.color = int(game['Color'], 16)
     embed.description = f'{videoDescription}\n[youtube.com/watch?v={videoId}]({videoUrl})'
@@ -106,7 +105,7 @@ def update_embed(item, embed: discord.Embed):
     embed.set_thumbnail(url=videoThumbnailUrl)
     embed.clear_fields()
     embed.set_footer(text= 'Posted')
-  
+
     return videoUrl
 
   return None
@@ -115,6 +114,10 @@ def update_embed(item, embed: discord.Embed):
 async def youtubefeed_task(client: discord.Client):
   global last_query_date
   await client.wait_until_ready()
+
+  if YOUTUBEFEED_CHANNEL_ID is None:
+    return
+
   channel: discord.TextChannel = client.get_channel(YOUTUBEFEED_CHANNEL_ID)
   last_updated = config_get(['YoutubeFeed'])['LastUpdated']
 
@@ -155,4 +158,3 @@ def youtubefeed(client):
     return
 
   client.loop.create_task(youtubefeed_task(client))
-  

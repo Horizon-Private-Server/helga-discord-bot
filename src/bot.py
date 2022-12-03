@@ -8,6 +8,7 @@ from config import *
 from smoke import smoke
 from streamfeed import streamfeed
 from stats import get_dl_stats, get_dl_leaderboard, DEADLOCKED_GET_STATS_CHOICES, DEADLOCKED_STATS
+from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 
 load_dotenv()
@@ -16,12 +17,32 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 config_load()
 
 client = discord.Bot()
-deadlocked = SlashCommandGroup("deadlocked", "Commands related to deadlocked.", guild_ids=config_get(['Stats', 'GuildIds']))
+
+# create Slash Command group with bot.create_group
+deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.",guild_ids=config_get(['Stats', 'GuildIds']))
 leaderboard = deadlocked.create_subgroup("leaderboard", "Commands related to game leaderboards.")
+uya = client.create_group("uya", "Commands related to UYA.",guild_ids=config_get(['Stats', 'GuildIds']))
 
 @client.event
 async def on_ready():
   print(f'{client.user} has connected to Discord!')
+
+
+@uya.command(name="skins", description="Generate UYA multiplayer skins.")
+async def cmd_stats(
+  ctx: discord.ApplicationContext,
+  name: Option(str, "Enter the username")
+  ):
+  await get_uya_skins(ctx, name)
+
+
+
+@deadlocked.command(name="skins", description="Generate DL multiplayer skins.")
+async def cmd_stats(
+  ctx: discord.ApplicationContext,
+  name: Option(str, "Enter the username")
+  ):
+  await get_dl_skins(ctx, name)
 
 @deadlocked.command(name="stats", description="Query an account's stats.")
 async def cmd_stats(
@@ -132,6 +153,4 @@ async def cmd_weapon_leaderboard(
 streamfeed(client)
 youtubefeed(client)
 smoke(client)
-client.remove_application_command(deadlocked)
-client.add_application_command(deadlocked)
 client.run(TOKEN)

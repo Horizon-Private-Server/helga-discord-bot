@@ -2,6 +2,8 @@
 import os
 import discord
 from discord.commands import Option, SlashCommandGroup
+from discord.utils import get
+
 from dotenv import load_dotenv
 
 from config import *
@@ -16,7 +18,11 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 config_load()
 
-client = discord.Bot()
+intents = discord.Intents.default()
+intents.members = True
+intents.reactions = True
+
+client = discord.Bot(intents=intents)
 
 # create Slash Command group with bot.create_group
 deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.",guild_ids=config_get(['Stats', 'GuildIds']))
@@ -27,6 +33,74 @@ uya = client.create_group("uya", "Commands related to UYA.",guild_ids=config_get
 async def on_ready():
   print(f'{client.user} has connected to Discord!')
 
+@client.event
+async def on_raw_reaction_add(payload):
+  user_id = payload.user_id
+  message_id = payload.message_id
+  emoji = payload.emoji
+
+  # print("user:",user_id)
+  # print("message:",message_id)
+  # print("emoji:",emoji)
+  # print("emoji_id:",emoji.id)
+
+  if message_id != config_get(["ReactionRoles", "MessageId"]):
+    return
+
+  user = get(client.get_all_members(), id=user_id)
+  if not user:
+    return # no user found
+
+  for emoji_id, role_id in config_get(["ReactionRoles", "EmojisToRoles"]).items():
+    if emoji_id == str(emoji):
+      # Add the role
+      await user.add_roles(user.guild.get_role(int(role_id)))
+
+@client.event
+async def on_raw_reaction_remove(payload):
+  user_id = payload.user_id
+  message_id = payload.message_id
+  emoji = payload.emoji
+
+  # print("user:",user_id)
+  # print("message:",message_id)
+  # print("emoji:",emoji)
+  # print("emoji_id:",emoji.id)
+
+  if message_id != config_get(["ReactionRoles", "MessageId"]):
+    return
+
+  user = get(client.get_all_members(), id=user_id)
+  if not user:
+    return # no user found
+
+  for emoji_id, role_id in config_get(["ReactionRoles", "EmojisToRoles"]).items():
+    if emoji_id == str(emoji):
+      # Add the role
+      await user.remove_roles(user.guild.get_role(int(role_id)))
+
+@client.event
+async def on_raw_reaction_clear(payload):
+  user_id = payload.user_id
+  message_id = payload.message_id
+  emoji = payload.emoji
+
+  # print("user:",user_id)
+  # print("message:",message_id)
+  # print("emoji:",emoji)
+  # print("emoji_id:",emoji.id)
+
+  if message_id != config_get(["ReactionRoles", "MessageId"]):
+    return
+
+  user = get(client.get_all_members(), id=user_id)
+  if not user:
+    return # no user found
+
+  for emoji_id, role_id in config_get(["ReactionRoles", "EmojisToRoles"]).items():
+    if emoji_id == str(emoji):
+      # Add the role
+      await user.remove_roles(user.guild.get_role(int(role_id)))
 
 @uya.command(name="skins", description="Generate UYA multiplayer skins.")
 async def cmd_stats(

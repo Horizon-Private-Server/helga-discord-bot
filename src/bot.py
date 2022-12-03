@@ -17,14 +17,11 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 config_load()
 
 client = discord.Bot()
-#deadlocked = SlashCommandGroup("deadlocked", "Commands related to deadlocked.", guild_ids=['918360025829900298'])
-#uya = SlashCommandGroup("uya", "Commands related to Up Your Arsenal.", guild_ids=['918360025829900298'])
-#leaderboard = deadlocked.create_subgroup("leaderboard", "Commands related to game leaderboards.")
 
 # create Slash Command group with bot.create_group
-deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.")
+deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.",guild_ids=config_get(['Stats', 'GuildIds']))
 leaderboard = deadlocked.create_subgroup("leaderboard", "Commands related to game leaderboards.")
-uya = client.create_group("uya", "Commands related to UYA.")
+uya = client.create_group("uya", "Commands related to UYA.",guild_ids=config_get(['Stats', 'GuildIds']))
 
 @client.event
 async def on_ready():
@@ -156,8 +153,4 @@ async def cmd_weapon_leaderboard(
 streamfeed(client)
 youtubefeed(client)
 smoke(client)
-# client.remove_application_command(deadlocked)
-# client.add_application_command(deadlocked)
-# client.remove_application_command(uya)
-# client.add_application_command(uya)
 client.run(TOKEN)

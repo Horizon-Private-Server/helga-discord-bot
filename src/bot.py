@@ -12,6 +12,7 @@ from streamfeed import streamfeed
 from stats import get_dl_stats, get_dl_leaderboard, DEADLOCKED_GET_STATS_CHOICES, DEADLOCKED_STATS
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
+from uya import *
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -28,6 +29,8 @@ client = discord.Bot(intents=intents)
 deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.",guild_ids=config_get(['Stats', 'GuildIds']))
 leaderboard = deadlocked.create_subgroup("leaderboard", "Commands related to game leaderboards.")
 uya = client.create_group("uya", "Commands related to UYA.",guild_ids=config_get(['Stats', 'GuildIds']))
+
+uya_manager = UYAManager(client, config_get_full())
 
 @client.event
 async def on_ready():
@@ -108,6 +111,22 @@ async def cmd_stats(
   name: Option(str, "Enter the username")
   ):
   await get_uya_skins(ctx, name)
+
+@uya.command(name='alt', description="Find accounts tied to this account.")
+async def cmd_stats(
+  ctx: discord.ApplicationContext,
+  name: Option(str, "Enter the username")
+  ):
+  await uya_manager.alt(ctx, name)
+
+
+@uya.command(name='clan', description="Get Clan info from a clan name.")
+async def cmd_stats(
+  ctx: discord.ApplicationContext,
+  name: Option(str, "Enter the Clan name")
+  ):
+  await uya_manager.clan(ctx, name)
+
 
 
 
@@ -224,7 +243,7 @@ async def cmd_weapon_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Weapons", stat)
 
-streamfeed(client)
-youtubefeed(client)
-smoke(client)
+#streamfeed(client)
+#youtubefeed(client)
+#smoke(client)
 client.run(TOKEN)

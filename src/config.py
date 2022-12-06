@@ -100,3 +100,7 @@ def config_get(path: List[str]):
     item = item[field]
 
   return item
+
+def config_get_full():
+  global _config
+  return _config

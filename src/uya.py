@@ -174,9 +174,8 @@ class UYAManager:
     if len(resp) == 0 :
       val = 'No Accounts found!'
     else:
-      val = '```'
-      for acc in resp:
-        val += acc + '\n'
+      val = '```\n'
+      val += ', '.join(resp)
       val += '```'
 
     embed.add_field(name=f'Found {len(resp)} accounts!', value=val, inline=False)

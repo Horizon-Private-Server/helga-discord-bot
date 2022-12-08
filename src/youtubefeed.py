@@ -14,6 +14,7 @@ import googleapiclient.discovery
 from pprint import pprint
 from dotenv import load_dotenv
 from config import *
+from datetime import timedelta
 
 load_dotenv()
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
@@ -72,7 +73,6 @@ def get_latest_videos():
     config_get(['YoutubeFeed'])['LastUpdated'] = last_query_date_str
     config_save()
 
-
     # return response
     return response
   except Exception as e:
@@ -117,8 +117,8 @@ async def youtubefeed_task(client: discord.Client):
 
   if YOUTUBEFEED_CHANNEL_ID is None:
     return
-
-  channel: discord.TextChannel = client.get_channel(YOUTUBEFEED_CHANNEL_ID)
+  channel: discord.TextChannel = client.get_channel(int(YOUTUBEFEED_CHANNEL_ID))
+  
   last_updated = config_get(['YoutubeFeed'])['LastUpdated']
 
   if last_updated is not None:

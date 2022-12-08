@@ -33,14 +33,6 @@ TitleWhitelistFilters = [
   "online"
 ]
 
-# initialize twitch and get list of games
-twitch: Twitch = None
-try:
-  twitch = Twitch(TWITCH_APPKEY, TWITCH_SECRET)
-  games = twitch.get_games(names= SupportedGames)
-except:
-  print('unable to authenticate with twitch')
-  pass
 
 # whether or not a given stream matches the filter
 def is_match(stream):
@@ -80,6 +72,20 @@ def update_embed(stream, embed: discord.Embed, peak_viewer_count = 0):
 async def streamfeed_task(client: discord.Client):
   await client.wait_until_ready()
 
+
+  # initialize twitch and get list of games
+  twitch: Twitch = None
+  try:
+    twitch = await Twitch(TWITCH_APPKEY, TWITCH_SECRET)
+    games = []
+    async for game in twitch.get_games(names= SupportedGames):
+      games.append(game.to_dict())
+  except Exception as e:
+    print(traceback.format_exc())
+    print('unable to authenticate with twitch')
+    return
+
+
   if STREAMFEED_CHANNEL_ID is None:
     return
 
@@ -94,8 +100,11 @@ async def streamfeed_task(client: discord.Client):
         is_update = update_ticker >= STREAMFEED_UPDATE_EXISTING_DELAY
 
         # get latest list of streamers
-        response = twitch.get_streams(game_id= [game['id'] for game in games['data']], first= 6)
-        streams = filter(is_match, list(response['data']))
+        streams = []
+        async for stream in twitch.get_streams(game_id= [game['id'] for game in games], first= 6):
+          streams.append(stream.to_dict())
+
+        streams = filter(is_match, streams)
 
         # update or create stream messages
         for stream in streams:
@@ -151,7 +160,4 @@ async def streamfeed_task(client: discord.Client):
 
 #
 def streamfeed(client):
-  if twitch is None:
-    return
-
   client.loop.create_task(streamfeed_task(client))

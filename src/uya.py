@@ -178,6 +178,8 @@ class UYAManager:
       val += ', '.join(resp)
       val += '```'
 
+    val = val[:1000]
+
     embed.add_field(name=f'Found {len(resp)} accounts!', value=val, inline=False)
 
 

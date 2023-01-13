@@ -36,6 +36,10 @@ def seconds_tostr(seconds):
 
   return f'{hours}h {minutes % 60}m {seconds % 60}s'
 
+def int_topercent(value, precision):
+  ratio = value / precision
+  return f'{ratio:.2%}'
+
 def create_embed(account, fields):
   account_id = account["AccountId"]
   embed = discord.Embed()
@@ -51,7 +55,6 @@ def create_embed(account, fields):
         value = stat_field['FormatValue'](value)
 
       value = f'Rank {leaderboard["Index"]+1}' + (f' [{value}]' if value is not None else '')
-    
 
     inline = True if 'Inline' not in stat_field else stat_field['Inline']
 
@@ -990,17 +993,81 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
   embed.title = f'Survival Stats for {account_name}'
   await ctx.respond(content=get_phrase('survival', account["AccountName"]), embed=embed)
 
+#
+async def get_dl_training_stats(ctx: discord.ApplicationContext, account):
+  account_id = account["AccountId"]
+  account_name = account["AccountName"]
+  stats = account["AccountWideStats"]
+  stats_custom = account["AccountCustomWideStats"]
+
+  fusion_leaderboard = get_leaderboard(account["AppId"], account_id, constants.CUSTOM_STAT_TRAINING_FUSION_BEST_POINTS, True)
+
+  fields = [
+    {
+      'Name': 'Training Rank',
+      #'StatId': constants.CUSTOM_STAT_TRAINING_RANK,
+      'Custom': True,
+      'Inline': True,
+      'Children': [
+        {
+          'Name': 'Games Played',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_GAMES_PLAYED]}'
+        },
+        {
+          'Name': 'Time Played',
+          'Value': lambda : f'{seconds_tostr(stats_custom[constants.CUSTOM_STAT_TRAINING_TIME_PLAYED])}'
+        },
+        {
+          'Name': 'Targets Killed',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_TOTAL_KILLS]}'
+        }
+      ]
+    },
+    {
+      'Name': 'Fusion Rifle',
+      'Inline': True,
+      'Children': [
+        {
+          'Name': 'High Score',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_BEST_POINTS]} (#{fusion_leaderboard["Index"]+1})'
+        },
+        {
+          'Name': 'Best Time',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_BEST_TIME]}'
+        },
+        {
+          'Name': 'Targets Killed',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_KILLS]}'
+        },
+        {
+          'Name': 'Accuracy',
+          'Value': lambda : f'{int_topercent(stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_ACCURACY], 100*100)}'
+        }
+      ]
+    }
+  ]
+
+  embed = create_embed(account, fields)
+  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.title = f'Training Stats for {account_name}'
+  await ctx.respond(content=get_phrase('training', account["AccountName"]), embed=embed)
+
 
 #
 async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, leaderboard):
   
   lb_str = ''
   pad_str = ' '
+  transform_value = lambda x : x
+
+  if 'Accuracy' in stat:
+    transform_value = lambda x : int_topercent(x, 100 * 100)
+
   for i in range(0, len(leaderboard)):
     s = f'{i+1}. {leaderboard[i]["AccountName"]}'
     while len(s) < 24:
       s += pad_str
-    lb_str += f'{s}{leaderboard[i]["StatValue"]}\n'
+    lb_str += f'{s}{transform_value(leaderboard[i]["StatValue"])}\n'
 
 
   embed = discord.Embed()
@@ -1025,6 +1092,7 @@ DEADLOCKED_GET_STATS_CHOICES = {
   "Juggernaut": get_dl_juggy_stats,
   "Spleef": get_dl_spleef_stats,
   "Survival": get_dl_survival_stats,
+  "Training": get_dl_training_stats,
   "Weapons": get_dl_weapons_stats
 }
 
@@ -1171,6 +1239,16 @@ DEADLOCKED_STATS = {
     "Mine Launcher Kills": 288,
     "B6 Obliterator Kills": 289,
     "Scorpion Flail Kills": 290,
+  },
+  "Training": {
+    "Rank": 311,
+    "Games Played": 312,
+    "Time Played": 313,
+    "Total Targets Killed": 314,
+    "Fusion Rifle: Best Score": 315,
+    "Fusion Rifle: Best Time": 316,
+    "Fusion Rifle: Total Targets Killed": 317,
+    "Fusion Rifle: Accuracy": 320,
   },
   "Weapons": {
     "Wrench Kills": 46,

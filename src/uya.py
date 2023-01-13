@@ -42,9 +42,10 @@ class UYAManager:
     self._client = client
     self._config = config
 
-    self._http_session = aiohttp.ClientSession(base_url=config['UYA']['ServerUrl'])
-    
-    client.loop.create_task(self.uya_players_online_task(client, config))
+    if config['UYA']['ServerUrl']:
+      self._http_session = aiohttp.ClientSession(base_url=config['UYA']['ServerUrl'])
+      
+      client.loop.create_task(self.uya_players_online_task(client, config))
 
 # background task that polls api and creates/updates respective smoke messages in discord
   async def uya_players_online_task(self, client: discord.Client, config):

@@ -36,6 +36,12 @@ def seconds_tostr(seconds):
 
   return f'{hours}h {minutes % 60}m {seconds % 60}s'
 
+def ms_tostr(milliseconds):
+  seconds = milliseconds // 1000
+  minutes = seconds // 60
+
+  return f'{minutes}m {seconds % 60}s'
+
 def int_topercent(value, precision):
   ratio = value / precision
   return f'{ratio:.2%}'
@@ -1033,7 +1039,11 @@ async def get_dl_training_stats(ctx: discord.ApplicationContext, account):
         },
         {
           'Name': 'Best Time',
-          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_BEST_TIME]}'
+          'Value': lambda : f'{ms_tostr(stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_BEST_TIME])}'
+        },
+        {
+          'Name': 'Best Combo',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_BEST_COMBO]}'
         },
         {
           'Name': 'Targets Killed',
@@ -1245,8 +1255,9 @@ DEADLOCKED_STATS = {
     "Games Played": 312,
     "Time Played": 313,
     "Total Targets Killed": 314,
-    "Fusion Rifle: Best Score": 315,
+    "Fusion Rifle: High Score": 315,
     "Fusion Rifle: Best Time": 316,
+    "Fusion Rifle: Best Combo": 321,
     "Fusion Rifle: Total Targets Killed": 317,
     "Fusion Rifle: Accuracy": 320,
   },

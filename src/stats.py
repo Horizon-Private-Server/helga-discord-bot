@@ -1038,10 +1038,6 @@ async def get_dl_training_stats(ctx: discord.ApplicationContext, account):
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_BEST_POINTS]} (#{fusion_leaderboard["Index"]+1})'
         },
         {
-          'Name': 'Best Time',
-          'Value': lambda : f'{ms_tostr(stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_BEST_TIME])}'
-        },
-        {
           'Name': 'Best Combo',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_BEST_COMBO]}'
         },
@@ -1256,7 +1252,6 @@ DEADLOCKED_STATS = {
     "Time Played": 313,
     "Total Targets Killed": 314,
     "Fusion Rifle: High Score": 315,
-    "Fusion Rifle: Best Time": 316,
     "Fusion Rifle: Best Combo": 321,
     "Fusion Rifle: Total Targets Killed": 317,
     "Fusion Rifle: Accuracy": 320,

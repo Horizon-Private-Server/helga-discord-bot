@@ -27,7 +27,7 @@ client = discord.Bot(intents=intents)
 
 # create Slash Command group with bot.create_group
 deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.", guild_ids=config_get(['Stats', 'GuildIds']))
-dl_leaderboard = client.create_group("deadlocked-leaderboard2", "Commands related to game leaderboards.", guild_ids=config_get(['Stats', 'GuildIds']))
+dl_leaderboard = client.create_group("deadlocked-leaderboard", "Commands related to game leaderboards.", guild_ids=config_get(['Stats', 'GuildIds']))
 uya = client.create_group("uya", "Commands related to UYA.", guild_ids=config_get(['Stats', 'GuildIds']))
 
 uya_manager = UYAManager(client, config_get_full())

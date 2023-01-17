@@ -28,6 +28,7 @@ client = discord.Bot(intents=intents)
 # create Slash Command group with bot.create_group
 deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.", guild_ids=config_get(['Stats', 'GuildIds']))
 dl_leaderboard = client.create_group("deadlocked-leaderboard", "Commands related to game leaderboards.", guild_ids=config_get(['Stats', 'GuildIds']))
+dl_custom_leaderboard = client.create_group("deadlocked-custom-leaderboard", "Commands related to custom game leaderboards.", guild_ids=config_get(['Stats', 'GuildIds']))
 uya = client.create_group("uya", "Commands related to UYA.", guild_ids=config_get(['Stats', 'GuildIds']))
 
 uya_manager = UYAManager(client, config_get_full())
@@ -173,28 +174,28 @@ async def cmd_dm_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Deathmatch", stat)
 
-@dl_leaderboard.command(name="gungame", description="See the Top 5 in any Gun Game stat.")
+@dl_custom_leaderboard.command(name="gungame", description="See the Top 5 in any Gun Game stat.")
 async def cmd_gungame_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Gun Game"].keys()))
   ):
   await get_dl_leaderboard(ctx, "Gun Game", stat)
 
-@dl_leaderboard.command(name="infected", description="See the Top 5 in any Infected stat.")
+@dl_custom_leaderboard.command(name="infected", description="See the Top 5 in any Infected stat.")
 async def cmd_infected_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Infected"].keys()))
   ):
   await get_dl_leaderboard(ctx, "Infected", stat)
 
-@dl_leaderboard.command(name="juggernaut", description="See the Top 5 in any Juggernaut stat.")
+@dl_custom_leaderboard.command(name="juggernaut", description="See the Top 5 in any Juggernaut stat.")
 async def cmd_juggernaut_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Juggernaut"].keys()))
   ):
   await get_dl_leaderboard(ctx, "Juggernaut", stat)
 
-@dl_leaderboard.command(name="koth", description="See the Top 5 in any King of the Hill stat.")
+@dl_custom_leaderboard.command(name="koth", description="See the Top 5 in any King of the Hill stat.")
 async def cmd_koth_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["King of the Hill"].keys()))
@@ -208,35 +209,35 @@ async def cmd_overall_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Overall", stat)
 
-@dl_leaderboard.command(name="payload", description="See the Top 5 in any Payload stat.")
+@dl_custom_leaderboard.command(name="payload", description="See the Top 5 in any Payload stat.")
 async def cmd_payload_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Payload"].keys()))
   ):
   await get_dl_leaderboard(ctx, "Payload", stat)
 
-@dl_leaderboard.command(name="snd", description="See the Top 5 in any Search and Destroy stat.")
+@dl_custom_leaderboard.command(name="snd", description="See the Top 5 in any Search and Destroy stat.")
 async def cmd_snd_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Search and Destroy"].keys()))
   ):
   await get_dl_leaderboard(ctx, "Search and Destroy", stat)
 
-@dl_leaderboard.command(name="spleef", description="See the Top 5 in any Spleef stat.")
+@dl_custom_leaderboard.command(name="spleef", description="See the Top 5 in any Spleef stat.")
 async def cmd_spleef_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Spleef"].keys()))
   ):
   await get_dl_leaderboard(ctx, "Spleef", stat)
 
-@dl_leaderboard.command(name="survival", description="See the Top 5 in any Survival stat.")
+@dl_custom_leaderboard.command(name="survival", description="See the Top 5 in any Survival stat.")
 async def cmd_survival_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Survival"].keys()))
   ):
   await get_dl_leaderboard(ctx, "Survival", stat)
 
-@dl_leaderboard.command(name="training", description="See the Top 5 in any Training stat.")
+@dl_custom_leaderboard.command(name="training", description="See the Top 5 in any Training stat.")
 async def cmd_training_leaderboard(
   ctx: discord.ApplicationContext,
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Training"].keys()))

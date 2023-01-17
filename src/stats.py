@@ -1007,6 +1007,7 @@ async def get_dl_training_stats(ctx: discord.ApplicationContext, account):
   stats_custom = account["AccountCustomWideStats"]
 
   fusion_leaderboard = get_leaderboard(account["AppId"], account_id, constants.CUSTOM_STAT_TRAINING_FUSION_BEST_POINTS, True)
+  cycle_leaderboard = get_leaderboard(account["AppId"], account_id, constants.CUSTOM_STAT_TRAINING_CYCLE_BEST_POINTS, True)
 
   fields = [
     {
@@ -1048,6 +1049,32 @@ async def get_dl_training_stats(ctx: discord.ApplicationContext, account):
         {
           'Name': 'Accuracy',
           'Value': lambda : f'{int_topercent(stats_custom[constants.CUSTOM_STAT_TRAINING_FUSION_ACCURACY], 100*100)}'
+        }
+      ]
+    },
+    {
+      'Name': 'Cycle',
+      'Inline': True,
+      'Children': [
+        {
+          'Name': 'High Score',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_CYCLE_BEST_POINTS]} (#{cycle_leaderboard["Index"]+1})'
+        },
+        {
+          'Name': 'Best Combo',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_CYCLE_BEST_COMBO]}'
+        },
+        {
+          'Name': 'Total Kills',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_CYCLE_KILLS]}'
+        },
+        {
+          'Name': 'Total Deaths',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_TRAINING_CYCLE_DEATHS]}'
+        },
+        {
+          'Name': 'Fusion Accuracy',
+          'Value': lambda : f'{int_topercent(stats_custom[constants.CUSTOM_STAT_TRAINING_CYCLE_FUSION_ACCURACY], 100*100)}'
         }
       ]
     }
@@ -1247,14 +1274,18 @@ DEADLOCKED_STATS = {
     "Scorpion Flail Kills": 290,
   },
   "Training": {
-    "Rank": 311,
     "Games Played": 312,
     "Time Played": 313,
-    "Total Targets Killed": 314,
+    "Total Kills": 314,
     "Fusion Rifle: High Score": 315,
     "Fusion Rifle: Best Combo": 321,
-    "Fusion Rifle: Total Targets Killed": 317,
+    "Fusion Rifle: Total Kills": 317,
     "Fusion Rifle: Accuracy": 320,
+    "Cycle: High Score": 322,
+    "Cycle: Best Combo": 323,
+    "Cycle: Total Kills": 324,
+    "Cycle: Total Deaths": 325,
+    "Cycle: Fusion Accuracy": 328,
   },
   "Weapons": {
     "Wrench Kills": 46,

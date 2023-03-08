@@ -1,0 +1,121 @@
+Did you know that we have custom maps available for Deadlocked players on PS2 and PCSX2?
+Do you know how many of them there are? If you do, please let us know because we have lost count!
+DL custom maps (along with the many custom game modes) are possible thanks to the tireless work of Badger41, Dnawrkshp, and Agent Moose.
+For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CMAPS.md;
+
+Hosting a Deadlocked/Gladiator lobby and can't decide who should be on what team?
+Try entering '!tm' into the chat to randomly assign half of the players to the blue team and the other half on red team.
+Check out the GitHub documentation for optional arguments that can make this tool even more useful! https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CHATCOMMANDS.MD#teams;
+
+Have you ever been sitting in a DL lobby and thought "What I really need right now is a random number generator"?
+If so, you're in luck! Try entering '!roll' into the chat and the server will respond with a random number between 1 and 100 (inclusive).;
+
+Listen up, you lardballs! The Helga Discord bot is your resource for all Deadlocked stats.
+For a complete list of commands and instructions, visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/HELGA.MD#dl;
+
+Want to play with the pros on DL? Check out our DL Competitive Gameplay YouTube playlist!
+https://www.youtube.com/playlist?list=PLUCKuUL8PUCE956L74C4lDatEQAMuFyNI;
+
+Have you ever gotten sick while playing Deadlocked? We of course mean the Infected custom game mode! In this mode, players become "infected" after dying and must hunt the remaining survivors using only their wrench and their speed. Survivors have the luxury of weapons, but have a limited health and ammo pool - and only one life!
+For more information on Infected: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#infected;
+
+Ever played Gun Game on Call of Duty? Now you can play it on Deadlocked too! The rules are similar - you must get one kill with each weapon to advance to the next weapon. For an added challenge, at the end of the game you must kill another player with your wrench!
+For more information on Gun Game: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#gun-game;
+
+Do you tend to aim low and hit the ground beneath your opponents? Spleef may be the custom Deadlocked game mode for you!
+In this mode, the goal is not to kill your opponent but rather to destroy the ground below his or her feet.
+Don't worry - you have multiple opportunities per game to try to send your opponent through the floor.
+For more information on Spleef: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#spleef;
+
+Ever imagine that the Deadlocked map is flooding, and you have to keep climbing to get out?
+Well, with our custom Infinite Climber game mode you don't have to imagine anymore!
+You can even parkour alongside other players. Your score is calculated based on how high you climb.
+For more information on Infinite Climber: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#infinite-climber;
+
+Do you know about the Search and Destroy (SND) custom game mode for Deadlocked?
+In this mode, you will have to either attack bomb sites or defend them. Be careful - you only get one life!
+For more information on SND: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#search-and-destroy-snd;
+
+Brainsssssss! The zombies are coming after you in the Survival custom game mode for Deadlocked.
+The difficulty increases with each wave of zombies. Take them on alone, or with your friends!
+For more information on Survival: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#survival;
+
+Hey Deadlocked players! It's time for target practice! The Training custom game mode is designed to help you practice your Fusion rifle aiming against simple multiplayer bots. See how many points you can score!
+For more information on the custom Training mode: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#training;
+
+What is cycling, besides the thing that all the pro players say you don't know how to do?
+In short, cycling consists of firing three specific weapons and being able to rapidly switch between them.
+For UYA, the three weapons are the Flux Rifle, Gravity Bomb, and Blitz Gun. For DL, the three weapons are the Fusion Rifle, B6-Obliterator, and Magma Cannon.
+In competitive lobbies, it is common for these three weapons to be the only ones enabled.;
+
+Lock-strafe mode! You should always use lock-strafe mode for online play. Just do it.;
+
+"How many people are online right now?" This is a question that you will never have to ask when playing either UYA or DL on the Horizon servers.
+You can check the #uya-players-online and #dl-players-online channels in this Discord server to see who is on both games in real time.;
+
+Ever feel like an imposter in your own skin? Maybe you just need to change into one of the UYA or DL secret skins!
+There are two secret skins for UYA, and five for DL. You can learn how to unlock them at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/skins.md;
+
+Beep boop! Thanks to Fourbolt, the Horizon server for UYA/Ratchet and Clank 3 features bots!
+Bots are AI "players" that make great opponents for practice, or when no other human players are online.
+For more information on bots, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/bots.md;
+
+You may know about bots on UYA/Ratchet and Clank 3 - but do you know about the CPUG challenge?
+If you can record yourself defeating a G-level bot using certain lobby settings, we will award you the Godlike role.
+This is even better than the ice bucket challenge!
+For complete rules, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/bots.md#cpug-challenge;
+
+Did you know that you can follow UYA/Ratchet and Clank 3 games live without being in them?
+Or view detailed match statistics after the game, alongside a map that shows exactly where you got kevorked by that Trooper's midair fantasy shot?
+Nick#1's UYATracker website is home to all of this and more!
+See how you stack up to the competition at: https://www.uyatracker.net/;
+
+Have you ever played a beta version of a game online? How about a beta version of an 18 year old game?
+Using our test server, you can play several beta versions of UYA online.
+For more information, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/betas.md;
+
+Hacker alert! Did you know that you can customize colors in your UYA/Ratchet and Clank 3 clan tags? Big Al would be proud.
+For full instructions, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/clantags.md;
+
+Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game lobby name, do not try to join the lobby! "IG" is short for "in-game", meaning that the lobby has already started. UYA does not support joining games that have already started, and if you try to join your PS2 may freeze and/or you may see a network error pop up. If this happens, you will need to reconnect to the server.;
+
+Tagg - you're it! On UYA/Ratchet and Clank 3, you can manually adjust the amount of time the server aggregates packets before sending the data to other players. English please? This means that you can tweak the apparent amount of lag for the next game that you create.
+For more details, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/cities.md#lag-adjustment;
+
+How the heck do they move and shoot like that? If you have ever wondered this while playing UYA, you might want to check out our UYA Competitive Gameplay YouTube playlist! Thanks to Cy/iStronkz for contributing videos to this list.
+https://www.youtube.com/playlist?list=PLUCKuUL8PUCEyvlWo-fZxj7Om_r2UEpB5;
+
+Ever wonder why we chose the name "Horizon"? We wanted to get away from the Ratchet and Clank Online branding, and avoid any potential confusion around the R & C name in general. For example if we named the server "Ratchet and Clank: Horizon" some might have thought it was an upcoming game from Insomniac.;
+
+Why bother boosting the Horizon Discord server? Boosting unlocks Discord features in the server such as better streaming and audio quality, more custom emojis, and other fun perks.;
+
+Did you know that running the Horizon game servers for UYA and DL costs money?
+If you want to help chip in, please consider subscribing to our Discord server. All funds go directly towards hosting our private servers. Any additional funds will be saved for either future hosting costs or for community tournaments.
+You can find more info about subscriptions by clicking "Server Subscriptions" at the top of the Discord server. If you have additional questions, please contact a staff member.;
+
+Short on cash but want to help out the Horizon community? There are other ways to help us out as well! Some possible examples of this are:
+- Hosting regular events on UYA and/or DL to get people online.
+- Answering questions from other community members in the #tech-support Discord channel.
+- Recording gameplay footage and sending it to us to post to the Horizon YouTube channel.
+Staff members will award VIP status (Horizon VIP role) to those who consistently help out. Thank you for your support!;
+
+Did you know? Horizon offers both NTSC-U/C and PAL version support for both Ratchet and Clank: Up Your Arsenal (Ratchet and Clank 3) and Ratchet: Deadlocked (Ratchet: Gladiator). There is crossplay between the two versions, meaning that NTSC-U/C players can play in the same game lobby as PAL players. You can connect to our servers from any PS2 with a network adapter, or the PCSX2 emulator for PC.
+Full setup details can be found at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/README.md;
+
+You can host your own event and have it listed in the Horizon Events list! The only requirement is that you must commit to being online and available for at least one hour, starting at the day and time you pick.
+Please contact DeathBySnowman to set up your event in the list. He will ask you about the other event details such as:
+- Which game (UYA or DL) will you be playing?
+- What kinds of lobbies will you be playing? (competitive, casual, meme lobbies with mines only, etc.)
+- Any other details that potential attendees should know?;
+
+Your own gameplay recordings of UYA or DL can be shared on the Horizon YouTube channel!
+We would love to feature your gameplay! The only requirements for this are:
+- Capture card quality footage only please. We like throwing it back, but not THAT much.
+- We don't want to get flagged for copyright violations, so please use only the game audio (with or without commentary).
+Please send your footage to DeathBySnowman. Google Drive links (or similar) work best.;
+
+Why did so many Horizon staff members choose screen names that are animals? It's one of nature's mysteries!;
+
+Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 150 disc golf courses across eight different US states, from Alaska to Florida.;
+
+Did you know? The Horizon servers became available to the public on February 9, 2022.;

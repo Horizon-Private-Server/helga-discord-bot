@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from config import *
 from smoke import smoke
+from tipoftheday import tipoftheday
 from streamfeed import streamfeed
 from stats import get_dl_stats, get_dl_leaderboard, DEADLOCKED_GET_STATS_CHOICES, DEADLOCKED_STATS
 from skins import get_dl_skins, get_uya_skins
@@ -251,6 +252,7 @@ async def cmd_weapon_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Weapons", stat)
 
+tipoftheday(client)
 streamfeed(client)
 youtubefeed(client)
 smoke(client)

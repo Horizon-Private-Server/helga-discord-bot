@@ -29,6 +29,11 @@ _config_default = {
   "Stats": {
     "GuildIds": []
   },
+  "TipOfTheDay": {
+    "ChannelId": 0,
+    "Color": "0xAA0000",
+    "Thumbnail": None
+  },
   "Smoke": [
     {
       "Enabled": False,

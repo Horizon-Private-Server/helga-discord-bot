@@ -35,7 +35,7 @@ def get_next_tip_datetime(last_datetime: datetime):
   next = now
 
   # send at 9AM EST
-  target_hour = 24 - 5
+  target_hour = 9 + 5
 
   # either the next tip will be sent a day after the last
   # or it will be sent at the next available target_hour,

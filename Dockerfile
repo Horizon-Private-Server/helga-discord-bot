@@ -12,4 +12,4 @@ RUN pip install -r src/requirements.txt
 COPY . ${FUNCTION_DIR}
 
 WORKDIR ${FUNCTION_DIR}/src
-CMD python bot.py
+CMD python -u bot.py

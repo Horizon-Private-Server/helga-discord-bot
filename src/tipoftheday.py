@@ -52,7 +52,7 @@ async def tipoftheday_task(client: discord.Client, tipoftheday_config, tips):
   message: discord.Message = None
   embed: discord.Embed = discord.Embed()
   round_robin = []
-  datetime_sendnexttip: datetime = None #get_next_tip_datetime(None)
+  datetime_sendnexttip: datetime = get_next_tip_datetime(None)
 
   while not client.is_closed():
     if not client.is_ws_ratelimited():

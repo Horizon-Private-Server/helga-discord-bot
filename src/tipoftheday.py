@@ -9,9 +9,6 @@ import traceback
 from datetime import datetime, timedelta
 from config import *
 
-# tipoftheday path
-_tipoftheday_path = 'tipoftheday.txt'
-
 #
 def generate_tip_embed(tipoftheday_config, tip):
   
@@ -86,12 +83,12 @@ async def tipoftheday_task(client: discord.Client, tipoftheday_config, tips):
     await asyncio.sleep(0)
 
 #
-def read_tips():
+def read_tips(path):
   
   # if config file doesn't exist, create new with defaults
-  if os.path.exists(_tipoftheday_path):
+  if os.path.exists(path):
     print("Found tipoftheday!!! ")
-    with open(_tipoftheday_path, 'r') as f:
+    with open(path, 'r') as f:
       tips = [line.strip() for line in f.read().split(sep= ';')]
       tips = list(filter(lambda x: x, tips))
       return tips
@@ -102,5 +99,5 @@ def read_tips():
 def tipoftheday(client):
   i = 0
   tipoftheday_config = config_get(['TipOfTheDay'])
-  client.loop.create_task(tipoftheday_task(client, tipoftheday_config, read_tips()))
+  client.loop.create_task(tipoftheday_task(client, tipoftheday_config, read_tips(tipoftheday_config['Path'])))
 

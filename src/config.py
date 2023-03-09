@@ -30,6 +30,7 @@ _config_default = {
     "GuildIds": []
   },
   "TipOfTheDay": {
+    "Path": "tipoftheday.txt",
     "ChannelId": 0,
     "Color": "0xAA0000",
     "Thumbnail": None

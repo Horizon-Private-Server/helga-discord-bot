@@ -51,7 +51,7 @@ def create_embed(account, fields):
   embed = discord.Embed()
 
   for stat_field in fields:
-    value = ''
+    value = '' if 'DefaultValue' not in stat_field else stat_field['DefaultValue']
     if 'StatId' in stat_field:
       leaderboard = get_leaderboard(account["AppId"], account_id, stat_field['StatId'], stat_field['Custom'])
       value = leaderboard["StatValue"]
@@ -68,6 +68,10 @@ def create_embed(account, fields):
       #value += '```'
       for child_field in stat_field['Children']:
         value += f'\n{child_field["Name"]}: {child_field["Value"]()}'
+
+        if 'StatId' in child_field and 'Custom' in child_field:
+          leaderboard = get_leaderboard(account["AppId"], account_id, child_field['StatId'], child_field['Custom'])
+          value += f' (Rank {leaderboard["Index"]+1})'
       #value += '```'
 
     embed.add_field(name=stat_field['Name'], value=value, inline=inline)
@@ -158,7 +162,7 @@ async def get_dl_overall_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Overall Stats for {account_name}'
   await ctx.respond(content=get_phrase('deadlocked', account["AccountName"]), embed=embed)
 
@@ -201,7 +205,7 @@ async def get_dl_cq_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Conquest Stats for {account_name}'
   await ctx.respond(content=get_phrase('conquest', account["AccountName"]), embed=embed)
 
@@ -244,7 +248,7 @@ async def get_dl_ctf_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'CTF Stats for {account_name}'
   await ctx.respond(content=get_phrase('capture the flag', account["AccountName"]), embed=embed)
 
@@ -283,7 +287,7 @@ async def get_dl_dm_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Deathmatch Stats for {account_name}'
   await ctx.respond(content=get_phrase('deathmatch', account["AccountName"]), embed=embed)
 
@@ -326,7 +330,7 @@ async def get_dl_koth_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'KOTH Stats for {account_name}'
   await ctx.respond(content=get_phrase('king of the hill', account["AccountName"]), embed=embed)
 
@@ -369,7 +373,7 @@ async def get_dl_juggy_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Juggernaut Stats for {account_name}'
   await ctx.respond(content=get_phrase('juggernaut', account["AccountName"]), embed=embed)
 
@@ -537,7 +541,7 @@ async def get_dl_weapons_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Weapon Stats for {account_name}'
   await ctx.respond(content=get_phrase('deadlocked', account["AccountName"]), embed=embed)
 
@@ -584,7 +588,7 @@ async def get_dl_spleef_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Spleef Stats for {account_name}'
   await ctx.respond(content=get_phrase('spleef', account["AccountName"]), embed=embed)
 
@@ -627,7 +631,7 @@ async def get_dl_climber_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Climber Stats for {account_name}'
   await ctx.respond(content=get_phrase('climber', account["AccountName"]), embed=embed)
 
@@ -686,7 +690,7 @@ async def get_dl_gungame_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Gun Game Stats for {account_name}'
   await ctx.respond(content=get_phrase('gun game', account["AccountName"]), embed=embed)
 
@@ -745,7 +749,7 @@ async def get_dl_infected_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Infected Stats for {account_name}'
   await ctx.respond(content=get_phrase('infected', account["AccountName"]), embed=embed)
 
@@ -804,7 +808,7 @@ async def get_dl_payload_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Payload Stats for {account_name}'
   await ctx.respond(content=get_phrase('payload', account["AccountName"]), embed=embed)
 
@@ -871,7 +875,7 @@ async def get_dl_snd_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'SND Stats for {account_name}'
   await ctx.respond(content=get_phrase('search and destroy', account["AccountName"]), embed=embed)
 
@@ -920,6 +924,23 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
       ]
     },
     {
+      'Name': 'High Score',
+      'Inline': True,
+      'Children': [
+        {
+          'Name': 'Orxon',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP1_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP1_HIGH_SCORE,
+          'Custom': True
+        }
+      ]
+    },
+    {
+      'Name': ' ',
+      'DefaultValue': ' ',
+      'Inline': False
+    },
+    {
       'Name': 'Weapons',
       'Inline': True,
       'Children': [
@@ -958,44 +979,31 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
       ]
     },
     {
-      'Name': 'Exterminator',
-      'StatId': constants.CUSTOM_STAT_SURVIVAL_D5_HIGH_SCORE,
-      'Custom': True,
-      'FormatValue': lambda x: f'{x} rounds',
-      'Inline': False
-    },
-    {
-      'Name': 'Hero',
-      'StatId': constants.CUSTOM_STAT_SURVIVAL_D4_HIGH_SCORE,
-      'Custom': True,
-      'FormatValue': lambda x: f'{x} rounds',
-      'Inline': False
-    },
-    {
-      'Name': 'Gladiator',
-      'StatId': constants.CUSTOM_STAT_SURVIVAL_D3_HIGH_SCORE,
-      'Custom': True,
-      'FormatValue': lambda x: f'{x} rounds',
-      'Inline': False
-    },
-    {
-      'Name': 'Contestant',
-      'StatId': constants.CUSTOM_STAT_SURVIVAL_D2_HIGH_SCORE,
-      'Custom': True,
-      'FormatValue': lambda x: f'{x} rounds',
-      'Inline': False
-    },
-    {
-      'Name': 'Couch Potato',
-      'StatId': constants.CUSTOM_STAT_SURVIVAL_D1_HIGH_SCORE,
-      'Custom': True,
-      'FormatValue': lambda x: f'{x} rounds',
-      'Inline': False
+      'Name': 'Interaction Stats',
+      'Inline': True,
+      'Children': [
+        {
+          'Name': 'Mystery Box Rolls',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_TIMES_ROLLED_MYSTERY_BOX]}'
+        },
+        {
+          'Name': 'Demon Bells Activated',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_TIMES_ACTIVATED_DEMON_BELL]}'
+        },
+        {
+          'Name': 'Power Activations',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_TIMES_ACTIVATED_POWER]}'
+        },
+        {
+          'Name': 'Tokens used on Gates',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_TOKENS_USED_ON_GATES]}'
+        }
+      ]
     }
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Survival Stats for {account_name}'
   await ctx.respond(content=get_phrase('survival', account["AccountName"]), embed=embed)
 
@@ -1081,7 +1089,7 @@ async def get_dl_training_stats(ctx: discord.ApplicationContext, account):
   ]
 
   embed = create_embed(account, fields)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'Training Stats for {account_name}'
   await ctx.respond(content=get_phrase('training', account["AccountName"]), embed=embed)
 
@@ -1105,7 +1113,7 @@ async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, lea
 
   embed = discord.Embed()
   embed.add_field(name= f'Top 5', value=f'```\n{lb_str}```', inline=True)
-  embed.set_thumbnail(url='https://rac-horizon.com/downloads/dreadzone.png')
+  embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'{group} {stat}'
   await ctx.respond(content='', embed=embed)
 
@@ -1253,17 +1261,21 @@ DEADLOCKED_STATS = {
   "Survival": {
     "Rank": 271,
     "XP": 291,
-    "Couch Potato High Score": 278,
-    "Contestant High Score": 279,
-    "Gladiator High Score": 280,
-    "Hero High Score": 281,
-    "Exterminator High Score": 282,
+    "Orxon High Score": 278,
+    #"Contestant High Score": 279,
+    #"Gladiator High Score": 280,
+    #"Hero High Score": 281,
+    #"Exterminator High Score": 282,
     "Games Played": 272,
     "Time Played": 273,
     "Kills": 274,
     "Deaths": 275,
     "Revives": 276,
     "Times Revived": 277,
+    "Times Rolled Mystery Box": 292,
+    "Times Activated Demon Bell": 293,
+    "Times Activated Power": 294,
+    "Tokens Used On Gates": 295,
     "Wrench Kills": 283,
     "Dual Viper Kills": 284,
     "Magma Cannon Kills": 285,

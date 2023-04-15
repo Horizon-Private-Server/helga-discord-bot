@@ -56,6 +56,23 @@ You can check the #uya-players-online and #dl-players-online channels in this Di
 Ever feel like an imposter in your own skin? Maybe you just need to change into one of the UYA or DL secret skins!
 There are two secret skins for UYA, and five for DL. You can learn how to unlock them at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/skins.md;
 
+If you're playing on a PS2, we recommend investing in component (YPbPr) connector cables to replace the default composite connector cables that came with your PS2. These will provide a slightly clearer picture, and may also help with in-game lag. If your TV/monitor does not have component ports, you'll also need a component to HDMI converter. All of these items are available at various online retailers. Feel free to ask for specific recommendations in the #tech-support channel here.;
+
+For both UYA/Ratchet and Clank 3 and DL/Gladiator, we recommend enabling the "Progressive Scan" setting. This setting is located in the main (not online) menu of both games, and unfortunately you will have to set it each time you start the game. The good news for those playing on the Deadlocked server (only) is that the option is also built into the custom mod menu!;
+
+Looking for someone to play with? Try tagging one of our opt-in roles!
+All opt-in roles are described in the #roles channel of our Discord server. React to the message there to add yourself to whichever roles you like.
+If you change your mind, simply un-react to the same message to remove the corresponding role.
+To use the role, tag it in an appropriate channel. Others with the role will be pinged and know that you want to play!;
+
+Horizon is fortunate to have several community members who host regular events on both games. Check the Events list at the top of this Discord server regularly to view all upcoming events. Don't forget to click the "Interested" button on relevant events so that you will receive a reminder when the event starts!;
+
+Both UYA/Ratchet and Clank 3 and DL/Gladiator have a "Save Password" option on the profile creation page. We recommend enabling this option for both games, because:
+- It will prevent you from needing to enter a password each time you log in.
+- It will help prevent other people from accessing your account.
+- It allows you to "transfer" your account between different devices, e.g. from PCSX2 to PS2 and back.
+Write down your password somewhere safe, like you would any other password. If you forget your password, please let us know in the #tech-support channel here on Discord and a staff member should be able to help you reset it.;
+
 Beep boop! Thanks to Fourbolt, the Horizon server for UYA/Ratchet and Clank 3 features bots!
 Bots are AI "players" that make great opponents for practice, or when no other human players are online.
 For more information on bots, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/bots.md;
@@ -78,6 +95,8 @@ Hacker alert! Did you know that you can customize colors in your UYA/Ratchet and
 For full instructions, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/clantags.md;
 
 Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game lobby name, do not try to join the lobby! "IG" is short for "in-game", meaning that the lobby has already started. UYA does not support joining games that have already started, and if you try to join your PS2 may freeze and/or you may see a network error pop up. If this happens, you will need to reconnect to the server.;
+
+Are you getting error messages when trying to join lobbies on UYA/Ratchet and Clank 3? Check if the name of the lobby has "[IG]" at the front of it. This text (short for "in-game") means that the game has already started, and that you will not be able to join. Keep an eye out for when the game ends so that you can join the next one!;
 
 Tagg - you're it! On UYA/Ratchet and Clank 3, you can manually adjust the amount of time the server aggregates packets before sending the data to other players. English please? This means that you can tweak the apparent amount of lag for the next game that you create.
 For more details, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/cities.md#lag-adjustment;
@@ -114,8 +133,13 @@ We would love to feature your gameplay! The only requirements for this are:
 - We don't want to get flagged for copyright violations, so please use only the game audio (with or without commentary).
 Please send your footage to DeathBySnowman. Google Drive links (or similar) work best.;
 
+Fan of UYA but never tried DL? Or vice versa? We recommend that you broaden your Horizon(s)!
+(we're really sorry for that pun, though);
+
 Why did so many Horizon staff members choose screen names that are animals? It's one of nature's mysteries!;
 
-Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 150 disc golf courses across eight different US states, from Alaska to Florida.;
+Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 155 disc golf courses across twelve different US states, from Alaska to Florida.;
+
+For today's "tip", we just want to thank you for being a part of the Horizon community! We value all of our community members and strive to provide the best online experience possible. If you ever have any feedback or ideas for us, don't hesitate to post them in the #suggestions channel of this Discord server!;
 
 Did you know? The Horizon servers became available to the public on February 9, 2022.;

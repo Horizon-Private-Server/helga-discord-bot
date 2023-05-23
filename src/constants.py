@@ -1,5 +1,5 @@
 
-DEADLOCKED_DREADZONE_ICON_URL = 'https://www.rac-horizon.com/downloads/dreadzone.png'
+DEADLOCKED_DREADZONE_ICON_URL = 'https://box.rac-horizon.com/downloads/dreadzone.png'
 
 DEADLOCKED_SKILLS_TABLE = [
   100,

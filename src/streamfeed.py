@@ -104,10 +104,10 @@ async def streamfeed_task(client: discord.Client):
         async for stream in twitch.get_streams(game_id= [game['id'] for game in games], first= 6):
           streams.append(stream.to_dict())
 
-        streams = filter(is_match, streams)
+        filtered_streams = list(filter(is_match, streams))
 
         # update or create stream messages
-        for stream in streams:
+        for stream in filtered_streams:
           id = stream['id']
 
           # create new
@@ -118,7 +118,9 @@ async def streamfeed_task(client: discord.Client):
               live_channels[id] = {
                 "message": message,
                 "embed": embed,
-                "peak_viewers": stream["viewer_count"]
+                "peak_viewers": stream["viewer_count"],
+                "live": True,
+                "last_updated": datetime.utcnow()
               }
 
           # update existing
@@ -130,6 +132,8 @@ async def streamfeed_task(client: discord.Client):
             elif id in live_channels:
               # compute peak viewer count
               live_channels[id]["peak_viewers"] = max(live_channels[id]["peak_viewers"], stream["viewer_count"])
+              live_channels[id]["live"] = True
+              live_channels[id]["last_updated"] = datetime.utcnow()
 
             # only run update periodically to prioritize new streams
             if message is not None and is_update:
@@ -137,16 +141,23 @@ async def streamfeed_task(client: discord.Client):
                 embed = update_embed(stream, live_channels[id]["embed"])
                 await message.edit(embed= embed)
               except:
-                live_channels.pop(id) # couldn't update message, so just remove
+                pass # live_channels.pop(id) # couldn't update message, so just remove
 
         # remove streams if they are no longer live
         for id in leftover_ids:
-          data = live_channels.pop(id)
-          message: discord.Message = data["message"]
           try:
-            if message is not None:
-              embed = update_embed(None, data["embed"], peak_viewer_count= data["peak_viewers"])
-              await message.edit(embed= embed)
+            data = live_channels[id] #.pop(id)
+            if data["live"]:
+              data["live"] = False
+              message: discord.Message = data["message"]
+              
+              if message is not None:
+                embed = update_embed(None, data["embed"], peak_viewer_count= data["peak_viewers"])
+                await message.edit(embed= embed)
+              
+            elif (datetime.utcnow() - data["last_updated"]).total_seconds() > 30*60:
+              # remove from list if stream has been offline for more than 30 minutes
+              live_channels.pop(id)
           except:
             pass
 

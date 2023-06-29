@@ -43,6 +43,7 @@ _config_default = {
       "MessageId": 0,
       "Thumbnail": None,
       "Color": None,
+      "API": "",
       "AppIds": {},
       "Servers": [],
       "Interval": 10,

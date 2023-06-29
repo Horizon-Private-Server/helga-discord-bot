@@ -53,7 +53,7 @@ def create_embed(account, fields):
   for stat_field in fields:
     value = '' if 'DefaultValue' not in stat_field else stat_field['DefaultValue']
     if 'StatId' in stat_field:
-      leaderboard = get_leaderboard(account["AppId"], account_id, stat_field['StatId'], stat_field['Custom'])
+      leaderboard = get_leaderboard(DEADLOCKED_API_NAME, account["AppId"], account_id, stat_field['StatId'], stat_field['Custom'])
       value = leaderboard["StatValue"]
       if not 'FormatValue' in stat_field:
         value = f'{get_dl_skill_level(value):.2f}'
@@ -70,7 +70,7 @@ def create_embed(account, fields):
         value += f'\n{child_field["Name"]}: {child_field["Value"]()}'
 
         if 'StatId' in child_field and 'Custom' in child_field:
-          leaderboard = get_leaderboard(account["AppId"], account_id, child_field['StatId'], child_field['Custom'])
+          leaderboard = get_leaderboard(DEADLOCKED_API_NAME, account["AppId"], account_id, child_field['StatId'], child_field['Custom'])
           value += f' (Rank {leaderboard["Index"]+1})'
       #value += '```'
 
@@ -1014,8 +1014,8 @@ async def get_dl_training_stats(ctx: discord.ApplicationContext, account):
   stats = account["AccountWideStats"]
   stats_custom = account["AccountCustomWideStats"]
 
-  fusion_leaderboard = get_leaderboard(account["AppId"], account_id, constants.CUSTOM_STAT_TRAINING_FUSION_BEST_POINTS, True)
-  cycle_leaderboard = get_leaderboard(account["AppId"], account_id, constants.CUSTOM_STAT_TRAINING_CYCLE_BEST_POINTS, True)
+  fusion_leaderboard = get_leaderboard(DEADLOCKED_API_NAME, account["AppId"], account_id, constants.CUSTOM_STAT_TRAINING_FUSION_BEST_POINTS, True)
+  cycle_leaderboard = get_leaderboard(DEADLOCKED_API_NAME, account["AppId"], account_id, constants.CUSTOM_STAT_TRAINING_CYCLE_BEST_POINTS, True)
 
   fields = [
     {
@@ -1325,7 +1325,7 @@ DEADLOCKED_STATS = {
 #
 async def get_dl_stats(ctx: discord.ApplicationContext, stat: str, name: str):
   try:
-    account = get_account(11184, name)
+    account = get_account(DEADLOCKED_API_NAME, 11184, name)
     if stat in DEADLOCKED_GET_STATS_CHOICES:
       await DEADLOCKED_GET_STATS_CHOICES[stat](ctx, account)
     else:
@@ -1342,9 +1342,9 @@ async def get_dl_leaderboard(ctx: discord.ApplicationContext, group: str, stat: 
       if stat in group_values:
         stat_id = group_values[stat]
         if stat_id > 100:
-          leaderboard = get_leaderboard_top5(11184, stat_id - 100, custom=True)
+          leaderboard = get_leaderboard_top5(DEADLOCKED_API_NAME, 11184, stat_id - 100, custom=True)
         else:
-          leaderboard = get_leaderboard_top5(11184, stat_id, custom=False)
+          leaderboard = get_leaderboard_top5(DEADLOCKED_API_NAME, 11184, stat_id, custom=False)
 
         await build_dl_leaderboard(ctx, group, stat, leaderboard)
     else:

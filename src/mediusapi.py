@@ -11,38 +11,38 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from typing import List
 
-load_dotenv()
-USERNAME = os.getenv('MIDDLEWARE_USERNAME')
-PASSWORD = os.getenv('MIDDLEWARE_PASSWORD')
-MIDDLEWARE_ENDPOINT = os.getenv('MIDDLEWARE_ENDPOINT')
+DEADLOCKED_API_NAME = 'DL'
+UYA_API_NAME = 'UYA'
 
-headers = None
+load_dotenv()
+
+headers = {}
 
 #
-def authenticate():
+def authenticate(api):
   global headers
   data = {
-    "AccountName": USERNAME,
-    "Password": PASSWORD
+    "AccountName": os.getenv(f'MIDDLEWARE_USERNAME_{api}'),
+    "Password": os.getenv(f'MIDDLEWARE_PASSWORD_{api}')
   }
 
-  response = requests.post(MIDDLEWARE_ENDPOINT + "Account/authenticate", json=data, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + "Account/authenticate", json=data, verify=False)
   if response.status_code == 200:
     print(response.json())
     token = response.json()["Token"]
-    headers = { "Authorization": f"Bearer {token}" }
+    headers[api] = { "Authorization": f"Bearer {token}" }
     return True
   else:
-    return False
+    return None
 
 #
-def get_account(app_id, account_name):
+def get_account(api, app_id, account_name):
   global headers
-  if headers is None:
-    authenticate()
+  if api not in headers:
+    authenticate(api)
 
   route = f"Account/searchAccountByName?AccountName={account_name}&AppId={app_id}"
-  response = requests.get(MIDDLEWARE_ENDPOINT + route, headers=headers, verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
 
   if response.status_code == 200:
     return response.json()
@@ -50,15 +50,15 @@ def get_account(app_id, account_name):
     raise ValueError(f"{route} returned {response.status_code}")
 
 #
-def get_leaderboard(app_id, account_id, stat_id, custom = False):
+def get_leaderboard(api, app_id, account_id, stat_id, custom = False):
   global headers
-  if headers is None:
-    authenticate()
+  if api not in headers:
+    authenticate(api)
   
   optional_custom = 'Custom' if custom else ''
 
   route =  f"Stats/getPlayerLeaderboardIndex{optional_custom}?AccountId={account_id}&{optional_custom}StatId={stat_id+1}&AppId={app_id}"
-  response = requests.get(MIDDLEWARE_ENDPOINT + route, headers=headers, verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
 
   if response.status_code == 200:
     return response.json()
@@ -66,15 +66,15 @@ def get_leaderboard(app_id, account_id, stat_id, custom = False):
     raise ValueError(f"{route} returned {response.status_code}")
 
 #
-def get_leaderboard_top5(app_id, stat_id, custom = False):
+def get_leaderboard_top5(api, app_id, stat_id, custom = False):
   global headers
-  if headers is None:
-    authenticate()
+  if api not in headers:
+    authenticate(api)
   
   optional_custom = 'Custom' if custom else ''
 
   route =  f"Stats/getLeaderboard{optional_custom}?{optional_custom}StatId={stat_id}&StartIndex={0}&Size={5}&AppId={app_id}"
-  response = requests.get(MIDDLEWARE_ENDPOINT + route, headers=headers, verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
 
   if response.status_code == 200:
     return response.json()
@@ -82,13 +82,13 @@ def get_leaderboard_top5(app_id, stat_id, custom = False):
     raise ValueError(f"{route} returned {response.status_code}")
 
 #
-def get_players_online():
+def get_players_online(api):
   global headers
-  if headers is None:
-    authenticate()
+  if api not in headers:
+    authenticate(api)
   
   route =  f"Account/getOnlineAccounts"
-  response = requests.get(MIDDLEWARE_ENDPOINT + route, headers=headers, verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
 
   if response.status_code == 200:
     return response.json()
@@ -96,13 +96,13 @@ def get_players_online():
     raise ValueError(f"{route} returned {response.status_code}")
 
 #
-def get_active_games():
+def get_active_games(api):
   global headers
-  if headers is None:
-    authenticate()
+  if api not in headers:
+    authenticate(api)
   
   route =  f"api/Game/list"
-  response = requests.get(MIDDLEWARE_ENDPOINT + route, headers=headers, verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
 
   if response.status_code == 200:
     return response.json()

@@ -26,6 +26,24 @@ def parse_icon(icon, object):
 
   return None
 
+def get_player_region_dl(smoke_config, player):
+  app_id = player['AppId']
+
+  # if logged into the NTSC server (dbuser SYSTEM)
+  # and player has metadata
+  # check if client is logged in from DZO client
+  if 'Metadata' in player and player['DatabaseUser'] == 'SYSTEM':
+    metadata = json.loads(player['Metadata'])
+    if 'LastLoginClientType' in metadata and metadata['LastLoginClientType'] == 1:
+      return '[DZO] '
+
+  # map app id to respective name
+  app_id_key = str(app_id)
+  if app_id_key in smoke_config["AppIds"]:
+    return f'[{smoke_config["AppIds"][app_id_key]}]'.ljust(6, ' ')
+
+  return None
+
 def get_player_region(smoke_config, app_id):
   app_id_key = str(app_id)
   if app_id_key in smoke_config["AppIds"]:
@@ -56,7 +74,7 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
   # description
   if len(players) > 0:
     players.sort(key=lambda x: x["AccountName"])
-    names = [f'\n{get_player_region(smoke_config, player["AppId"])}  {player["AccountName"]}  ' for player in players]
+    names = [f'\n{get_player_region_dl(smoke_config, player)}  {player["AccountName"]}  ' for player in players]
     embed_value = '```'
     for name in names:
       embed_value += name

@@ -3,11 +3,11 @@ Do you know how many of them there are? If you do, please let us know because we
 DL custom maps (along with the many custom game modes) are possible thanks to the tireless work of Badger41, Dnawrkshp, and Agent Moose.
 For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CMAPS.md;
 
-Hosting a Deadlocked/Gladiator lobby and can't decide who should be on what team?
+Hosting a Deadlocked lobby and can't decide who should be on what team?
 Try entering '!tm' into the chat to randomly assign half of the players to the blue team and the other half on red team.
 Check out the GitHub documentation for optional arguments that can make this tool even more useful! https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CHATCOMMANDS.MD#teams;
 
-Have you ever been sitting in a DL lobby and thought "What I really need right now is a random number generator"?
+Have you ever been sitting in a Deadlocked lobby and thought "What I really need right now is a random number generator"?
 If so, you're in luck! Try entering '!roll' into the chat and the server will respond with a random number between 1 and 100 (inclusive).;
 
 Listen up, you lardballs! The Helga Discord bot is your resource for all Deadlocked stats.
@@ -139,7 +139,7 @@ Fan of UYA but never tried DL? Or vice versa? We recommend that you broaden your
 
 Why did so many Horizon staff members choose screen names that are animals? It's one of nature's mysteries!;
 
-Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 160 different disc golf courses across 13 different US states, from Alaska to Florida.;
+Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 180 different disc golf courses across 13 different US states, from Alaska to Florida.;
 
 For today's "tip", we just want to thank you for being a part of the Horizon community! We value all of our community members and strive to provide the best online experience possible. If you ever have any feedback or ideas for us, don't hesitate to post them in the #suggestions channel of this Discord server!;
 

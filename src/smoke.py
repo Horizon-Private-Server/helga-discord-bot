@@ -9,6 +9,7 @@ import traceback
 from datetime import datetime
 from config import *
 from mediusapi import get_active_games, get_players_online, DEADLOCKED_API_NAME, UYA_API_NAME
+from uya_parsers import mapParser, timeParser, gamerulesParser, weaponParserNew
 
 def parse_icon(icon, object):
   if icon["Emoji"] is not None:
@@ -221,7 +222,7 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
 
       # in game tag
       if in_game:
-        embed_name += '[IG] \u200B '
+        embed_name += '\u200B '
       
       # icons
       for icon in smoke_config["Icons"]:
@@ -230,7 +231,8 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
           embed_name += icon_value
 
       # game name
-      embed_name += f'{game["GameName"]} - ({len(game_players)}/10)'
+      game['GameName'] = game['GameName'].strip('000000280000').strip()
+      embed_name += f'{game["GameName"]} - ({len(game_players)}/8)'
 
       # in game timer
       if in_game:
@@ -241,48 +243,56 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
         icon_value = parse_icon(icon, game)
         if icon_value is not None:
           embed_value += icon_value
+
+      print("Game:", game)
+      print("Metadata:", metadata)
       
       # game mode
       embed_value += '```\n'
-      if metadata is not None and metadata["CustomGameMode"] is not None:
-        embed_value += metadata["CustomGameMode"] + ' at '
-      elif str(game["RuleSet"]) in smoke_config["Rulesets"]:
-        embed_value += smoke_config["Rulesets"][str(game["RuleSet"])] + ' at '
+      # if metadata is not None and metadata["CustomGameMode"] is not None:
+      #   embed_value += metadata["CustomGameMode"] + ' at '
+      # elif str(game["RuleSet"]) in smoke_config["Rulesets"]:
+      #   embed_value += smoke_config["Rulesets"][str(game["RuleSet"])] + ' at '
+      game_mode, game_type = gamerulesParser(game['GenericField3'])
+      embed_value += f'{game_mode} ({game_type}) at '
 
       # level
       if metadata is not None and metadata["CustomMap"] is not None:
         embed_value += metadata["CustomMap"]
-      elif str(game["GameLevel"]) in smoke_config["Levels"]:
-        embed_value += smoke_config["Levels"][str(game["GameLevel"])]
-      
+      else:
+        embed_value += mapParser(game['GenericField3'])
+
       # game info
-      if metadata is not None and metadata["GameInfo"] is not None:
-        embed_value += "\n" + metadata["GameInfo"]
+      timelimit = timeParser(game['GenericField3'])
+      embed_value += "\n" + timelimit
+      embed_value += '\n' + weaponParserNew(game['PlayerSkillLevel'])
+
+      # if metadata is not None and metadata["GameInfo"] is not None:
+      #   embed_value += "\n" + metadata["GameInfo"]
 
       embed_value += '\n```\n'
       embed_value += '```\n'
-      if metadata is not None and "GameState" in metadata and "Teams" in metadata["GameState"] and metadata["GameState"]["Teams"] is not None:
-        teams = metadata["GameState"]["Teams"]
-        teams.sort(key= lambda x: x["Score"], reverse= True)
-        teams_enabled = metadata["GameState"]["TeamsEnabled"]
-        for team in teams:
-          score = team["Score"]
-          team_players = team["Players"] if team["Players"] is not None else []
-          team_players.sort()
-          if not teams_enabled and len(team_players) > 0:
-            embed_value += f'\n{team_players[0]}{(f" - {score}" if in_game else "")}'
-          else:
-            embed_value += f'\n{team["Name"]}{(f" - {score}" if in_game else "")}'
-            for player in team_players:
-              embed_value += f'\n  {player}  '
+      # if metadata is not None and "GameState" in metadata and "Teams" in metadata["GameState"] and metadata["GameState"]["Teams"] is not None:
+      #   teams = metadata["GameState"]["Teams"]
+      #   teams.sort(key= lambda x: x["Score"], reverse= True)
+      #   teams_enabled = metadata["GameState"]["TeamsEnabled"]
+      #   for team in teams:
+      #     score = team["Score"]
+      #     team_players = team["Players"] if team["Players"] is not None else []
+      #     team_players.sort()
+      #     if not teams_enabled and len(team_players) > 0:
+      #       embed_value += f'\n{team_players[0]}{(f" - {score}" if in_game else "")}'
+      #     else:
+      #       embed_value += f'\n{team["Name"]}{(f" - {score}" if in_game else "")}'
+      #       for player in team_players:
+      #         embed_value += f'\n  {player}  '
             
-      else:
-        if len(game_players) > 0:
-          names = [x["AccountName"] for x in game_players]
-          names.sort()
-          names = [f'\n  {x}  ' for x in names]
-          for name in names:
-            embed_value += name
+      if len(game_players) > 0:
+        names = [x["AccountName"] for x in game_players]
+        names.sort()
+        names = [f'\n  {x}  ' for x in names]
+        for name in names:
+          embed_value += name
       embed_value += '```'
 
       embed.add_field(name= embed_name, value= embed_value, inline= False)

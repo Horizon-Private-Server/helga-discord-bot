@@ -13,7 +13,7 @@ from streamfeed import streamfeed
 from stats import get_dl_stats, get_dl_leaderboard, DEADLOCKED_GET_STATS_CHOICES, DEADLOCKED_STATS
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
-from uya import *
+#from uya import *
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -32,7 +32,7 @@ dl_leaderboard = client.create_group("deadlocked-leaderboard", "Commands related
 dl_custom_leaderboard = client.create_group("deadlocked-custom-leaderboard", "Commands related to custom game leaderboards.", guild_ids=config_get(['Stats', 'GuildIds']))
 uya = client.create_group("uya", "Commands related to UYA.", guild_ids=config_get(['Stats', 'GuildIds']))
 
-uya_manager = UYAManager(client, config_get_full())
+#uya_manager = UYAManager(client, config_get_full())
 
 @client.event
 async def on_ready():
@@ -114,20 +114,20 @@ async def cmd_stats(
   ):
   await get_uya_skins(ctx, name)
 
-@uya.command(name='alt', description="Find accounts tied to this account.")
-async def cmd_stats(
-  ctx: discord.ApplicationContext,
-  name: Option(str, "Enter the username")
-  ):
-  await uya_manager.alt(ctx, name)
+# @uya.command(name='alt', description="Find accounts tied to this account.")
+# async def cmd_stats(
+#   ctx: discord.ApplicationContext,
+#   name: Option(str, "Enter the username")
+#   ):
+#   await uya_manager.alt(ctx, name)
 
 
-@uya.command(name='clan', description="Get Clan info from a clan name.")
-async def cmd_stats(
-  ctx: discord.ApplicationContext,
-  name: Option(str, "Enter the Clan name")
-  ):
-  await uya_manager.clan(ctx, name)
+# @uya.command(name='clan', description="Get Clan info from a clan name.")
+# async def cmd_stats(
+#   ctx: discord.ApplicationContext,
+#   name: Option(str, "Enter the Clan name")
+#   ):
+#   await uya_manager.clan(ctx, name)
 
 
 

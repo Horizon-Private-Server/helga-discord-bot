@@ -3,14 +3,14 @@ Do you know how many of them there are? If you do, please let us know because we
 DL custom maps (along with the many custom game modes) are possible thanks to the tireless work of Badger41, Dnawrkshp, and Agent Moose.
 For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CMAPS.md;
 
-Hosting a Deadlocked/Gladiator lobby and can't decide who should be on what team?
+Hosting a Deadlocked lobby and can't decide who should be on what team?
 Try entering '!tm' into the chat to randomly assign half of the players to the blue team and the other half on red team.
 Check out the GitHub documentation for optional arguments that can make this tool even more useful! https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CHATCOMMANDS.MD#teams;
 
-Have you ever been sitting in a DL lobby and thought "What I really need right now is a random number generator"?
+Have you ever been sitting in a Deadlocked lobby and thought "What I really need right now is a random number generator"?
 If so, you're in luck! Try entering '!roll' into the chat and the server will respond with a random number between 1 and 100 (inclusive).;
 
-Listen up, you lardballs! The Helga Discord bot is your resource for all Deadlocked stats.
+Listen up, you lardballs! The Helga Discord bot is your resource for all Deadlocked stats, not to mention a lot of other cool stuff.
 For a complete list of commands and instructions, visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/HELGA.MD#dl;
 
 Want to play with the pros on DL? Check out our DL Competitive Gameplay YouTube playlist!
@@ -58,7 +58,7 @@ There are two secret skins for UYA, and five for DL. You can learn how to unlock
 
 If you're playing on a PS2, we recommend investing in component (YPbPr) connector cables to replace the default composite connector cables that came with your PS2. These will provide a slightly clearer picture, and may also help with in-game lag. If your TV/monitor does not have component ports, you'll also need a component to HDMI converter. All of these items are available at various online retailers. Feel free to ask for specific recommendations in the #tech-support channel here.;
 
-For both UYA and DL, we recommend enabling the "Progressive Scan" setting. This setting is located in the main (not online) menu of both games, and unfortunately you will have to set it each time you start the game. The good news for those playing on the Deadlocked server (only) is that the option is also built into the custom mod menu! NOTE: This option only applies for NTSC-U/C players.;
+For both UYA and DL, we recommend enabling the "Progressive Scan" setting. This setting is located in the main (not online) menu of both games, and unfortunately you will have to set it each time you start the game. The good news is that for NTSC-U/C players of both games, the option is also built into the custom mod menu online! NOTE: This option does not apply for PAL players.;
 
 Looking for someone to play with? Try tagging one of our opt-in roles!
 All opt-in roles are described in the #roles channel of our Discord server. React to the message there to add yourself to whichever roles you like.
@@ -81,6 +81,15 @@ You may know about bots on UYA/Ratchet and Clank 3 - but do you know about the C
 If you can record yourself defeating a G-level bot using certain lobby settings, we will award you the Godlike role.
 This is even better than the ice bucket challenge!
 For complete rules, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/bots.md#cpug-challenge;
+
+New in July 2023, we have custom maps available for NTSC-U/C and PAL players on UYA/Ratchet and Clank 3!
+These also work on both PS2 and PCSX2. Badger41 is the creative coder responsible for these maps.
+For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/CMAPS.md;
+
+No V2s? V2s all the time? V2s that are eliminated with you? No health boxes?
+All of these are now available in UYA/Ratchet and Clank 3 as configurable mod menu settings, thanks to Agent Moose.
+For the most up-to-date list of available settings, LOG IN AND SEE FOR YOURSELF!
+(but you could also check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/CMODS.md);
 
 Did you know that you can follow UYA/Ratchet and Clank 3 games live without being in them?
 Or view detailed match statistics after the game, alongside a map that shows exactly where you got kevorked by that Trooper's midair fantasy shot?
@@ -139,7 +148,7 @@ Fan of UYA but never tried DL? Or vice versa? We recommend that you broaden your
 
 Why did so many Horizon staff members choose screen names that are animals? It's one of nature's mysteries!;
 
-Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 160 different disc golf courses across 13 different US states, from Alaska to Florida.;
+Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 185 different disc golf courses across 13 different US states, from Alaska to Florida.;
 
 For today's "tip", we just want to thank you for being a part of the Horizon community! We value all of our community members and strive to provide the best online experience possible. If you ever have any feedback or ideas for us, don't hesitate to post them in the #suggestions channel of this Discord server!;
 

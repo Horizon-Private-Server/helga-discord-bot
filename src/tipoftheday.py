@@ -80,7 +80,7 @@ async def tipoftheday_task(client: discord.Client, tipoftheday_config, tips):
 
       except Exception as e:
         print(traceback.format_exc())
-    await asyncio.sleep(0)
+    await asyncio.sleep(60)
 
 #
 def read_tips(path):

@@ -46,6 +46,7 @@ _config_default = {
       "API": "",
       "AppIds": {},
       "Servers": [],
+      "Locations": [],
       "Interval": 10,
       "Rulesets": {},
       "Levels": {},

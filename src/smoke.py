@@ -52,6 +52,12 @@ def get_player_region(smoke_config, app_id):
 
   return None
 
+def get_game_location(smoke_config, location_id):
+  if "Locations" in smoke_config and smoke_config["Locations"] is not None and location_id < len(smoke_config["Locations"]):
+    return smoke_config["Locations"][location_id]
+
+  return None
+
 def filter_by_config(smoke_config, game_or_player):
   return str(game_or_player["AppId"]) in smoke_config["AppIds"] and game_or_player["DatabaseUser"] in smoke_config["Servers"]
 
@@ -97,6 +103,10 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
       time_started: datetime = datetime.strptime(game["GameStartDt"][:26], '%Y-%m-%dT%H:%M:%S.%f') if in_game and game["GameStartDt"] is not None else None
       seconds_since_started: datetime = (datetime.utcnow() - time_started).total_seconds() if time_started is not None else None
       game_players = list(filter(lambda x: x["GameId"] is not None and x["GameId"] == game["GameId"], players))
+      location_name = None
+      
+      if metadata is not None and metadata["Location"] is not None:
+        location_name = get_game_location(smoke_config, metadata["Location"])
 
       embed_name = ''
       embed_value = '\u200B'
@@ -113,6 +123,10 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
 
       # game name
       embed_name += f'{game["GameName"]} - ({len(game_players)}/10)'
+
+      # location
+      if location_name is not None:
+        embed_name += f' [{location_name}]'
 
       # in game timer
       if in_game:

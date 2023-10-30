@@ -100,15 +100,9 @@ Have you ever played a beta version of a game online? How about a beta version o
 Using our test server, you can play several beta versions of UYA online.
 For more information, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/betas.md;
 
-Hacker alert! Did you know that you can customize colors in your UYA/Ratchet and Clank 3 clan tags? Big Al would be proud.
-For full instructions, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/clantags.md;
-
 Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game lobby name, do not try to join the lobby! "IG" is short for "in-game", meaning that the lobby has already started. UYA does not support joining games that have already started, and if you try to join your PS2 may freeze and/or you may see a network error pop up. If this happens, you will need to reconnect to the server.;
 
 Are you getting error messages when trying to join lobbies on UYA/Ratchet and Clank 3? Check if the name of the lobby has "[IG]" at the front of it. This text (short for "in-game") means that the game has already started, and that you will not be able to join. Keep an eye out for when the game ends so that you can join the next one!;
-
-Tagg - you're it! On UYA/Ratchet and Clank 3, you can manually adjust the amount of time the server aggregates packets before sending the data to other players. English please? This means that you can tweak the apparent amount of lag for the next game that you create.
-For more details, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/cities.md#lag-adjustment;
 
 How the heck do they move and shoot like that? If you have ever wondered this while playing UYA, you might want to check out our UYA Competitive Gameplay YouTube playlist! Thanks to Cy/iStronkz for contributing videos to this list.
 https://www.youtube.com/playlist?list=PLUCKuUL8PUCEyvlWo-fZxj7Om_r2UEpB5;
@@ -148,7 +142,7 @@ Fan of UYA but never tried DL? Or vice versa? We recommend that you broaden your
 
 Why did so many Horizon staff members choose screen names that are animals? It's one of nature's mysteries!;
 
-Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 185 different disc golf courses across 13 different US states, from Alaska to Florida.;
+Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 225 different disc golf courses across 16 different US states, from Alaska to Florida.;
 
 For today's "tip", we just want to thank you for being a part of the Horizon community! We value all of our community members and strive to provide the best online experience possible. If you ever have any feedback or ideas for us, don't hesitate to post them in the #suggestions channel of this Discord server!;
 

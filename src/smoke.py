@@ -37,6 +37,10 @@ def get_player_region_dl(smoke_config, player):
     metadata = json.loads(player['Metadata'])
     if 'LastLoginClientType' in metadata and metadata['LastLoginClientType'] == 1:
       return '[DZO] '
+    if 'LastLoginClientType' in metadata and metadata['LastLoginClientType'] == 2:
+      return '[EMU] '
+    
+    return '[PS2] '
 
   # map app id to respective name
   app_id_key = str(app_id)

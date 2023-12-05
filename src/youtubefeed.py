@@ -146,7 +146,7 @@ async def youtubefeed_task(client: discord.Client):
               videoUrl = f'https://www.youtube.com/watch?v={videoId}'
               videoTitle = item['snippet']['title']
               videoDescription = item['snippet']['description']
-              await channel.send(content= f'**New Youtube Video!**\n{videoUrl}\n\n*{videoDescription}*')
+              await channel.send(content= f'**New Youtube Video!**\n{videoUrl}')
 
       except Exception as e:
         print(traceback.format_exc())

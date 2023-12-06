@@ -9,6 +9,7 @@ import traceback
 import constants
 import urllib3
 from discord.ext import commands
+from scavengerhunt import get_scavenger_hunt_dates, get_discord_string_from_date
 from mediusapi import *
 
 #
@@ -1100,11 +1101,12 @@ async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, lea
   lb_str = ''
   pad_str = ' '
   transform_value = lambda x : x
+  count = len(leaderboard)
 
   if 'Accuracy' in stat:
     transform_value = lambda x : int_topercent(x, 100 * 100)
 
-  for i in range(0, len(leaderboard)):
+  for i in range(0, count):
     s = f'{i+1}. {leaderboard[i]["AccountName"]}'
     while len(s) < 24:
       s += pad_str
@@ -1112,7 +1114,7 @@ async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, lea
 
 
   embed = discord.Embed()
-  embed.add_field(name= f'Top 5', value=f'```\n{lb_str}```', inline=True)
+  embed.add_field(name= f'Top {count}', value=f'```\n{lb_str}```', inline=True)
   embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'{group} {stat}'
   await ctx.respond(content='', embed=embed)
@@ -1325,7 +1327,7 @@ DEADLOCKED_STATS = {
 #
 async def get_dl_stats(ctx: discord.ApplicationContext, stat: str, name: str):
   try:
-    account = get_account(DEADLOCKED_API_NAME, 11184, name)
+    account = get_account(DEADLOCKED_API_NAME, APPID_DEADLOCKED, name)
     if stat in DEADLOCKED_GET_STATS_CHOICES:
       await DEADLOCKED_GET_STATS_CHOICES[stat](ctx, account)
     else:
@@ -1342,9 +1344,9 @@ async def get_dl_leaderboard(ctx: discord.ApplicationContext, group: str, stat: 
       if stat in group_values:
         stat_id = group_values[stat]
         if stat_id > 100:
-          leaderboard = get_leaderboard_top5(DEADLOCKED_API_NAME, 11184, stat_id - 100, custom=True)
+          leaderboard = get_leaderboard_top5(DEADLOCKED_API_NAME, APPID_DEADLOCKED, stat_id - 100, custom=True)
         else:
-          leaderboard = get_leaderboard_top5(DEADLOCKED_API_NAME, 11184, stat_id, custom=False)
+          leaderboard = get_leaderboard_top5(DEADLOCKED_API_NAME, APPID_DEADLOCKED, stat_id, custom=False)
 
         await build_dl_leaderboard(ctx, group, stat, leaderboard)
     else:
@@ -1352,4 +1354,73 @@ async def get_dl_leaderboard(ctx: discord.ApplicationContext, group: str, stat: 
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Leaderboard `{leaderboard}` not found.')
+
+#
+async def get_dl_scavenger_hunt_leaderboard(ctx: discord.ApplicationContext):
+  try:
+    prefix = ''
+    now = datetime.datetime.now().astimezone(datetime.timezone.utc)
+    begin_date, end_date = get_scavenger_hunt_dates(DEADLOCKED_API_NAME, APPID_DEADLOCKED)
+    if begin_date is None or end_date is None:
+      await ctx.respond(content="Looks like there is no scavenger hunt! Keep an eye out in <#936415070299226152> for the next one!")
+      return
+    
+    if now < begin_date:
+      await ctx.respond(content=f'The hunt begins {get_discord_string_from_date(begin_date)}!')
+      return
+    
+    if now > end_date:
+      prefix = 'Past '
+
+    leaderboard = get_leaderboard_top(DEADLOCKED_API_NAME, APPID_DEADLOCKED, 2, 10, custom=True)
+    await build_dl_leaderboard(ctx, f'{prefix}Scavenger Hunt', 'Horizon Bolts', leaderboard)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Leaderboard `{leaderboard}` not found.')
+
+
+##############################################
+#                     UYA                    #
+##############################################
+async def build_uya_leaderboard(ctx: discord.ApplicationContext, group, stat, leaderboard):
   
+  lb_str = ''
+  pad_str = ' '
+  transform_value = lambda x : x
+  count = len(leaderboard)
+
+  for i in range(0, count):
+    s = f'{i+1}. {leaderboard[i]["AccountName"]}'
+    while len(s) < 24:
+      s += pad_str
+    lb_str += f'{s}{transform_value(leaderboard[i]["StatValue"])}\n'
+
+  embed = discord.Embed()
+  embed.add_field(name= f'Top {count}', value=f'```\n{lb_str}```', inline=True)
+  # embed.set_thumbnail(url=constants.UYA_ICON_URL)
+  embed.title = f'{group} {stat}'
+  await ctx.respond(content='', embed=embed)
+
+
+#
+async def get_uya_scavenger_hunt_leaderboard(ctx: discord.ApplicationContext):
+  try:
+    prefix = ''
+    now = datetime.datetime.now().astimezone(datetime.timezone.utc)
+    begin_date, end_date = get_scavenger_hunt_dates(UYA_API_NAME, APPID_UYA)
+    if begin_date is None or end_date is None:
+      await ctx.respond(content="Looks like there is no scavenger hunt! Keep an eye out in <#936415070299226152> for the next one!")
+      return
+    
+    if now < begin_date:
+      await ctx.respond(content=f'The hunt begins {get_discord_string_from_date(begin_date)}!')
+      return
+    
+    if now > end_date:
+      prefix = 'Past '
+
+    leaderboard = get_leaderboard_top(UYA_API_NAME, APPID_UYA, 2, 10, custom=True)
+    await build_uya_leaderboard(ctx, f'{prefix}Scavenger Hunt', 'Horizon Bolts', leaderboard)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Leaderboard `{leaderboard}` not found.')

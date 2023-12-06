@@ -1,5 +1,6 @@
 
 DEADLOCKED_DREADZONE_ICON_URL = 'https://box.rac-horizon.com/downloads/dreadzone.png'
+UYA_ICON_URL = None # 'https://box.rac-horizon.com/downloads/dreadzone.png'
 
 DEADLOCKED_SKILLS_TABLE = [
   100,

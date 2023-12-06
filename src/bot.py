@@ -6,11 +6,12 @@ from discord.utils import get
 
 from dotenv import load_dotenv
 
+from scavengerhunt import activate_scavenger_hunt, print_scavenger_hunt, reset_leaderboard_scavenger_hunt, kill_scavenger_hunt, set_spawn_rate_scavenger_hunt
 from config import *
 from smoke import smoke
 from tipoftheday import tipoftheday
 from streamfeed import streamfeed
-from stats import get_dl_stats, get_dl_leaderboard, DEADLOCKED_GET_STATS_CHOICES, DEADLOCKED_STATS
+from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leaderboard, get_uya_scavenger_hunt_leaderboard, DEADLOCKED_GET_STATS_CHOICES, DEADLOCKED_STATS
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 #from uya import *
@@ -31,6 +32,7 @@ deadlocked = client.create_group("deadlocked", "Commands related to deadlocked."
 dl_leaderboard = client.create_group("deadlocked-leaderboard", "Commands related to game leaderboards.", guild_ids=config_get(['Stats', 'GuildIds']))
 dl_custom_leaderboard = client.create_group("deadlocked-custom-leaderboard", "Commands related to custom game leaderboards.", guild_ids=config_get(['Stats', 'GuildIds']))
 uya = client.create_group("uya", "Commands related to UYA.", guild_ids=config_get(['Stats', 'GuildIds']))
+scavenger_hunt = client.create_group("scavenger-hunt", "Commands for Horizon staff.", guild_ids=config_get(['Stats', 'GuildIds']))
 
 #uya_manager = UYAManager(client, config_get_full())
 
@@ -114,6 +116,12 @@ async def cmd_stats(
   ):
   await get_uya_skins(ctx, name)
 
+@uya.command(name="scavenger-hunt", description="See the current scavenger hunt leaderboard.")
+async def cmd_stats(
+  ctx: discord.ApplicationContext
+  ):
+  await get_uya_scavenger_hunt_leaderboard(ctx)
+
 # @uya.command(name='alt', description="Find accounts tied to this account.")
 # async def cmd_stats(
 #   ctx: discord.ApplicationContext,
@@ -130,7 +138,49 @@ async def cmd_stats(
 #   await uya_manager.clan(ctx, name)
 
 
+@scavenger_hunt.command(name="reset", description="Resets the current scavenger hunt leaderboard.")
+async def cmd_admin_print_scavenger_hunt(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["Deadlocked", "UYA"])
+  ):
+  await reset_leaderboard_scavenger_hunt(ctx, game)
 
+@scavenger_hunt.command(name="print", description="Prints the current scavenger hunt settings.")
+async def cmd_admin_print_scavenger_hunt(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["Deadlocked", "UYA"])
+  ):
+  await print_scavenger_hunt(ctx, game)
+
+@scavenger_hunt.command(name="spawn-rate", description="Configure scavenger hunt spawn rate.")
+async def cmd_admin_activate_scavenger_hunt(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["Deadlocked", "UYA"]),
+  spawn_rate: Option(float, "Increases the frequency of bolt spawns. Default is 1.")
+  ):
+  await set_spawn_rate_scavenger_hunt(ctx, game, spawn_rate)
+
+@scavenger_hunt.command(name="activate", description="Configure scavenger hunt settings.")
+async def cmd_admin_activate_scavenger_hunt(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["Deadlocked", "UYA"]),
+  delay: Option(float, "Begin the hunt n minutes from now"),
+  duration: Option(float, "How many hours the scavenger hunt should last")
+  ):
+  await activate_scavenger_hunt(ctx, game, delay, duration)
+
+@scavenger_hunt.command(name="kill", description="Immediately ends the current scavenger hunt.")
+async def cmd_admin_abort_scavenger_hunt(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["Deadlocked", "UYA"])
+  ):
+  await kill_scavenger_hunt(ctx, game)
+
+@deadlocked.command(name="scavenger-hunt", description="See the current scavenger hunt leaderboard.")
+async def cmd_stats(
+  ctx: discord.ApplicationContext
+  ):
+  await get_dl_scavenger_hunt_leaderboard(ctx)
 
 @deadlocked.command(name="skins", description="Generate DL multiplayer skins.")
 async def cmd_stats(
@@ -252,8 +302,8 @@ async def cmd_weapon_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Weapons", stat)
 
-tipoftheday(client)
-streamfeed(client)
-youtubefeed(client)
-smoke(client)
+#tipoftheday(client)
+#streamfeed(client)
+#youtubefeed(client)
+#smoke(client)
 client.run(TOKEN)

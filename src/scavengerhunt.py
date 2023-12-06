@@ -129,7 +129,7 @@ async def print_scavenger_hunt(ctx: discord.ApplicationContext, game: str):
     begin_date = get_date_from_string(settings[f'{acc_name}_ScavengerHuntBeginDate'])
     end_date = get_date_from_string(settings[f'{acc_name}_ScavengerHuntEndDate'])
     spawn_factor = settings[f'{acc_name}_ScavengerHuntSpawnRateFactor']
-    leaderboard = get_leaderboard_top(api_name, appids[0], 2, 10, custom=True)
+    leaderboard = get_leaderboard_top(api_name, appids[0], constants.CUSTOM_STAT_CURRENT_HORIZON_BOLTS+1, 10, custom=True)
 
     embed = get_scavenger_hunt_settings_embed(game, begin_date, end_date, spawn_factor)
     append_leaderboard_embed(embed, leaderboard)

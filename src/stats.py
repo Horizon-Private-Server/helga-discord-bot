@@ -117,6 +117,10 @@ async def get_dl_overall_stats(ctx: discord.ApplicationContext, account):
         {
           'Name': 'Squats',
           'Value': lambda : f'{stats[constants.ACCOUNT_STAT_SQUATS]}'
+        },
+        {
+          'Name': 'Horizon Bolts',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_CURRENT_HORIZON_BOLTS]}'
         }
       ]
     },
@@ -1375,7 +1379,7 @@ async def get_dl_scavenger_hunt_leaderboard(ctx: discord.ApplicationContext):
     if now > end_date:
       prefix = 'Past '
 
-    leaderboard = get_leaderboard_top(DEADLOCKED_API_NAME, APPID_DEADLOCKED, 2, 10, custom=True)
+    leaderboard = get_leaderboard_top(DEADLOCKED_API_NAME, APPID_DEADLOCKED, constants.CUSTOM_STAT_CURRENT_HORIZON_BOLTS+1, 10, custom=True)
     await build_dl_leaderboard(ctx
                                , f'{prefix}Scavenger Hunt', 'Horizon Bolts'
                                , leaderboard
@@ -1430,7 +1434,7 @@ async def get_uya_scavenger_hunt_leaderboard(ctx: discord.ApplicationContext):
     if now > end_date:
       prefix = 'Past '
 
-    leaderboard = get_leaderboard_top(UYA_API_NAME, APPID_UYA, 2, 10, custom=True)
+    leaderboard = get_leaderboard_top(UYA_API_NAME, APPID_UYA, constants.CUSTOM_STAT_CURRENT_HORIZON_BOLTS+1, 10, custom=True)
     await build_uya_leaderboard(ctx
                                , f'{prefix}Scavenger Hunt', 'Horizon Bolts'
                                , leaderboard

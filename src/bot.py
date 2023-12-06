@@ -302,8 +302,8 @@ async def cmd_weapon_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Weapons", stat)
 
-#tipoftheday(client)
-#streamfeed(client)
-#youtubefeed(client)
-#smoke(client)
+tipoftheday(client)
+streamfeed(client)
+youtubefeed(client)
+smoke(client)
 client.run(TOKEN)

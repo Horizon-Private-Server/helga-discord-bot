@@ -1096,7 +1096,7 @@ async def get_dl_training_stats(ctx: discord.ApplicationContext, account):
 
 
 #
-async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, leaderboard):
+async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, leaderboard, additional_embed_title= None, additional_embed_message= None):
   
   lb_str = ''
   pad_str = ' '
@@ -1117,6 +1117,9 @@ async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, lea
   embed.add_field(name= f'Top {count}', value=f'```\n{lb_str}```', inline=True)
   embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'{group} {stat}'
+  if additional_embed_title is not None and additional_embed_message is not None:
+    embed.add_field(name= additional_embed_title, value= additional_embed_message, inline= False)
+
   await ctx.respond(content='', embed=embed)
 
 
@@ -1373,7 +1376,11 @@ async def get_dl_scavenger_hunt_leaderboard(ctx: discord.ApplicationContext):
       prefix = 'Past '
 
     leaderboard = get_leaderboard_top(DEADLOCKED_API_NAME, APPID_DEADLOCKED, 2, 10, custom=True)
-    await build_dl_leaderboard(ctx, f'{prefix}Scavenger Hunt', 'Horizon Bolts', leaderboard)
+    await build_dl_leaderboard(ctx
+                               , f'{prefix}Scavenger Hunt', 'Horizon Bolts'
+                               , leaderboard
+                               , additional_embed_title='Event Dates'
+                               , additional_embed_message=f'{get_discord_string_from_date(begin_date)} - {get_discord_string_from_date(end_date)}')
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Leaderboard `{leaderboard}` not found.')
@@ -1382,7 +1389,7 @@ async def get_dl_scavenger_hunt_leaderboard(ctx: discord.ApplicationContext):
 ##############################################
 #                     UYA                    #
 ##############################################
-async def build_uya_leaderboard(ctx: discord.ApplicationContext, group, stat, leaderboard):
+async def build_uya_leaderboard(ctx: discord.ApplicationContext, group, stat, leaderboard, additional_embed_title= None, additional_embed_message= None):
   
   lb_str = ''
   pad_str = ' '
@@ -1399,6 +1406,10 @@ async def build_uya_leaderboard(ctx: discord.ApplicationContext, group, stat, le
   embed.add_field(name= f'Top {count}', value=f'```\n{lb_str}```', inline=True)
   # embed.set_thumbnail(url=constants.UYA_ICON_URL)
   embed.title = f'{group} {stat}'
+
+  if additional_embed_title is not None and additional_embed_message is not None:
+    embed.add_field(name= additional_embed_title, value= additional_embed_message, inline= False)
+
   await ctx.respond(content='', embed=embed)
 
 
@@ -1420,7 +1431,11 @@ async def get_uya_scavenger_hunt_leaderboard(ctx: discord.ApplicationContext):
       prefix = 'Past '
 
     leaderboard = get_leaderboard_top(UYA_API_NAME, APPID_UYA, 2, 10, custom=True)
-    await build_uya_leaderboard(ctx, f'{prefix}Scavenger Hunt', 'Horizon Bolts', leaderboard)
+    await build_uya_leaderboard(ctx
+                               , f'{prefix}Scavenger Hunt', 'Horizon Bolts'
+                               , leaderboard
+                               , additional_embed_title='Event Dates'
+                               , additional_embed_message=f'{get_discord_string_from_date(begin_date)} - {get_discord_string_from_date(end_date)}')
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Leaderboard `{leaderboard}` not found.')

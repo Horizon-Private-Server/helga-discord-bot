@@ -176,6 +176,10 @@ async def cmd_admin_abort_scavenger_hunt(
   ):
   await kill_scavenger_hunt(ctx, game)
 
+#
+#
+#
+
 @deadlocked.command(name="scavenger-hunt", description="See the current scavenger hunt leaderboard.")
 async def cmd_stats(
   ctx: discord.ApplicationContext

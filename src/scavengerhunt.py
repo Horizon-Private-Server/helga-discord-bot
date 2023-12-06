@@ -12,6 +12,22 @@ import urllib3
 from discord.ext import commands
 from mediusapi import *
 
+#
+def get_leaderboard_top(api, app_id, stat_id, count, custom = False):
+  global headers
+  if api not in headers:
+    authenticate(api)
+  
+  optional_custom = 'Custom' if custom else ''
+
+  route =  f"Stats/getLeaderboard{optional_custom}?{optional_custom}StatId={stat_id}&StartIndex={0}&Size={count}&AppId={app_id}"
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+
+  if response.status_code == 200:
+    return response.json()
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
 def get_discord_string_from_date(datetime: datetime.datetime):
   if datetime is None:
     return 'None'
@@ -87,6 +103,23 @@ def set_scavenger_hunt_settings(game: str, settings):
   return get_scavenger_hunt_settings_embed(game, begin_date, end_date, spawn_factor)
 
 #
+def append_leaderboard_embed(embed: discord.Embed, leaderboard):
+  
+  lb_str = ''
+  pad_str = ' '
+  transform_value = lambda x : x
+  count = len(leaderboard)
+
+  for i in range(0, count):
+    s = f'{i+1}. {leaderboard[i]["AccountName"]}'
+    while len(s) < 24:
+      s += pad_str
+    lb_str += f'{s}{transform_value(leaderboard[i]["StatValue"])}\n'
+
+  embed.add_field(name= f'Top {count}', value=f'```\n{lb_str}```', inline=True)
+  return embed
+
+#
 async def print_scavenger_hunt(ctx: discord.ApplicationContext, game: str):
   try:
     api_name = get_api_from_game_name(game)
@@ -96,8 +129,11 @@ async def print_scavenger_hunt(ctx: discord.ApplicationContext, game: str):
     begin_date = get_date_from_string(settings[f'{acc_name}_ScavengerHuntBeginDate'])
     end_date = get_date_from_string(settings[f'{acc_name}_ScavengerHuntEndDate'])
     spawn_factor = settings[f'{acc_name}_ScavengerHuntSpawnRateFactor']
+    leaderboard = get_leaderboard_top(api_name, appids[0], 2, 10, custom=True)
 
-    await ctx.respond('', embed=get_scavenger_hunt_settings_embed(game, begin_date, end_date, spawn_factor))
+    embed = get_scavenger_hunt_settings_embed(game, begin_date, end_date, spawn_factor)
+    append_leaderboard_embed(embed, leaderboard)
+    await ctx.respond('', embed=embed)
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Error.')

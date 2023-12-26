@@ -907,10 +907,6 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
           'Value': lambda : f'{seconds_tostr(stats_custom[constants.CUSTOM_STAT_SURVIVAL_TIME_PLAYED])}'
         },
         {
-          'Name': 'Experience',
-          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_XP]}'
-        },
-        {
           'Name': 'Kills',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_KILLS]}'
         },
@@ -933,11 +929,29 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
       'Inline': True,
       'Children': [
         {
-          'Name': 'Orxon',
-          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP1_HIGH_SCORE]} rounds',
-          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP1_HIGH_SCORE,
+          'Name': 'Solo Orxon',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP1_SOLO_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP1_SOLO_HIGH_SCORE,
           'Custom': True
-        }
+        },
+        {
+          'Name': 'Coop Orxon',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP1_COOP_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP1_COOP_HIGH_SCORE,
+          'Custom': True
+        },
+        {
+          'Name': 'Solo Mountain Pass',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP2_SOLO_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP2_SOLO_HIGH_SCORE,
+          'Custom': True
+        },
+        {
+          'Name': 'Coop Mountain Pass',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP2_COOP_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP2_COOP_HIGH_SCORE,
+          'Custom': True
+        },
       ]
     },
     {
@@ -1270,7 +1284,10 @@ DEADLOCKED_STATS = {
   "Survival": {
     "Rank": 271,
     "XP": 291,
-    "Orxon High Score": 278,
+    "Orxon Solo High Score": 278,
+    "Orxon Coop High Score": 279,
+    "Mountain Pass Solo High Score": 280,
+    "Mountain Pass Coop High Score": 281,
     #"Contestant High Score": 279,
     #"Gladiator High Score": 280,
     #"Hero High Score": 281,

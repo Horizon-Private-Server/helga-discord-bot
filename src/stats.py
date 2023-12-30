@@ -15,15 +15,22 @@ from mediusapi import *
 #
 def get_dl_skill_level(rank):
   i = 0
+  prestige = rank // 10000
+  rank = rank % 10000
+  if rank == 0 and rank > 0:
+    prestige -= 1
+
+  if rank <= constants.DEADLOCKED_SKILLS_TABLE[0] and prestige > 0:
+    return prestige * 10
   if rank >= constants.DEADLOCKED_SKILLS_TABLE[9]:
-    return 10
+    return 10 + (prestige * 10)
   if rank <= constants.DEADLOCKED_SKILLS_TABLE[0]:
-    return 1
+    return 1 + (prestige * 10)
 
   while rank > constants.DEADLOCKED_SKILLS_TABLE[i]:
     i += 1
   
-  return i + (rank - constants.DEADLOCKED_SKILLS_TABLE[i-1]) / (constants.DEADLOCKED_SKILLS_TABLE[i] - constants.DEADLOCKED_SKILLS_TABLE[i-1])
+  return (prestige * 10) + i + (rank - constants.DEADLOCKED_SKILLS_TABLE[i-1]) / (constants.DEADLOCKED_SKILLS_TABLE[i] - constants.DEADLOCKED_SKILLS_TABLE[i-1])
 
 def safe_ratio(num, denom):
   if denom == 0:

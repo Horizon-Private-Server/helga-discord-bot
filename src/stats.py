@@ -959,6 +959,18 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
           'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP2_COOP_HIGH_SCORE,
           'Custom': True
         },
+        {
+          'Name': 'Solo Veldin',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP3_SOLO_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP3_SOLO_HIGH_SCORE,
+          'Custom': True
+        },
+        {
+          'Name': 'Coop Veldin',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP3_COOP_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP3_COOP_HIGH_SCORE,
+          'Custom': True
+        },
       ]
     },
     {

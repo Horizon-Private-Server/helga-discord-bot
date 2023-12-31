@@ -1307,6 +1307,8 @@ DEADLOCKED_STATS = {
     "Orxon Coop High Score": 279,
     "Mountain Pass Solo High Score": 280,
     "Mountain Pass Coop High Score": 281,
+    "Veldin Solo High Score": 282,
+    "Veldin Coop High Score": 296,
     #"Contestant High Score": 279,
     #"Gladiator High Score": 280,
     #"Hero High Score": 281,

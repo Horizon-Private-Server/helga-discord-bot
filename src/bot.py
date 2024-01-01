@@ -1,8 +1,8 @@
 # bot.py
 import os
 import discord
+import traceback
 from discord.commands import Option, SlashCommandGroup
-from discord.utils import get
 
 from dotenv import load_dotenv
 
@@ -33,6 +33,7 @@ dl_leaderboard = client.create_group("deadlocked-leaderboard", "Commands related
 dl_custom_leaderboard = client.create_group("deadlocked-custom-leaderboard", "Commands related to custom game leaderboards.", guild_ids=config_get(['Stats', 'GuildIds']))
 uya = client.create_group("uya", "Commands related to UYA.", guild_ids=config_get(['Stats', 'GuildIds']))
 scavenger_hunt = client.create_group("scavenger-hunt", "Commands for Horizon staff.", guild_ids=config_get(['Stats', 'GuildIds']))
+mod = client.create_group("mod", "Commands for Horizon staff.", guild_ids=config_get(['Stats', 'GuildIds']))
 
 #uya_manager = UYAManager(client, config_get_full())
 
@@ -180,6 +181,35 @@ async def cmd_admin_abort_scavenger_hunt(
 #
 #
 
+@mod.command(name="find-matching-nicknames", description="Searches list of users in the discord and reports any that have a matching name.")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    lines = 'Results:\n'
+    members = []
+    async for memberA in ctx.guild.fetch_members():
+      for memberB in members:
+        if memberA.id == memberB.id: continue
+
+        if memberA.display_name is not None and (memberA.display_name == memberB.display_name or memberA.display_name == memberB.nick):
+          lines += f'<@{memberA.id}> & <@{memberB.id}> match nickname/name "{memberA.display_name}"' + '\n'
+        elif memberA.nick is not None and (memberA.nick == memberB.nick or memberA.nick == memberB.display_name):
+          lines += f'<@{memberA.id}> & <@{memberB.id}> match nickname/name "{memberA.nick}"' + '\n'
+
+      members.append(memberA)
+
+    await ctx.channel.send(lines)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error.')
+
+#
+#
+#
+  
 @deadlocked.command(name="scavenger-hunt", description="See the current scavenger hunt leaderboard.")
 async def cmd_stats(
   ctx: discord.ApplicationContext

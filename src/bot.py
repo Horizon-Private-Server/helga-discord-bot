@@ -3,6 +3,7 @@ import os
 import discord
 import traceback
 from discord.commands import Option, SlashCommandGroup
+from discord.utils import get
 
 from dotenv import load_dotenv
 
@@ -23,7 +24,7 @@ config_load()
 
 intents = discord.Intents.default()
 intents.members = True
-intents.reactions = True
+intents.guild_reactions = True
 
 client = discord.Bot(intents=intents)
 

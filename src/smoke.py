@@ -99,12 +99,17 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
   # active games
   games.sort(key=lambda x: x["GameName"])
   for game in games:
-    if game["WorldStatus"] == 'WorldActive' or game["WorldStatus"] == 'WorldStaging':
+    game_players = list(filter(lambda x: x["GameId"] is not None and x["GameId"] == game["GameId"], players))
+    game_active = game["WorldStatus"] == 'WorldActive' or game["WorldStatus"] == 'WorldStaging'
+    game_end_scoreboard = game["WorldStatus"] == 'WorldClosed' and len(game_players) > 0
+    if game_active or game_end_scoreboard:
       metadata = None
       if game["Metadata"] is not None:
         metadata = json.loads(game["Metadata"])
       in_game = game["WorldStatus"] == 'WorldActive'
-      time_started: datetime = datetime.strptime(game["GameStartDt"][:26], '%Y-%m-%dT%H:%M:%S.%f') if in_game and game["GameStartDt"] is not None else None
+      end_game = game["WorldStatus"] == 'WorldClosed'
+      has_stats = in_game or end_game
+      time_started: datetime = datetime.strptime(game["GameStartDt"][:26], '%Y-%m-%dT%H:%M:%S.%f') if has_stats and game["GameStartDt"] is not None else None
       seconds_since_started: datetime = (datetime.utcnow() - time_started).total_seconds() if time_started is not None else None
       game_players = list(filter(lambda x: x["GameId"] is not None and x["GameId"] == game["GameId"], players))
       location_name = None
@@ -118,6 +123,8 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
       # in game tag
       if in_game:
         embed_name += '[IG] \u200B '
+      elif end_game:
+        embed_name += '[END] \u200B '
       
       # icons
       for icon in smoke_config["Icons"]:
@@ -133,7 +140,7 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
         embed_name += f' [{location_name}]'
 
       # in game timer
-      if in_game:
+      if has_stats and seconds_since_started is not None:
         embed_name += f' @{int(seconds_since_started//3600):02}:{int(seconds_since_started//60)%60:02}:{int(seconds_since_started%60):02}'
 
       # sub icons
@@ -170,9 +177,9 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
           team_players = team["Players"] if team["Players"] is not None else []
           team_players.sort()
           if not teams_enabled and len(team_players) > 0:
-            embed_value += f'\n{team_players[0]}{(f" - {score}" if in_game else "")}'
+            embed_value += f'\n{team_players[0]}{(f" - {score}" if has_stats else "")}'
           else:
-            embed_value += f'\n{team["Name"]}{(f" - {score}" if in_game else "")}'
+            embed_value += f'\n{team["Name"]}{(f" - {score}" if has_stats else "")}'
             for player in team_players:
               embed_value += f'\n  {player}  '
             

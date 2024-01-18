@@ -897,6 +897,7 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
   account_name = account["AccountName"]
   stats = account["AccountWideStats"]
   stats_custom = account["AccountCustomWideStats"]
+  xp_to_rank = lambda xp : get_dl_skill_level(max(100, min(10000, 100 + (xp) / 5000)))
 
   fields = [
     {
@@ -932,41 +933,76 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
       ]
     },
     {
-      'Name': 'High Score',
+      'Name': 'Orxon',
       'Inline': True,
       'Children': [
         {
-          'Name': 'Solo Orxon',
+          'Name': 'Rank',
+          'Value': lambda : f'{xp_to_rank(stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP1_XP]) + (10 * stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP1_PRESTIGE]):.2f}',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP1_XP,
+          'Custom': True
+        },
+        {
+          'Name': 'Solo High Score',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP1_SOLO_HIGH_SCORE]} rounds',
           'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP1_SOLO_HIGH_SCORE,
           'Custom': True
         },
         {
-          'Name': 'Coop Orxon',
+          'Name': 'Coop High Score',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP1_COOP_HIGH_SCORE]} rounds',
           'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP1_COOP_HIGH_SCORE,
           'Custom': True
         },
+      ]
+    },
+    {
+      'Name': ' ',
+      'DefaultValue': ' ',
+      'Inline': False
+    },
+    {
+      'Name': 'Mountain Pass',
+      'Inline': True,
+      'Children': [
         {
-          'Name': 'Solo Mountain Pass',
+          'Name': 'Rank',
+          'Value': lambda : f'{xp_to_rank(stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP2_XP]) + (10 * stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP2_PRESTIGE]):.2f}',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP2_XP,
+          'Custom': True
+        },
+        {
+          'Name': 'Solo High Score',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP2_SOLO_HIGH_SCORE]} rounds',
           'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP2_SOLO_HIGH_SCORE,
           'Custom': True
         },
         {
-          'Name': 'Coop Mountain Pass',
+          'Name': 'Coop High Score',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP2_COOP_HIGH_SCORE]} rounds',
           'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP2_COOP_HIGH_SCORE,
           'Custom': True
         },
+      ]
+    },
+    {
+      'Name': 'Veldin',
+      'Inline': True,
+      'Children': [
         {
-          'Name': 'Solo Veldin',
+          'Name': 'Rank',
+          'Value': lambda : f'{xp_to_rank(stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP3_XP]) + (10 * stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP3_PRESTIGE]):.2f}',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP3_XP,
+          'Custom': True
+        },
+        {
+          'Name': 'Solo High Score',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP3_SOLO_HIGH_SCORE]} rounds',
           'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP3_SOLO_HIGH_SCORE,
           'Custom': True
         },
         {
-          'Name': 'Coop Veldin',
+          'Name': 'Coop High Score',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP3_COOP_HIGH_SCORE]} rounds',
           'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP3_COOP_HIGH_SCORE,
           'Custom': True

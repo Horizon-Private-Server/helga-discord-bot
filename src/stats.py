@@ -11,6 +11,7 @@ import urllib3
 from discord.ext import commands
 from scavengerhunt import get_scavenger_hunt_dates, get_discord_string_from_date
 from mediusapi import *
+from datetime import timedelta
 
 #
 def get_dl_skill_level(rank):
@@ -53,6 +54,10 @@ def ms_tostr(milliseconds):
 def int_topercent(value, precision):
   ratio = value / precision
   return f'{ratio:.2%}'
+
+def int_totime(ms):
+  dt = timedelta(milliseconds= ms)
+  return str(dt)
 
 def create_embed(account, fields):
   account_id = account["AccountId"]
@@ -1178,6 +1183,8 @@ async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, lea
 
   if 'Accuracy' in stat:
     transform_value = lambda x : int_topercent(x, 100 * 100)
+  if 'Best Time' in stat:
+    transform_value = lambda x : int_totime(x)
 
   for i in range(0, count):
     s = f'{i+1}. {leaderboard[i]["AccountName"]}'
@@ -1214,6 +1221,15 @@ DEADLOCKED_GET_STATS_CHOICES = {
   "Training": get_dl_training_stats,
   "Weapons": get_dl_weapons_stats
 }
+
+DEADLOCKED_STATS_ASC = [
+  302,
+  303,
+  304,
+  305,
+  306,
+  307,
+]
 
 #
 DEADLOCKED_STATS = {
@@ -1340,29 +1356,35 @@ DEADLOCKED_STATS = {
     "Rank": 271,
     "XP": 291,
     "Orxon Solo High Score": 278,
+    "Orxon Solo 50 Rounds Best Time": 302,
     "Orxon Coop High Score": 279,
+    "Orxon Coop 50 Rounds Best Time": 303,
     "Mountain Pass Solo High Score": 280,
+    "Mountain Pass Solo 50 Rounds Best Time": 304,
     "Mountain Pass Coop High Score": 281,
+    "Mountain Pass Coop 50 Rounds Best Time": 305,
     "Veldin Solo High Score": 282,
+    "Veldin Solo 50 Rounds Best Time": 306,
     "Veldin Coop High Score": 296,
+    "Veldin Coop 50 Rounds Best Time": 307,
     "Games Played": 272,
     "Time Played": 273,
     "Kills": 274,
     "Deaths": 275,
     "Revives": 276,
     "Times Revived": 277,
-    "Times Rolled Mystery Box": 292,
+    #"Times Rolled Mystery Box": 292,
     #"Times Activated Demon Bell": 293,
     #"Times Activated Power": 294,
-    "Tokens Used On Gates": 295,
-    "Wrench Kills": 283,
-    "Dual Viper Kills": 284,
-    "Magma Cannon Kills": 285,
-    "Arbiter Kills": 286,
-    "Fusion Rifle Kills": 287,
-    "Mine Launcher Kills": 288,
-    "B6 Obliterator Kills": 289,
-    "Scorpion Flail Kills": 290,
+    #"Tokens Used On Gates": 295,
+    #"Wrench Kills": 283,
+    #"Dual Viper Kills": 284,
+    #"Magma Cannon Kills": 285,
+    #"Arbiter Kills": 286,
+    #"Fusion Rifle Kills": 287,
+    #"Mine Launcher Kills": 288,
+    #"B6 Obliterator Kills": 289,
+    #"Scorpion Flail Kills": 290,
   },
   "Training": {
     "Games Played": 312,
@@ -1421,9 +1443,10 @@ async def get_dl_leaderboard(ctx: discord.ApplicationContext, group: str, stat: 
       if stat in group_values:
         stat_id = group_values[stat]
         if stat_id > 100:
-          leaderboard = get_leaderboard_top5(DEADLOCKED_API_NAME, APPID_DEADLOCKED, stat_id - 100, custom=True)
+          orderAsc = stat_id in DEADLOCKED_STATS_ASC
+          leaderboard = get_leaderboard_top10(DEADLOCKED_API_NAME, APPID_DEADLOCKED, stat_id - 100, custom=True, orderAsc= orderAsc)
         else:
-          leaderboard = get_leaderboard_top5(DEADLOCKED_API_NAME, APPID_DEADLOCKED, stat_id, custom=False)
+          leaderboard = get_leaderboard_top10(DEADLOCKED_API_NAME, APPID_DEADLOCKED, stat_id, custom=False)
 
         await build_dl_leaderboard(ctx, group, stat, leaderboard)
     else:

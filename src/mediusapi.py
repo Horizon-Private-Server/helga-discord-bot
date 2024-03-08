@@ -73,14 +73,14 @@ def get_leaderboard(api, app_id, account_id, stat_id, custom = False):
     raise ValueError(f"{route} returned {response.status_code}")
 
 #
-def get_leaderboard_top(api, app_id, stat_id, count, custom = False):
+def get_leaderboard_top(api, app_id, stat_id, count, custom = False, orderAsc = False):
   global headers
   if api not in headers:
     authenticate(api)
   
   optional_custom = 'Custom' if custom else ''
 
-  route =  f"Stats/getLeaderboard{optional_custom}?{optional_custom}StatId={stat_id}&StartIndex={0}&Size={count}&AppId={app_id}"
+  route =  f"Stats/getLeaderboard{optional_custom}?{optional_custom}StatId={stat_id}&StartIndex={0}&Size={count}&AppId={app_id}&orderAsc={orderAsc}"
   response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
 
   if response.status_code == 200:
@@ -89,8 +89,8 @@ def get_leaderboard_top(api, app_id, stat_id, count, custom = False):
     raise ValueError(f"{route} returned {response.status_code}")
 
 #
-def get_leaderboard_top5(api, app_id, stat_id, custom = False):
-  return get_leaderboard_top(api, app_id, stat_id, count=5, custom= custom)
+def get_leaderboard_top10(api, app_id, stat_id, custom = False, orderAsc = False):
+  return get_leaderboard_top(api, app_id, stat_id, count=10, custom= custom, orderAsc= orderAsc)
 
 #
 def get_players_online(api):

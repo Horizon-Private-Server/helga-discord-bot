@@ -269,8 +269,8 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
         if icon_value is not None:
           embed_value += icon_value
 
-      print("Game:", game)
-      print("Metadata:", metadata)
+      #print("Game:", game)
+      #print("Metadata:", metadata)
       
       # game mode
       embed_value += '```\n'

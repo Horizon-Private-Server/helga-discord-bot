@@ -73,9 +73,27 @@ async def on_message(message):
     return
     
   # Process welcome message
-  if message.channel.id == config_get(["WelcomeChannel", "ChannelId"]) and message.content.lower().strip() == config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower().strip():
-    print("Right channel id and right message!")
-    await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "RoleId"]))))
+  if message.channel.id == config_get(["WelcomeChannel", "WelcomeChannelId"]):
+    # Write to welcome logs what people write
+    msg_to_send = f'''
+Display Name: `{message.author.display_name}`
+Name: `{message.author.name}`
+User ID: `{message.author.id}`
+User Tag: <@{message.author.id}>
+User Created At: `{message.author.created_at}`
+Message: `{message.content}`
+Message Created At: `{message.created_at}`
+    '''
+    welcome_logs_channel = client.get_channel(config_get(["WelcomeChannel", "WelcomeLogChannelId"]))
+    await welcome_logs_channel.send(msg_to_send)
+
+    await message.delete()
+
+    msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower().strip()}{message.author.display_name.lower()}'.lower()
+
+    if message.content.lower().strip() == msg_to_match:
+      await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "VerifiedRoleId"]))))
+      await message.author.remove_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "AuthenticatingRoleId"]))))
 
 
 @client.event

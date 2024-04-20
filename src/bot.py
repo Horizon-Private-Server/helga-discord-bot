@@ -73,9 +73,11 @@ async def on_message(message):
     return
     
   # Process welcome message
-  if message.channel.id == config_get(["WelcomeChannel", "WelcomeChannelId"]):
-    await message.delete()
+  welcome_channel_id = config_get(["WelcomeChannel", "WelcomeChannelId"])
+  welcome_help_channel_id = config_get(["WelcomeChannel", "WelcomeHelpChannelId"])
+  pass_verification = False
 
+  if message.channel.id in [welcome_channel_id, welcome_help_channel_id]:
     raw_msg = message.content.replace("`", "(backtick)")
     user_msg = message.content.lower().strip()
     msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower()}{message.author.name.lower().strip()}'.lower().strip()
@@ -85,24 +87,27 @@ async def on_message(message):
       await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "VerifiedRoleId"]))))
       await message.author.remove_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "AuthenticatingRoleId"]))))
 
-    # Write to welcome logs what people write
-    msg_to_send = f'''
-=================================================
-User Tag: <@{message.author.id}>
-```
-Passed Verification: {pass_verification}
-Display Name: {message.author.display_name}
-Discord Username: {message.author.name}
-User ID: {message.author.id}
-User Created At: {message.author.created_at}
-Message Created At: {message.created_at}
-Message: {raw_msg}
-```
-    '''
-    welcome_logs_channel = client.get_channel(config_get(["WelcomeChannel", "WelcomeLogChannelId"]))
-    if len(msg_to_send) > 2000:
-      msg_to_send = msg_to_send[0:1980] + '\n```'
-    await welcome_logs_channel.send(msg_to_send)
+    if message.channel.id == welcome_channel_id or pass_verification:
+      # Write to welcome logs what people write
+      msg_to_send = f'''
+  =================================================
+  User Tag: <@{message.author.id}>
+  ```
+  Passed Verification: {pass_verification}
+  Display Name: {message.author.display_name}
+  Discord Username: {message.author.name}
+  User ID: {message.author.id}
+  User Created At: {message.author.created_at}
+  Message Created At: {message.created_at}
+  Message: {raw_msg}
+  ```
+      '''
+      welcome_logs_channel = client.get_channel(config_get(["WelcomeChannel", "WelcomeLogChannelId"]))
+      if len(msg_to_send) > 2000:
+        msg_to_send = msg_to_send[0:1980] + '\n```'
+      await welcome_logs_channel.send(msg_to_send)
+
+      await message.delete()
 
 
 

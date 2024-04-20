@@ -76,15 +76,20 @@ async def on_message(message):
   if message.channel.id == config_get(["WelcomeChannel", "WelcomeChannelId"]):
     # Write to welcome logs what people write
     msg_to_send = f'''
-Display Name: `{message.author.display_name}`
-Discord Username: `{message.author.name}`
-User ID: `{message.author.id}`
+=================================================
 User Tag: <@{message.author.id}>
-User Created At: `{message.author.created_at}`
-Message: `{message.content}`
-Message Created At: `{message.created_at}`
+```
+Display Name: {message.author.display_name}
+Discord Username: {message.author.name}
+User ID: {message.author.id}
+User Created At: {message.author.created_at}
+Message Created At: {message.created_at}
+Message: {message.content}
+```
     '''
     welcome_logs_channel = client.get_channel(config_get(["WelcomeChannel", "WelcomeLogChannelId"]))
+    if len(msg_to_send) > 2000:
+      msg_to_send = msg_to_send[0:1980] + '\n```'
     await welcome_logs_channel.send(msg_to_send)
 
     await message.delete()

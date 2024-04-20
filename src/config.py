@@ -78,7 +78,7 @@ def config_load():
 
   # if config file doesn't exist, create new with defaults
   if os.path.exists(_config_path):
-    print("Found a config file!!! ")
+    print("Found a config file!")
     with open(_config_path, 'r') as f:
       _config.update(json.load(f))
   else:

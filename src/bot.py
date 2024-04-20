@@ -76,6 +76,7 @@ async def on_message(message):
   if message.channel.id == config_get(["WelcomeChannel", "WelcomeChannelId"]):
     await message.delete()
 
+    raw_msg = message.content
     user_msg = message.content.lower().strip()
     msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower()}{message.author.name.lower().strip()}'.lower().strip()
 
@@ -95,7 +96,7 @@ Discord Username: {message.author.name}
 User ID: {message.author.id}
 User Created At: {message.author.created_at}
 Message Created At: {message.created_at}
-Message: {user_msg}
+Message: {raw_msg}
 ```
     '''
     welcome_logs_channel = client.get_channel(config_get(["WelcomeChannel", "WelcomeLogChannelId"]))

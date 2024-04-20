@@ -74,17 +74,28 @@ async def on_message(message):
     
   # Process welcome message
   if message.channel.id == config_get(["WelcomeChannel", "WelcomeChannelId"]):
+    await message.delete()
+
+    user_msg = message.content.lower().strip()
+    msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower()}{message.author.name.lower().strip()}'.lower().strip()
+
+    pass_verification = user_msg == msg_to_match
+    if pass_verification:
+      await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "VerifiedRoleId"]))))
+      await message.author.remove_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "AuthenticatingRoleId"]))))
+
     # Write to welcome logs what people write
     msg_to_send = f'''
 =================================================
 User Tag: <@{message.author.id}>
 ```
+Passed Verification: {pass_verification}
 Display Name: {message.author.display_name}
 Discord Username: {message.author.name}
 User ID: {message.author.id}
 User Created At: {message.author.created_at}
 Message Created At: {message.created_at}
-Message: {message.content}
+Message: {user_msg}
 ```
     '''
     welcome_logs_channel = client.get_channel(config_get(["WelcomeChannel", "WelcomeLogChannelId"]))
@@ -92,14 +103,6 @@ Message: {message.content}
       msg_to_send = msg_to_send[0:1980] + '\n```'
     await welcome_logs_channel.send(msg_to_send)
 
-    await message.delete()
-
-    user_msg = message.content.lower().strip()
-    msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower()}{message.author.name.lower().strip()}'.lower().strip()
-
-    if user_msg == msg_to_match:
-      await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "VerifiedRoleId"]))))
-      await message.author.remove_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "AuthenticatingRoleId"]))))
 
 
 @client.event

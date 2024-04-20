@@ -75,6 +75,7 @@ async def on_message(message):
   # Process welcome message
   welcome_channel_id = config_get(["WelcomeChannel", "WelcomeChannelId"])
   welcome_help_channel_id = config_get(["WelcomeChannel", "WelcomeHelpChannelId"])
+  help_message = config_get(["WelcomeChannel", "WelcomeHelpMessageOnFail"])
   pass_verification = False
 
   if message.channel.id in [welcome_channel_id, welcome_help_channel_id]:
@@ -86,6 +87,10 @@ async def on_message(message):
     if pass_verification:
       await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "VerifiedRoleId"]))))
       await message.author.remove_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "AuthenticatingRoleId"]))))
+
+    if message.channel.id == welcome_channel_id and pass_verification == False:
+      help_channel = client.get_channel(welcome_help_channel_id)
+      await help_channel.send(f'<@{message.author.id}> - {help_message}')
 
     if message.channel.id == welcome_channel_id or pass_verification:
       # Write to welcome logs what people write

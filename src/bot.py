@@ -89,9 +89,10 @@ Message Created At: `{message.created_at}`
 
     await message.delete()
 
-    msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower().strip()}{message.author.display_name.lower()}'.lower()
+    user_msg = message.content.lower().strip()
+    msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower()}{message.author.display_name.lower()}'.lower().strip()
 
-    if message.content.lower().strip() == msg_to_match:
+    if user_msg == msg_to_match:
       await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "VerifiedRoleId"]))))
       await message.author.remove_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "AuthenticatingRoleId"]))))
 

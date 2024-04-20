@@ -76,7 +76,7 @@ async def on_message(message):
   if message.channel.id == config_get(["WelcomeChannel", "WelcomeChannelId"]):
     await message.delete()
 
-    raw_msg = message.content
+    raw_msg = message.content.replace("`", "")
     user_msg = message.content.lower().strip()
     msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower()}{message.author.name.lower().strip()}'.lower().strip()
 

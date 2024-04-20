@@ -35,7 +35,7 @@ def authenticate(api):
 
   response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + "Account/authenticate", json=data, verify=False)
   if response.status_code == 200:
-    print(response.json())
+    #print(response.json())
     token = response.json()["Token"]
     headers[api] = { "Authorization": f"Bearer {token}" }
     #print("HEADERS!", headers)
@@ -127,7 +127,7 @@ def get_active_games(api):
   if api not in headers:
     authenticate(api)
   
-  print("HEADERS:", headers)
+  #print("HEADERS:", headers)
   route =  f"api/Game/list"
   response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
 

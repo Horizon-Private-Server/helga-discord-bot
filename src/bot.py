@@ -25,6 +25,7 @@ config_load()
 intents = discord.Intents.default()
 intents.members = True
 intents.guild_reactions = True
+intents.message_content = True
 
 client = discord.Bot(intents=intents)
 
@@ -64,6 +65,18 @@ async def on_raw_reaction_add(payload):
     if emoji_id == str(emoji):
       # Add the role
       await user.add_roles(user.guild.get_role(int(role_id)))
+
+@client.event
+async def on_message(message):
+
+  if message.author == client.user:
+    return
+    
+  # Process welcome message
+  if message.channel.id == config_get(["WelcomeChannel", "ChannelId"]) and message.content.lower().strip() == config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower().strip():
+    print("Right channel id and right message!")
+    await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "RoleId"]))))
+
 
 @client.event
 async def on_raw_reaction_remove(payload):

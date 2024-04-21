@@ -1,5 +1,6 @@
 # bot.py
 import os
+import random
 import discord
 import traceback
 from discord.commands import Option, SlashCommandGroup
@@ -71,28 +72,36 @@ async def on_message(message):
 
   if message.author == client.user:
     return
-    
+
   # Process welcome message
-  welcome_channel_id = config_get(["WelcomeChannel", "WelcomeChannelId"])
-  welcome_help_channel_id = config_get(["WelcomeChannel", "WelcomeHelpChannelId"])
-  help_message = config_get(["WelcomeChannel", "WelcomeHelpMessageOnFail"])
+  verification_channel_id = config_get(["Verification", "VerificationChannelId"])
+  verification_help_channel_id = config_get(["Verification", "VerificationHelpChannelid"])
+  help_message = config_get(["Verification", "VerificationHelpMessageOnFail"])
   pass_verification = False
 
-  if message.channel.id in [welcome_channel_id, welcome_help_channel_id]:
+  if message.channel.id in [verification_channel_id, verification_help_channel_id]:
     raw_msg = message.content.replace("`", "(backtick)")
     user_msg = message.content.lower().strip()
-    msg_to_match = f'{config_get(["WelcomeChannel", "WelcomeAcceptMessage"]).lower()}{message.author.name.lower().strip()}'.lower().strip()
+    msg_to_match = f'{config_get(["Verification", "VerificationAcceptMessage"]).lower()}{message.author.name.lower().strip()}'.lower().strip()
 
     pass_verification = user_msg == msg_to_match
     if pass_verification:
-      await message.author.add_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "VerifiedRoleId"]))))
-      await message.author.remove_roles(message.author.guild.get_role(int(config_get(["WelcomeChannel", "AuthenticatingRoleId"]))))
+      await message.author.add_roles(message.author.guild.get_role(int(config_get(["Verification", "VerifiedRoleId"]))))
+      welcome_msg = f'<@{message.author.id}>{config_get(["Verification", "WelcomeMessage"])}'
+      welcome_channel = client.get_channel(config_get(["Verification", "WelcomeChannelId"]))
+      welcome_emojis = config_get(["Verification", "WelcomeEmojis"])
+      random.shuffle(welcome_emojis)
+      welcome_msg_sent = await welcome_channel.send(welcome_msg)
+      number_of_emojis_to_post = random.randint(config_get(["Verification", "WelcomeEmojiMinReactions"]), config_get(["Verification", "WelcomeEmojiMaxReactions"]))
+      await welcome_msg_sent.add_reaction('\N{WAVING HAND SIGN}')  # Unicode for :wave:
+      for i in range(number_of_emojis_to_post):
+        await welcome_msg_sent.add_reaction(welcome_emojis[i])
 
-    if message.channel.id == welcome_channel_id and pass_verification == False:
-      help_channel = client.get_channel(welcome_help_channel_id)
+    if message.channel.id == verification_channel_id and pass_verification == False:
+      help_channel = client.get_channel(verification_help_channel_id)
       await help_channel.send(f'<@{message.author.id}> - {help_message}')
 
-    if message.channel.id == welcome_channel_id or pass_verification:
+    if message.channel.id == verification_channel_id or pass_verification:
       # Write to welcome logs what people write
       msg_to_send = f'''
   =================================================
@@ -107,7 +116,7 @@ async def on_message(message):
   Message: {raw_msg}
   ```
       '''
-      welcome_logs_channel = client.get_channel(config_get(["WelcomeChannel", "WelcomeLogChannelId"]))
+      welcome_logs_channel = client.get_channel(config_get(["Verification", "VerificationLogChannelId"]))
       if len(msg_to_send) > 2000:
         msg_to_send = msg_to_send[0:1980] + '\n```'
       await welcome_logs_channel.send(msg_to_send)

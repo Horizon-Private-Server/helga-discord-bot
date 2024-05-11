@@ -89,16 +89,13 @@ async def on_message(message):
       await message.author.add_roles(message.author.guild.get_role(int(config_get(["Verification", "VerifiedRoleId"]))))
       welcome_msg = f'<@{message.author.id}>{config_get(["Verification", "WelcomeMessage"])}'
       welcome_channel = client.get_channel(config_get(["Verification", "WelcomeChannelId"]))
-      welcome_emojis = config_get(["Verification", "WelcomeEmojis"])
-      random.shuffle(welcome_emojis)
       welcome_msg_sent = await welcome_channel.send(welcome_msg)
       number_of_emojis_to_post = random.randint(config_get(["Verification", "WelcomeEmojiMinReactions"]), config_get(["Verification", "WelcomeEmojiMaxReactions"]))
       await welcome_msg_sent.add_reaction('\N{WAVING HAND SIGN}')  # Unicode for :wave:
-      for i in range(number_of_emojis_to_post):
-        await welcome_msg_sent.add_reaction(welcome_emojis[i])
 
     if message.channel.id == verification_channel_id and pass_verification == False:
       help_channel = client.get_channel(verification_help_channel_id)
+      help_message = help_message.format(message.author.name.lower().strip())
       await help_channel.send(f'<@{message.author.id}> - {help_message}')
 
     if message.channel.id == verification_channel_id or pass_verification:

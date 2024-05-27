@@ -1,0 +1,3 @@
+input_words|help_message
+uya,opl,help|Oh no! Looks like you need help with OPL!
+secret,message,fourbolt,test|message from helga (secret)

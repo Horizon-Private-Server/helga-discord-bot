@@ -5,6 +5,7 @@ import discord
 import traceback
 from discord.commands import Option, SlashCommandGroup
 from discord.utils import get
+import csv
 
 from dotenv import load_dotenv
 
@@ -40,6 +41,28 @@ mod = client.create_group("mod", "Commands for Horizon staff.", guild_ids=config
 
 #uya_manager = UYAManager(client, config_get_full())
 
+
+def read_helga_help_messages():
+  helga_help_path = '/code/helgahelpmessages.txt'
+
+  # Open the file and create a csv.reader object with the delimiter set to '|'
+  with open(helga_help_path, mode='r', newline='') as file:
+    csv_reader = csv.reader(file, delimiter='|')      
+    # Read and print the header
+    header = next(csv_reader)
+
+    mapping = []
+
+    # Read and print each row
+    for row in csv_reader:
+      inputs = row[0].split(",")
+      output = row[1]
+      mapping.append([inputs,output])
+
+    return mapping
+
+HELGA_HELP_MSG_MAPPING = read_helga_help_messages()
+
 @client.event
 async def on_ready():
   print(f'{client.user} has connected to Discord!')
@@ -72,6 +95,18 @@ async def on_message(message):
 
   if message.author == client.user:
     return
+  
+  # Helga Help Messages
+  for inputs, output in HELGA_HELP_MSG_MAPPING:
+    num_matching = 0
+    for input_word in inputs:
+      if input_word.lower() in message.content.lower().strip():
+        num_matching += 1
+    if num_matching == len(inputs):
+      # Help message match
+      help_msg = f'<@{message.author.id}>, {output}'
+      await message.channel.send(help_msg)
+
 
   # Process welcome message
   verification_channel_id = config_get(["Verification", "VerificationChannelId"])

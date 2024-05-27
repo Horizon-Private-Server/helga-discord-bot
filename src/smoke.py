@@ -215,17 +215,17 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
   # filter players by appid and server
   players = list(filter(lambda x: filter_by_config(smoke_config, x), players))
   games = list(filter(lambda x: filter_by_config(smoke_config, x), games))
-
   # description
   if len(players) > 0:
-    players.sort(key=lambda x: x["AccountName"])
-    names = [f'\n{get_player_region(smoke_config, player["AppId"])}  {player["AccountName"]}  ' for player in players]
+    players_online = [player for player in players if not player["AccountName"].lower().startswith("cpu-")]
+    players_online.sort(key=lambda x: x["AccountName"])
+    names = [f'\n{get_player_region(smoke_config, player["AppId"])}  {player["AccountName"]}  ' for player in players_online]
     embed_value = '```'
     for name in names:
       embed_value += name
     embed_value += '```'
 
-    embed.add_field(name= f'Players Online - {len(players)}', value= embed_value, inline= False)
+    embed.add_field(name= f'Players Online - {len(players_online)}', value= embed_value, inline= False)
 
   # games
   embed.add_field(name= '\u200B', value= 'Active Games:', inline= False)

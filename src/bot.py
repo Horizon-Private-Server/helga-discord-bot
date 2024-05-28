@@ -302,13 +302,39 @@ async def cmd_admin_find_matching_nicknames(
     print(traceback.format_exc())
     await ctx.respond(f'Error.')
 
-@mod.command(name="uya-file-system-status", description="Look at how much space the uya server has")
+@mod.command(name="uya-check-filesystem", description="Look at how much space the uya server has")
 async def cmd_admin_find_matching_nicknames(
   ctx: discord.ApplicationContext
   ):
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
-    output = await MOD_SSH_COMMANDS.uya_get_file_system_status()
+    output = await MOD_SSH_COMMANDS.uya_check_filesystem()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="uya-check-memory", description="Check memory status")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_check_memory()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="uya-check-cpu", description="Check CPU status")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_check_cpu()
     await ctx.respond(output)
     #await ctx.respond(lines)
   except Exception as e:

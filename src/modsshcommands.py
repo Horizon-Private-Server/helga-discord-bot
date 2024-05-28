@@ -60,8 +60,14 @@ class ModSshCommands:
         result = f'Output: \n```{stdout}```\nStandard Error:\n```{stderr}```\nErrors:\n```{error}```\n'
         return result
     
-    async def uya_get_file_system_status(self):
+    async def uya_check_filesystem(self):
         return await self.run_remote_command('uya', 'df -h')
+
+    async def uya_check_memory(self):
+        return await self.run_remote_command('uya', '''free -mh''')
+
+    async def uya_check_cpu(self):
+        return await self.run_remote_command('uya', '''awk '/^cpu[0-9]+ / {usage=($2+$3+$4)*100/($2+$3+$4+$5); printf "%s: %.2f%% usage, ", $1, usage}' /proc/stat''')
 
     async def uya_check_containers(self):
         return await self.run_remote_command('uya', "docker container ls --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}'")
@@ -80,4 +86,6 @@ class ModSshCommands:
 
     async def uya_restart_goldbolt(self):
         return await self.run_remote_command('uya', 'cd goldboltbot && bash run.sh')
+
+
 

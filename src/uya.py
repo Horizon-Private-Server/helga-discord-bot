@@ -83,12 +83,16 @@ class UYAManager:
 
     players = await self.get_players_endpoint()
     games = await self.get_games_endpoint()
-
+    print("ENDPOINT!")
     if len(players) == 0:
       players_val = 'No Players Online'
     else:
       players_val = ''
       for player in players:
+        print(player['username'])
+        if player["username"].strip().lower().startswith("cpu"):
+          print("FOUND CPU!")
+          continue
         this_player = f'[{player["region"]}] {player["username"]}'
         if player['clan_tag'] != '':
           this_player += f' [{player["clan_tag"]}]'

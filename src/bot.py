@@ -17,6 +17,7 @@ from streamfeed import streamfeed
 from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leaderboard, get_uya_scavenger_hunt_leaderboard, DEADLOCKED_GET_STATS_CHOICES, DEADLOCKED_STATS
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
+from modsshcommands import ModSshCommands
 #from uya import *
 
 load_dotenv()
@@ -30,6 +31,8 @@ intents.guild_reactions = True
 intents.message_content = True
 
 client = discord.Bot(intents=intents)
+
+MOD_SSH_COMMANDS = ModSshCommands()
 
 # create Slash Command group with bot.create_group
 deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.", guild_ids=config_get(['Stats', 'GuildIds']))
@@ -298,6 +301,100 @@ async def cmd_admin_find_matching_nicknames(
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Error.')
+
+@mod.command(name="uya-file-system-status", description="Look at how much space the uya server has")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_get_file_system_status()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="uya-check-containers", description="Check which containers are running")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_check_containers()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+
+@mod.command(name="uya-clean-filesystem", description="Clean filesystem")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_clean_filesystem()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="uya-restart-server", description="Restart UYA server")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_restart_server()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+
+@mod.command(name="uya-restart-middleware", description="Restart UYA middleware")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_restart_middleware()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="uya-restart-database", description="Restart UYA Database")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_restart_database()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="uya-restart-goldbolt", description="Restart UYA Database")
+async def cmd_admin_find_matching_nicknames(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_restart_goldbolt()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
 
 #
 #

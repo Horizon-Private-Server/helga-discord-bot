@@ -18,6 +18,7 @@ from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leader
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
+from mediusapi import reset_account_password
 #from uya import *
 
 load_dotenv()
@@ -302,8 +303,21 @@ async def cmd_admin_find_matching_nicknames(
     print(traceback.format_exc())
     await ctx.respond(f'Error.')
 
+@mod.command(name="reset-password", description="Reset a users password")
+async def cmd_reset_password(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]),
+  username: Option(str, "Username to reset")
+  ):
+  try:
+    result = reset_account_password(game, username)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
 @mod.command(name="uya-check-filesystem", description="Look at how much space the uya server has")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_check_filesystem(
   ctx: discord.ApplicationContext
   ):
   try:
@@ -316,7 +330,7 @@ async def cmd_admin_find_matching_nicknames(
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-check-memory", description="Check memory status")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_check_memory(
   ctx: discord.ApplicationContext
   ):
   try:
@@ -329,7 +343,7 @@ async def cmd_admin_find_matching_nicknames(
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-check-cpu", description="Check CPU status")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_check_cpu(
   ctx: discord.ApplicationContext
   ):
   try:
@@ -342,7 +356,7 @@ async def cmd_admin_find_matching_nicknames(
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-check-containers", description="Check which containers are running")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_check_containers(
   ctx: discord.ApplicationContext
   ):
   try:
@@ -356,7 +370,7 @@ async def cmd_admin_find_matching_nicknames(
 
 
 @mod.command(name="uya-clean-filesystem", description="Clean filesystem")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_clean_filesystem(
   ctx: discord.ApplicationContext
   ):
   try:
@@ -369,7 +383,7 @@ async def cmd_admin_find_matching_nicknames(
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-restart-server", description="Restart UYA server")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_restart_server(
   ctx: discord.ApplicationContext
   ):
   try:
@@ -383,7 +397,7 @@ async def cmd_admin_find_matching_nicknames(
 
 
 @mod.command(name="uya-restart-middleware", description="Restart UYA middleware")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_restart_middleware(
   ctx: discord.ApplicationContext
   ):
   try:
@@ -396,7 +410,7 @@ async def cmd_admin_find_matching_nicknames(
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-restart-database", description="Restart UYA Database")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_restart_database(
   ctx: discord.ApplicationContext
   ):
   try:
@@ -409,7 +423,7 @@ async def cmd_admin_find_matching_nicknames(
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-restart-goldbolt", description="Restart UYA Database")
-async def cmd_admin_find_matching_nicknames(
+async def cmd_uya_restart_goldbolt(
   ctx: discord.ApplicationContext
   ):
   try:

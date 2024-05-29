@@ -194,4 +194,33 @@ def reset_custom_leaderboard(api, appId, statId):
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
+#
+def reset_account_password(api, accountName):
+  global headers
+  if api not in headers:
+    authenticate(api)
+
+  if api == DEADLOCKED_API_NAME:
+    appId = APPID_DEADLOCKED
+  elif api == UYA_API_NAME:
+    appId = APPID_RC3
+  
+  request = {
+    'AccountName': accountName,
+    'AppId': appId
+  }
+  route =  f"Account/resetAccountPassword"
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+
+  if response.status_code == 200:
+    return "Success!"
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
+    return "Got 401. Try again"
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
+
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

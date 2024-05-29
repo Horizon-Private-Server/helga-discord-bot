@@ -213,11 +213,13 @@ def reset_account_password(api, accountName):
   response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
 
   if response.status_code == 200:
-    return "Success!"
+    return f"Success! Reset {api} account for {accountName}"
   elif response.status_code == 401:
     print("Got 401 Unauthorized. Repulling token")
     authenticate(api)
     return "Got 401. Try again"
+  elif response.status_code == 404:
+    return f"{api} account not found: {accountName}"
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 

@@ -13,8 +13,8 @@ If so, you're in luck! Try entering '!roll' into the chat and the server will re
 Listen up, you lardballs! The Helga Discord bot is your resource for all Deadlocked stats, not to mention a lot of other cool stuff.
 For a complete list of commands and instructions, visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/HELGA.MD#dl;
 
-Want to play with the pros on DL? Check out our DL Competitive Gameplay YouTube playlist!
-https://www.youtube.com/playlist?list=PLUCKuUL8PUCE956L74C4lDatEQAMuFyNI;
+Want to play with the pros on DL? Check out our DL Competitive Training YouTube playlist!
+https://www.youtube.com/playlist?list=PLLaViRLf6UBH2PNUVVVE0ea8xYq0ZpOmZ;
 
 Have you ever gotten sick while playing Deadlocked? We of course mean the Infected custom game mode! In this mode, players become "infected" after dying and must hunt the remaining survivors using only their wrench and their speed. Survivors have the luxury of weapons, but have a limited health and ammo pool - and only one life!
 For more information on Infected: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#infected;
@@ -105,8 +105,8 @@ Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game l
 
 Are you getting error messages when trying to join lobbies on UYA/Ratchet and Clank 3? Check if the name of the lobby has "[IG]" at the front of it. This text (short for "in-game") means that the game has already started, and that you will not be able to join. Keep an eye out for when the game ends so that you can join the next one!;
 
-How the heck do they move and shoot like that? If you have ever wondered this while playing UYA, you might want to check out our UYA Competitive Gameplay YouTube playlist! Thanks to Cy/iStronkz for contributing videos to this list.
-https://www.youtube.com/playlist?list=PLUCKuUL8PUCEyvlWo-fZxj7Om_r2UEpB5;
+How the heck do they move and shoot like that? If you have ever wondered this while playing UYA, you might want to check out our UYA Competitive Training YouTube playlist!
+https://www.youtube.com/playlist?list=PLLaViRLf6UBE5etVzayxJMKXN1wRqN1Au;
 
 Ever wonder why we chose the name "Horizon"? We wanted to get away from the Ratchet and Clank Online branding, and avoid any potential confusion around the R & C name in general. For example if we named the server "Ratchet and Clank: Horizon" some might have thought it was an upcoming game from Insomniac.;
 
@@ -143,7 +143,7 @@ Fan of UYA but never tried DL? Or vice versa? We recommend that you broaden your
 
 Why did so many Horizon staff members choose screen names that are animals? It's one of nature's mysteries!;
 
-Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 225 different disc golf courses across 16 different US states, from Alaska to Florida.;
+Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 235 different disc golf courses across 17 different US states, from Alaska to Florida.;
 
 For today's "tip", we just want to thank you for being a part of the Horizon community! We value all of our community members and strive to provide the best online experience possible. If you ever have any feedback or ideas for us, don't hesitate to post them in the #suggestions channel of this Discord server!;
 

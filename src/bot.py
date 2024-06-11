@@ -435,6 +435,19 @@ async def cmd_uya_restart_goldbolt(
     print(traceback.format_exc())
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
+@mod.command(name="uya-backup-database", description="Backup a copy of the UYA database at this point in time to the cloud")
+async def cmd_uya_backup_database(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+    await ctx.respond(f'Processing request... this may take awhile...')
+    output = await MOD_SSH_COMMANDS.uya_backup_database_to_cloud()
+    await ctx.respond(output)
+    #await ctx.respond(lines)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
 
 #
 #

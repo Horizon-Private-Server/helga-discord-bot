@@ -87,5 +87,5 @@ class ModSshCommands:
     async def uya_restart_goldbolt(self):
         return await self.run_remote_command('uya', 'cd goldboltbot && bash run.sh')
 
-
-
+    async def uya_backup_database_to_cloud(self):
+        return await self.run_remote_command('uya', 'source /root/.bashrc && cd /root/horizon-uya-prod/horizon-database-backup && bash run.sh')

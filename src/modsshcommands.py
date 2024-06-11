@@ -47,7 +47,7 @@ class ModSshCommands:
                 stdout = get_last_15_lines(result.stdout)
                 stderr = get_last_15_lines(result.stderr)
 
-        except (OSError, asyncssh.Error) as exc:
+        except Exception as exc:
             error = get_last_15_lines(str(exc))
 
         if stdout == '':
@@ -88,4 +88,4 @@ class ModSshCommands:
         return await self.run_remote_command('uya', 'cd goldboltbot && bash run.sh')
 
     async def uya_backup_database_to_cloud(self):
-        return await self.run_remote_command('uya', 'source /root/.bashrc && cd /root/horizon-uya-prod/horizon-database-backup && bash run.sh')
+        return await self.run_remote_command('uya', 'cd /root/horizon-uya-prod/horizon-database-backup && bash run.sh')

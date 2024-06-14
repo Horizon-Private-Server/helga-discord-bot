@@ -85,7 +85,7 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
   # description
   if len(players) > 0:
     players.sort(key=lambda x: x["AccountName"])
-    names = [f'\n{get_player_region_dl(smoke_config, player)}  {player["AccountName"]}  ' for player in players]
+    names = [f'\n{get_player_region_dl(smoke_config, player)}  {player["AccountName"]}' for player in players]
     embed_value = '```'
     for name in names:
       embed_value += name

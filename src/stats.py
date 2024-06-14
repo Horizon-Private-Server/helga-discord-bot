@@ -1187,7 +1187,7 @@ async def build_dl_leaderboard(ctx: discord.ApplicationContext, group, stat, lea
     transform_value = lambda x : int_totime(x)
 
   for i in range(0, count):
-    s = f'{i+1}. {leaderboard[i]["AccountName"]}'
+    s = f'{i+1}.\n{leaderboard[i]["AccountName"]}'
     while len(s) < 20:
       s += pad_str
     lb_str += f'{s}{transform_value(leaderboard[i]["StatValue"])}\n'

@@ -35,11 +35,14 @@ def authenticate(api):
 
   response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + "Account/authenticate", json=data, verify=False)
   if response.status_code == 200:
-    print(response.json())
+    #print(response.json())
     token = response.json()["Token"]
     headers[api] = { "Authorization": f"Bearer {token}" }
+    #print("HEADERS!", headers)
     return True
   else:
+    print(response.status_code)
+    print("ERROR AUTHENTICATING!")
     return None
 
 #
@@ -53,6 +56,9 @@ def get_account(api, app_id, account_name):
 
   if response.status_code == 200:
     return response.json()
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
@@ -69,6 +75,9 @@ def get_leaderboard(api, app_id, account_id, stat_id, custom = False):
 
   if response.status_code == 200:
     return response.json()
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
@@ -85,6 +94,9 @@ def get_leaderboard_top(api, app_id, stat_id, count, custom = False, orderAsc = 
 
   if response.status_code == 200:
     return response.json()
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
@@ -103,6 +115,9 @@ def get_players_online(api):
 
   if response.status_code == 200:
     return response.json()
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
@@ -112,11 +127,15 @@ def get_active_games(api):
   if api not in headers:
     authenticate(api)
   
+  #print("HEADERS:", headers)
   route =  f"api/Game/list"
   response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
 
   if response.status_code == 200:
     return response.json()
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
@@ -131,6 +150,9 @@ def get_settings(api, appId):
 
   if response.status_code == 200:
     return response.json()
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
@@ -145,6 +167,9 @@ def set_settings(api, appId, settings):
 
   if response.status_code == 200:
     return
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
@@ -163,7 +188,41 @@ def reset_custom_leaderboard(api, appId, statId):
 
   if response.status_code == 200:
     return
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
   else:
     raise ValueError(f"{route} returned {response.status_code}")
+
+#
+def reset_account_password(api, accountName):
+  global headers
+  if api not in headers:
+    authenticate(api)
+
+  if api == DEADLOCKED_API_NAME:
+    appId = APPID_DEADLOCKED
+  elif api == UYA_API_NAME:
+    appId = APPID_RC3
+  
+  request = {
+    'AccountName': accountName,
+    'AppId': appId
+  }
+  route =  f"Account/resetAccountPassword"
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+
+  if response.status_code == 200:
+    return f"Success! Reset {api} account for {accountName}"
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
+    return "Got 401. Try again"
+  elif response.status_code == 404:
+    return f"{api} account not found: {accountName}"
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

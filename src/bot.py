@@ -2,10 +2,14 @@
 import os
 import random
 import discord
+import requests
 import traceback
+import csv
+import base64
 from discord.commands import Option, SlashCommandGroup
 from discord.utils import get
-import csv
+from io import BytesIO
+from PIL import Image
 
 from dotenv import load_dotenv
 
@@ -460,8 +464,57 @@ async def cmd_admin_dl_set_menu_banner(
   try:
 
     # send to db
-    await set_dl_banner_image('deadlocked', image.url)
-    await ctx.respond(f'Deadlocked Banner Updated {image}')
+    new_image = await set_dl_banner_image('deadlocked', image.url)
+    
+    if new_image:
+      
+      # quantize image to simulate PS2 output
+      new_image = new_image.resize((447, 175), resample= Image.Resampling.BILINEAR)
+      new_image.quantize(256)
+
+      # overlay on screenshot
+      underlay_image = Image.open('./assets/dl-banner-underlay.png')
+      underlay_image.paste(new_image, (331,127))
+      with BytesIO() as image_binary:
+        underlay_image.save(image_binary, 'PNG')
+        image_binary.seek(0)
+        await ctx.respond(f'Deadlocked Banner Updated', file=discord.File(fp=image_binary, filename='banner.png'))
+    else:
+      await ctx.respond(f'Deadlocked Banner Updated {image}')
+
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error.')
+
+@mod.command(name="dl-preview-menu-banner", description="Previews the current Deadlocked main menu banner image.")
+async def cmd_admin_dl_set_menu_banner(
+  ctx: discord.ApplicationContext,
+  image: discord.Attachment
+  ):
+  try:
+
+    # load image from url
+    if image.url is not None:
+      image_png_buffered = BytesIO()
+      response = requests.get(image.url)
+      new_image = Image.open(BytesIO(response.content))
+      new_image = new_image.resize((256, 64))
+
+    if new_image:
+      # quantize image to simulate PS2 output
+      new_image = new_image.resize((447, 175), resample= Image.Resampling.BILINEAR)
+      new_image.quantize(256)
+
+      # overlay on screenshot
+      underlay_image = Image.open('./assets/dl-banner-underlay.png')
+      underlay_image.paste(new_image, (331,127))
+      with BytesIO() as image_binary:
+        underlay_image.save(image_binary, 'PNG')
+        image_binary.seek(0)
+        await ctx.respond(file=discord.File(fp=image_binary, filename='banner.png'))
+    else:
+      await ctx.respond(f'Unable to read image')
+
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Error.')

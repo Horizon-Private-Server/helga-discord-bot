@@ -10,6 +10,7 @@ import csv
 from dotenv import load_dotenv
 
 from scavengerhunt import activate_scavenger_hunt, print_scavenger_hunt, reset_leaderboard_scavenger_hunt, kill_scavenger_hunt, set_spawn_rate_scavenger_hunt
+from dl import set_dl_banner_image
 from config import *
 from smoke import smoke
 from tipoftheday import tipoftheday
@@ -48,6 +49,8 @@ mod = client.create_group("mod", "Commands for Horizon staff.", guild_ids=config
 
 def read_helga_help_messages():
   helga_help_path = '/code/helgahelpmessages.txt'
+  if not os.path.isfile(helga_help_path):
+    return []
 
   # Open the file and create a csv.reader object with the delimiter set to '|'
   with open(helga_help_path, mode='r', newline='') as file:
@@ -448,6 +451,33 @@ async def cmd_uya_backup_database(
     print(traceback.format_exc())
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
+
+@mod.command(name="dl-set-menu-banner", description="Sets the current Deadlocked main menu banner image.")
+async def cmd_admin_dl_set_menu_banner(
+  ctx: discord.ApplicationContext,
+  image: discord.Attachment
+  ):
+  try:
+
+    # send to db
+    await set_dl_banner_image('deadlocked', image.url)
+    await ctx.respond(f'Deadlocked Banner Updated {image}')
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error.')
+
+@mod.command(name="dl-remove-menu-banner", description="Removes the current Deadlocked main menu banner image.")
+async def cmd_admin_dl_set_menu_banner(
+  ctx: discord.ApplicationContext
+  ):
+  try:
+
+    # send to db
+    await set_dl_banner_image('deadlocked', None)
+    await ctx.respond(f'Deadlocked Banner Removed')
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error.')
 
 #
 #

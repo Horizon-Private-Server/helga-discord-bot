@@ -49,7 +49,7 @@ async def set_dl_banner_image(game: str, image_url: str):
       image_png_buffered = BytesIO()
       response = requests.get(image_url)
       image = Image.open(BytesIO(response.content))
-      image.resize((128, 64))
+      image = image.resize((128, 64))
       image.save(image_png_buffered, format="PNG")
       image_png_base64 = base64.b64encode(image_png_buffered.getvalue()).decode()
 

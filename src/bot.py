@@ -473,7 +473,7 @@ async def cmd_admin_dl_set_menu_banner(
       new_image.quantize(256)
 
       # overlay on screenshot
-      underlay_image = Image.open('./assets/dl-banner-underlay.png')
+      underlay_image = Image.open('../assets/dl-banner-underlay.png')
       underlay_image.paste(new_image, (331,127))
       with BytesIO() as image_binary:
         underlay_image.save(image_binary, 'PNG')
@@ -506,7 +506,7 @@ async def cmd_admin_dl_set_menu_banner(
       new_image.quantize(256)
 
       # overlay on screenshot
-      underlay_image = Image.open('./assets/dl-banner-underlay.png')
+      underlay_image = Image.open('../assets/dl-banner-underlay.png')
       underlay_image.paste(new_image, (331,127))
       with BytesIO() as image_binary:
         underlay_image.save(image_binary, 'PNG')

@@ -18,7 +18,7 @@ from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leader
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
-from mediusapi import reset_account_password
+from mediusapi import reset_account_password, change_account_name
 #from uya import *
 
 load_dotenv()
@@ -306,8 +306,8 @@ async def cmd_admin_find_matching_nicknames(
 @mod.command(name="reset-password", description="Reset a users password")
 async def cmd_reset_password(
   ctx: discord.ApplicationContext,
-  game: Option(str, "Choose a game", choices=["DL", "UYA"]),
-  username: Option(str, "Username to reset")
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  username: Option(str, "Username to reset") # type: ignore
   ):
   try:
     result = reset_account_password(game, username)
@@ -315,6 +315,21 @@ async def cmd_reset_password(
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="change-account-name", description="Change a users Account Name")
+async def cmd_change_account_name(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  current_account_name: Option(str, "Current Account Name"), # type: ignore
+  new_account_name: Option(str, "New Account Name") # type: ignore
+  ):
+  try:
+    result = change_account_name(game, current_account_name, new_account_name)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
 
 @mod.command(name="uya-check-filesystem", description="Look at how much space the uya server has")
 async def cmd_uya_check_filesystem(

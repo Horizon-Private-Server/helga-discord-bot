@@ -252,7 +252,7 @@ def change_account_name(api, current_account_name, new_account_name):
   elif response.status_code == 404:
     return f"{api} account not found: {current_account_name}"
   elif response.status_code == 403:
-    return f"{api} new account name already exists: {new_account_name}"
+    return f"{api} new account name already exists: {new_account_name}. Or > 14 character name or special characters in the name."
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 

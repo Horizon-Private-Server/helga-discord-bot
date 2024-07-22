@@ -23,7 +23,7 @@ from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leader
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
-from mediusapi import reset_account_password, change_account_name
+from mediusapi import reset_account_password, change_account_name, combine_account_stats
 #from uya import *
 
 load_dotenv()
@@ -332,6 +332,20 @@ async def cmd_change_account_name(
   ):
   try:
     result = change_account_name(game, current_account_name, new_account_name)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="combine-account-name", description="Combine an accounts stats")
+async def cmd_combine_account_stats(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  account_name_from: Option(str, "Account to pull stats from"), # type: ignore
+  account_name_to: Option(str, "Account to add stats to") # type: ignore
+  ):
+  try:
+    result = combine_account_stats(game, account_name_from, account_name_to)
     await ctx.respond(result)
   except Exception as e:
     print(traceback.format_exc())

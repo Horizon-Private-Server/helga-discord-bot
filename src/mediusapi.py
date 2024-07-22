@@ -256,5 +256,36 @@ def change_account_name(api, current_account_name, new_account_name):
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 
+def combine_account_stats(api, account_name_from, account_name_to):
+  global headers
+  if api not in headers:
+    authenticate(api)
+
+  if api == DEADLOCKED_API_NAME:
+    appId = APPID_DEADLOCKED
+  elif api == UYA_API_NAME:
+    appId = APPID_RC3
+  
+  request = {
+    'AccountNameFrom': account_name_from,
+    'AccountNameTo': account_name_to,
+    'AppId': appId
+  }
+  route =  f"Stats/combineAccountStat"
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+
+  if response.status_code == 200:
+    return f"Success! {api} Added stats from {account_name_from} to {account_name_to}"
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
+    return "Got 401. Try again"
+  elif response.status_code == 404:
+    return f"{api} account not found"
+  elif response.status_code == 403:
+    return f"{api} error 403, {response.text}"
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

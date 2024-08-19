@@ -1,3 +1,4 @@
 input_words|help_message
 uya,opl,help|Oh no! Looks like you need help with OPL!
 secret,message,fourbolt,test|message from helga (secret)
+!ig|Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game lobby name, do not try to join the lobby! "IG" is short for "in-game", meaning that the lobby has already started. UYA does not support joining games that have already started, and if you try to join your PS2 may freeze and/or you may see a network error pop up. If this happens, you will need to reconnect to the server.

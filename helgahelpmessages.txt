@@ -2,3 +2,13 @@ input_words|help_message
 uya,opl,help|Oh no! Looks like you need help with OPL!
 secret,message,fourbolt,test|message from helga (secret)
 !ig|Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game lobby name, do not try to join the lobby! "IG" is short for "in-game", meaning that the lobby has already started. UYA does not support joining games that have already started, and if you try to join your PS2 may freeze and/or you may see a network error pop up. If this happens, you will need to reconnect to the server.
+dns|Visit our ⁠#how-to-play channel for the DNS addresses that can be used to access our game servers. Using any of the DNS listed there will get you to the same lobby.
+anyone,online|Check out our #dl-players-online and #uya-players-online channels to see who is playing in real time.
+where,DZO|You can download DZO from our website at https://www.rac-horizon.com/
+where,update,maps|You can find the latest custom map downloads at https://www.rac-horizon.com/
+emuguide|Check out our in-depth setup guide for the PCSX2 emulator here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/pcsx2/README.md
+ps2guide|Check out our in-depth setup guide for the PS2 here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
+dzoguide|Check out our in-depth setup guide for DZO here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
+how,play|Check out our in-depth setup guide here: https://github.com/Horizon-Private-Server/horizon-wiki/tree/main/getting-online/
+ps3|Please note: Horizon is focused on PS2 Ratchet & Clank multiplayer titles. For the PS3 re-release multiplayer titles, check out the PSORG Discord linked in ⁠our #other-servers channel.
+channels,missing|Hey, cadet! That sounds annoying. Check this out for a possible reason why: https://discord.com/channels/936413500408995850/936415070299226152/1233228556004495403

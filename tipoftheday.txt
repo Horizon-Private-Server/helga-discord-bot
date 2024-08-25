@@ -7,6 +7,9 @@ Did you ever dream of making your own custom maps for Ratchet: Deadlocked?
 Thanks to our staff member Dnawrkshp, that dream can become a reality thanks to Forge, our custom map editing software.
 To get started with Forge, check out: https://github.com/Horizon-Private-Server/horizon-forge/wiki/Setup-Guide;
 
+Want to play Deadlocked with crystal-clear, modern graphics? We have you covered with our DreadZone Online PC Client!
+Learn more on our wiki: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/dzo/README.md;
+
 Hosting a Deadlocked lobby and can't decide who should be on what team?
 Try entering '!tm' into the chat to randomly assign half of the players to the blue team and the other half on red team.
 Check out the GitHub documentation for optional arguments that can make this tool even more useful! https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CHATCOMMANDS.MD#teams;

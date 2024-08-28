@@ -109,12 +109,10 @@ async def on_message(message):
   
   # Helga Help Messages
   for inputs, output in HELGA_HELP_MSG_MAPPING:
-    num_matching = 0
-    for input_word in inputs:
-      if input_word.lower() in message.content.lower().strip():
-        num_matching += 1
-    if num_matching == len(inputs):
-      # Help message match
+    input_set = set([word.lower() for word in message.content.split()])
+    help_msg_set = set([word.lower() for word in inputs])
+
+    if len(help_msg_set.intersection(input_set)) == len(help_msg_set):
       help_msg = f'<@{message.author.id}>, {output}'
       await message.channel.send(help_msg)
 

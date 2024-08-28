@@ -10,5 +10,5 @@ emuguide|Check out our in-depth setup guide for the PCSX2 emulator here: https:/
 ps2guide|Check out our in-depth setup guide for the PS2 here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
 dzoguide|Check out our in-depth setup guide for DZO here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
 how,play|Check out our in-depth setup guide here: https://github.com/Horizon-Private-Server/horizon-wiki/tree/main/getting-online/
-ps3|Please note: Horizon is focused on PS2 Ratchet & Clank multiplayer titles. For the PS3 re-release multiplayer titles, check out the PSORG Discord linked in ⁠our https://discord.com/channels/936413500408995850/936415117661331507 channel.
+ps3,server|Please note: Horizon is focused on PS2 Ratchet & Clank multiplayer titles. For the PS3 re-release multiplayer titles, check out the PSORG Discord linked in ⁠our https://discord.com/channels/936413500408995850/936415117661331507 channel.
 channels,missing|Hey, cadet! That sounds annoying. Check this out for a possible reason why: https://discord.com/channels/936413500408995850/936415070299226152/1233228556004495403

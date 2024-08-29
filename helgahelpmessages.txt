@@ -1,6 +1,7 @@
 input_words|help_message
 secret,message,fourbolt,test|message from helga (secret)
 secret,message,dbs|That guy failed my training course nine times in a row!
+secret,message,moose|a letter moose?
 channels,missing|Hey, cadet! That sounds annoying. Check this out for a possible reason why: https://discord.com/channels/936413500408995850/936415070299226152/1233228556004495403
 select,roles|All opt-in roles are described in the https://discord.com/channels/936413500408995850/936415045296984074 channel of our Discord server. React to the message there to add yourself to whichever roles you like. If you change your mind, simply un-react to the same message to remove the corresponding role. To use the role, tag it in an appropriate channel. Others with the role will be pinged and know that you want to play!
 anyone,online|Check out our https://discord.com/channels/936413500408995850/936414685278928996 and https://discord.com/channels/936413500408995850/936414448799842314 channels to see who is playing in real time.

@@ -1,5 +1,6 @@
 input_words|help_message
-secret,message,fourbolt,test|message from helga (secret)
+secret,message,bubblegum|That's a secret!
+secret,message,fourbolt|message from helga (secret)
 secret,message,dbs|That guy failed my training course nine times in a row!
 secret,message,moose|a letter moose?
 channels,missing|Hey, cadet! That sounds annoying. Check this out for a possible reason why: https://discord.com/channels/936413500408995850/936415070299226152/1233228556004495403

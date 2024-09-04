@@ -23,7 +23,7 @@ from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leader
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
-from mediusapi import reset_account_password, change_account_name, combine_account_stats
+from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement
 #from uya import *
 
 load_dotenv()
@@ -344,6 +344,20 @@ async def cmd_combine_account_stats(
   ):
   try:
     result = combine_account_stats(game, account_name_from, account_name_to)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="post-announcement", description="Post an announcement to the game")
+async def cmd_post_announcement(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
+  announcement: Option(str, "Announcement"), # type: ignore
+  ):
+  try:
+    result = post_announcement(game, ntsc_or_pal, announcement)
     await ctx.respond(result)
   except Exception as e:
     print(traceback.format_exc())

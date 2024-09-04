@@ -1,14 +1,31 @@
 input_words|help_message
-uya,opl,help|Oh no! Looks like you need help with OPL! Check out our guide here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md#opl
-secret,message,fourbolt,test|message from helga (secret)
-!ig|Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game lobby name, do not try to join the lobby! "IG" is short for "in-game", meaning that the lobby has already started. UYA does not support joining games that have already started, and if you try to join your PS2 may freeze and/or you may see a network error pop up. If this happens, you will need to reconnect to the server.
-dns|Visit our ⁠https://discord.com/channels/936413500408995850/941146155713187860 channel for the DNS addresses that can be used to access our game servers. Using any of the DNS listed there will get you to the same lobby.
+secret,message,bubblegum|That's a secret!
+secret,message,fourbolt|message from helga (secret)
+secret,message,dbs|That guy failed my training course nine times in a row!
+secret,message,moose|a letter moose?
+channels,missing|Hey, cadet! That sounds annoying. Check this out for a possible reason why: https://discord.com/channels/936413500408995850/936415070299226152/1233228556004495403
+select,roles|All opt-in roles are described in the https://discord.com/channels/936413500408995850/936415045296984074 channel of our Discord server. React to the message there to add yourself to whichever roles you like. If you change your mind, simply un-react to the same message to remove the corresponding role. To use the role, tag it in an appropriate channel. Others with the role will be pinged and know that you want to play!
 anyone,online|Check out our https://discord.com/channels/936413500408995850/936414685278928996 and https://discord.com/channels/936413500408995850/936414448799842314 channels to see who is playing in real time.
-where,DZO|You can download DZO from our website at https://www.rac-horizon.com/
-where,update,maps|You can find the latest custom map downloads at https://www.rac-horizon.com/
+anyone,on|Check out our https://discord.com/channels/936413500408995850/936414685278928996 and https://discord.com/channels/936413500408995850/936414448799842314 channels to see who is playing in real time.
+how,many,on|Check out our https://discord.com/channels/936413500408995850/936414685278928996 and https://discord.com/channels/936413500408995850/936414448799842314 channels to see who is playing in real time.
+event,when|Check the Events list at the top of this Discord server regularly to view all upcoming events. Don't forget to click the "Interested" button on relevant events so that you will receive a reminder when the event starts!
+ps3,server|Please note: Horizon is focused on PS2 Ratchet & Clank multiplayer titles. For the PS3 re-release titles, check PSORG Discord linked in ⁠our https://discord.com/channels/936413500408995850/936415117661331507 channel.
+youtube,feature|Refer to this info for how your game footage can be featured on our YouTube channel! https://discord.com/channels/936413500408995850/1068297466912444558/1272192933692571679
+how,event,host|Refer to this info if you want to host your own event! https://discord.com/channels/936413500408995850/1068297466912444558/1264220345963905195
 emuguide|Check out our in-depth setup guide for the PCSX2 emulator here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/pcsx2/README.md
 ps2guide|Check out our in-depth setup guide for the PS2 here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
 dzoguide|Check out our in-depth setup guide for DZO here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
 how,play|Check out our in-depth setup guide here: https://github.com/Horizon-Private-Server/horizon-wiki/tree/main/getting-online/
-ps3|Please note: Horizon is focused on PS2 Ratchet & Clank multiplayer titles. For the PS3 re-release multiplayer titles, check out the PSORG Discord linked in ⁠our https://discord.com/channels/936413500408995850/936415117661331507 channel.
-channels,missing|Hey, cadet! That sounds annoying. Check this out for a possible reason why: https://discord.com/channels/936413500408995850/936415070299226152/1233228556004495403
+dns|Visit our ⁠https://discord.com/channels/936413500408995850/941146155713187860 channel for the DNS addresses that can be used to access our game servers. Using any of the DNS listed there will get you to the same lobby.
+opl,help|Oh no! Looks like you need help with OPL! Check out our guide here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md#opl
+custom,skins,how|There are two secret skins for UYA, and five for DL. You can learn how to unlock them at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/skins.md
+save,password,option| We recommend enabling the "Save Password" option and selecting a strong password for both games. For more info: https://discord.com/channels/936413500408995850/1068297466912444558/1257697478858375208
+where,update,maps|You can find the latest custom map downloads at https://www.rac-horizon.com/
+any,new,updates|Check out the latest change logs at https://discord.com/channels/936413500408995850/1207780391084105788 for DL or https://discord.com/channels/936413500408995850/1213398512201637929 for UYA.
+forge,map|You can get started with our Forge custom map editor at https://github.com/Horizon-Private-Server/horizon-forge/wiki/Setup-Guide
+where,DZO|You can download DZO from our website at https://www.rac-horizon.com/
+what,cycling|In short, cycling consists of firing three specific weapons and being able to rapidly switch between them. For UYA, the three weapons are the Flux Rifle, Gravity Bomb, and Blitz Gun. For DL, the three weapons are the Fusion Rifle, B6-Obliterator, and Magma Cannon. In competitive lobbies, it is common for these three weapons to be the only ones enabled.
+dl,training,video|Check out our DL Competitive Training YouTube playlist: https://www.youtube.com/playlist?list=PLLaViRLf6UBH2PNUVVVE0ea8xYq0ZpOmZ
+survival,info|Info on our Survival custom game mode for Deadlocked: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#survival
+uya,training,video|Check out our UYA Competitive Training YouTube playlist: https://www.youtube.com/playlist?list=PLLaViRLf6UBE5etVzayxJMKXN1wRqN1Au
+!ig|Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game lobby name, do not try to join the lobby! "IG" is short for "in-game", meaning that the lobby has already started. UYA does not support joining games that have already started, and if you try to join your PS2 may freeze and/or you may see a network error pop up. If this happens, you will need to reconnect to the server.

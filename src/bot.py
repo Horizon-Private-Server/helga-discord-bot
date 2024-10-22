@@ -23,7 +23,7 @@ from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leader
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
-from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement
+from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement, set_settings
 #from uya import *
 
 load_dotenv()
@@ -345,6 +345,19 @@ async def cmd_combine_account_stats(
   try:
     result = combine_account_stats(game, account_name_from, account_name_to)
     await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="uya-agg-time", description="Set agg time for UYA")
+async def cmd_combine_account_stats(
+  ctx: discord.ApplicationContext,
+  agg_time: Option(int, "Agg time to use (UYA Default: 30)"), # type: ignore
+  ):
+  try:
+    for app_id in (10683, 10684):
+      result = set_settings("UYA", app_id, {"DefaultClientWorldAggTime": agg_time})
+      await ctx.respond(f"UYA ({app_id}) agg time set to {agg_time} -> {result}")
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Error: {traceback.format_exc()}')

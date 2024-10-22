@@ -167,10 +167,11 @@ def set_settings(api, appId, settings):
   response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=settings, verify=False)
 
   if response.status_code == 200:
-    return
+    return "Success"
   elif response.status_code == 401:
     print("Got 401 Unauthorized. Repulling token")
     authenticate(api)
+    return "Error 401"
   else:
     raise ValueError(f"{route} returned {response.status_code}")
 

@@ -16,7 +16,7 @@ emuguide|Check out our in-depth setup guide for the PCSX2 emulator here: https:/
 ps2guide|Check out our in-depth setup guide for the PS2 here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
 dzoguide|Check out our in-depth setup guide for DZO here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
 how,play|Check out our in-depth setup guide here: https://github.com/Horizon-Private-Server/horizon-wiki/tree/main/getting-online/
-dns|Visit our ⁠https://discord.com/channels/936413500408995850/941146155713187860 channel for the DNS addresses that can be used to access our game servers. Using any of the DNS listed there will get you to the same lobby.
+what,dns|Visit our ⁠https://discord.com/channels/936413500408995850/941146155713187860 channel for the DNS addresses that can be used to access our game servers. Using any of the DNS listed there will get you to the same lobby.
 opl,help|Oh no! Looks like you need help with OPL! Check out our guide here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md#opl
 custom,skins,how|There are two secret skins for UYA, and five for DL. You can learn how to unlock them at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/skins.md
 save,password,option| We recommend enabling the "Save Password" option and selecting a strong password for both games. For more info: https://discord.com/channels/936413500408995850/1068297466912444558/1257697478858375208

@@ -51,6 +51,8 @@ For more information on Survival: https://github.com/Horizon-Private-Server/hori
 Hey Deadlocked players! It's time for target practice! The Training custom game mode is designed to help you practice your Fusion rifle aiming against simple multiplayer bots. See how many points you can score!
 For more information on the custom Training mode: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/GAME_MODES.MD#training;
 
+You'll definitely need to know this one for your next trivia night! Ratchet: Deadlocked was first released in North America on October 25, 2005. This would be followed less than a month later by Ratchet: Gladiator in Europe (18 November).;
+
 What is cycling, besides the thing that all the pro players say you don't know how to do?
 In short, cycling consists of firing three specific weapons and being able to rapidly switch between them.
 For UYA, the three weapons are the Flux Rifle, Gravity Bomb, and Blitz Gun. For DL, the three weapons are the Fusion Rifle, B6-Obliterator, and Magma Cannon.
@@ -106,11 +108,17 @@ Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game l
 
 Are you getting error messages when trying to join lobbies on UYA/Ratchet and Clank 3? Check if the name of the lobby has "[IG]" at the front of it. This text (short for "in-game") means that the game has already started, and that you will not be able to join. Keep an eye out for when the game ends so that you can join the next one!;
 
+Did you ever dream of making your own custom maps for Ratchet & Clank: Up Your Arsenal?
+With our custom Forge software, you can create your own custom maps for both NTSC and PAL players.
+To get started with Forge, check out: https://github.com/Horizon-Private-Server/horizon-forge/wiki/Setup-Guide;
+
 How the heck do they move and shoot like that? If you have ever wondered this while playing UYA, you might want to check out our UYA Competitive Training YouTube playlist!
 https://www.youtube.com/playlist?list=PLLaViRLf6UBE5etVzayxJMKXN1wRqN1Au;
 
 Can't get on today? Relive some Ratchet & Clank nostalgia on the go with Horizon staff member DeathBySnowman's curated playlist of his 15 favorite tracks from UYA/R&C 3's single player mode.
 https://youtube.com/playlist?list=PLUCKuUL8PUCGSLXCFgYZ41PPprF_dtRwm&si=UD9ocUUebJWBOBwG;
+
+Fun fact! Ratchet & Clank: Up Your Arsenal was first released in North America on November 2, 2004. This was followed soon after by the European release on 12 November.;
 
 Ever wonder why we chose the name "Horizon"? We wanted to get away from the Ratchet and Clank Online branding, and avoid any potential confusion around the R & C name in general. For example if we named the server "Ratchet and Clank: Horizon" some might have thought it was an upcoming game from Insomniac.;
 
@@ -149,7 +157,7 @@ Do most Horizon staff members like DL more, or UYA? Well, the truth is HEY DON'T
 
 Why did so many Horizon staff members choose screen names that are animals? It's one of nature's mysteries!;
 
-Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 270 different disc golf courses across 20 different US states, from Alaska to Florida.;
+Ever wonder what DeathBySnowman does when he isn't playing UYA? Well, he has to spend a lot of time in the walk-in freezer during the warmer months. But the rest of the time, he is likely playing disc golf. Since 2020 he has played over 300 different disc golf courses across 20 different US states (from Alaska to Florida) and Iceland.;
 
 For today's "tip", we just want to thank you for being a part of the Horizon community! We value all of our community members and strive to provide the best online experience possible. If you ever have any feedback or ideas for us, don't hesitate to post them in the #suggestions channel of this Discord server!;
 

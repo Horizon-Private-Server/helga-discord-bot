@@ -23,7 +23,7 @@ from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leader
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
-from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement, set_settings
+from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement, set_settings, ban_account, ban_ip, ban_mac
 #from uya import *
 
 load_dotenv()
@@ -371,6 +371,48 @@ async def cmd_post_announcement(
   ):
   try:
     result = post_announcement(game, ntsc_or_pal, announcement)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="ban-account", description="Ban an account in-game")
+async def cmd_ban_account(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
+  account_name: Option(str, "Account Name"), # type: ignore
+  ):
+  try:
+    result = ban_account(game, ntsc_or_pal, account_name)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="ban-ip", description="Ban an account by IP in-game")
+async def cmd_ban_ip(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
+  account_name: Option(str, "Account Name"), # type: ignore
+  ):
+  try:
+    result = ban_ip(game, ntsc_or_pal, account_name)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+@mod.command(name="ban-mac", description="Ban an account by MAC in-game")
+async def cmd_ban_mac(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
+  account_name: Option(str, "Account Name"), # type: ignore
+  ):
+  try:
+    result = ban_mac(game, ntsc_or_pal, account_name)
     await ctx.respond(result)
   except Exception as e:
     print(traceback.format_exc())

@@ -4,7 +4,7 @@ DL custom maps (along with the many custom game modes) are possible thanks to th
 For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CMAPS.md;
 
 Did you ever dream of making your own custom maps for Ratchet: Deadlocked?
-Thanks to our staff member Dnawrkshp, that dream can become a reality thanks to Forge, our custom map editing software.
+Thanks to our staff members Dnawrkshp and Badger41, that dream can become a reality thanks to Forge, our custom map editing software.
 To get started with Forge, check out: https://github.com/Horizon-Private-Server/horizon-forge/wiki/Setup-Guide;
 
 Want to play Deadlocked with crystal-clear, modern graphics? We have you covered with our DreadZone Online PC Client!
@@ -91,8 +91,8 @@ Beep boop! Thanks to Fourbolt, the Horizon server for UYA/Ratchet and Clank 3 fe
 Bots are AI "players" that make great opponents for practice, or when no other human players are online.
 For more information on bots, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/bots.md;
 
-We have over 25 custom maps available for NTSC-U/C and PAL players on UYA/Ratchet and Clank 3!
-These also work on both PS2 and PCSX2. Badger41, Nick#1, and max7 are the creative coders responsible for these maps.
+We have dozens of custom maps available for NTSC-U/C and PAL players on UYA/Ratchet and Clank 3!
+These work on both PS2 and PCSX2. Badger41, Nick#1, max7, and others are the creative minds responsible for these maps.
 For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/CMAPS.md;
 
 No V2s? V2s all the time? V2s that are eliminated with you? No health boxes?
@@ -100,7 +100,7 @@ All of these are now available in UYA/Ratchet and Clank 3 as configurable mod me
 For the most up-to-date list of available settings, LOG IN AND SEE FOR YOURSELF!
 More information on UYA mods is at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/CMODS.md;
 
-Have you ever played a beta version of a game online? How about a beta version of an 18 year old game?
+Have you ever played a beta version of a game online? How about a beta version of a 20+ year old game?
 Using our test server, you can play several beta versions of UYA online.
 For more information, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/betas.md;
 
@@ -122,19 +122,19 @@ Fun fact! Ratchet & Clank: Up Your Arsenal was first released in North America o
 
 Ever wonder why we chose the name "Horizon"? We wanted to get away from the Ratchet and Clank Online branding, and avoid any potential confusion around the R & C name in general. For example if we named the server "Ratchet and Clank: Horizon" some might have thought it was an upcoming game from Insomniac.;
 
-Why bother boosting the Horizon Discord server? Boosting unlocks Discord features in the server such as better streaming and audio quality, more custom emojis, and other fun perks.;
+Why bother boosting the Horizon Discord server? Boosting unlocks Discord features in the server such as better streaming and audio quality. It also allows us to continue using our custom server invite link (https://discord.gg/horizonps), which is shared in about 1,000,000 different places across the Internet. Your support means a lot to us!;
 
 Did you know that running the Horizon game servers for UYA and DL costs money?
-If you want to help chip in, please consider subscribing to our Discord server. All funds go directly towards hosting our private servers. Any additional funds will be saved for either future hosting costs or for community tournaments.
+If you want to help chip in, please consider subscribing to our Discord server. All funds go directly towards hosting our private servers. Any additional funds will either be saved for future hosting costs, or used for community-focused content like tournaments/special produced videos/etc.
 You can find more info about subscriptions by clicking "Server Subscriptions" at the top of the Discord server. If you have additional questions, please contact a staff member.;
 
-Short on cash but want to help out the Horizon community? There are other ways to help us out as well! Some possible examples of this are:
+Short on cash but want to help out the Horizon community? There are other ways to lend a hand! Some possible examples of this are:
 - Hosting regular events on UYA and/or DL to get people online.
 - Answering questions from other community members in the #tech-support Discord channel.
 - Recording gameplay footage and sending it to us to post to the Horizon YouTube channel.
 Staff members will award VIP status (Horizon VIP role) to those who consistently help out. Thank you for your support!;
 
-Did you know? Horizon offers both NTSC-U/C and PAL version support for both Ratchet and Clank: Up Your Arsenal (Ratchet and Clank 3) and Ratchet: Deadlocked (Ratchet: Gladiator). There is crossplay between the two versions, meaning that NTSC-U/C players can play in the same game lobby as PAL players. You can connect to our servers from any PS2 with a network adapter, or the PCSX2 emulator for PC.
+Did you know? Horizon offers both NTSC-U/C and PAL version support for both Ratchet and Clank: Up Your Arsenal (Ratchet and Clank 3) and Ratchet: Deadlocked (Ratchet: Gladiator). There is crossplay between the two versions, meaning that NTSC-U/C players can play in the same game lobby as PAL players. You can connect to our servers from any PS2 with a network adapter, the PCSX2 emulator for PC, or our DreadZone Online client (Deadlocked only).
 Full setup details can be found at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/README.md;
 
 You can host your own event and have it listed in the Horizon Events list! The only requirement is that you must commit to being online and available for at least one hour, starting at the day and time you pick.
@@ -148,7 +148,7 @@ We would love to feature your gameplay! The only requirements for this are:
 - Capture card quality footage only please. We like throwing it back, but not THAT much.
 - We don't want to get flagged for copyright violations, so please use only the game audio (with or without commentary).
 - Please choose matches that were competitive. Your 20-0 1v1 victory over someone just figuring out how to play bores most viewers, and frankly us too.
-Please send your footage to DeathBySnowman. Google Drive links (or similar) of each individual game work best.;
+Please send your footage to DeathBySnowman, or use our Google Form: https://forms.gle/77yX7nNpqe5vEiz48;
 
 Fan of UYA but never tried DL? Or vice versa? We recommend that you broaden your Horizon(s)!
 (we're really sorry for that pun, though);

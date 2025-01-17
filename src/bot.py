@@ -189,6 +189,8 @@ async def on_raw_reaction_remove(payload):
     return # no user found
 
   for emoji_id, role_id in config_get(["ReactionRoles", "EmojisToRoles"]).items():
+    if '\\u' in emoji_id:
+      emoji_id = emoji_id.encode("utf-8").decode("unicode_escape")
     if emoji_id == str(emoji):
       # Add the role
       await user.remove_roles(user.guild.get_role(int(role_id)))

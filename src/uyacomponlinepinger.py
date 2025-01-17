@@ -42,11 +42,11 @@ async def uyacomppingertask(client: discord.Client, config):
           await channel.send(help_msg)
           cooldown_2v2 = datetime.now()
         elif len(players) == 5 and ((datetime.now() - cooldown_3v3).total_seconds() / 60) > ping_cooldown:
-          help_msg = f'<@&{role_id_3v3}>, theres 3 online! need 1 for 3v3!\n (to get tagged in future pings, add yourself in <#{role_channel}>)'
+          help_msg = f'<@&{role_id_3v3}>, theres 5 online! need 1 for 3v3!\n (to get tagged in future pings, add yourself in <#{role_channel}>)'
           await channel.send(help_msg)
           cooldown_3v3 = datetime.now()
         elif len(players) == 7 and ((datetime.now() - cooldown_4v4).total_seconds() / 60) > ping_cooldown:
-          help_msg = f'<@&{role_id_4v4}>, theres 3 online! need 1 for 4v4!\n (to get tagged in future pings, add yourself in <#{role_channel}>)'
+          help_msg = f'<@&{role_id_4v4}>, theres 7 online! need 1 for 4v4!\n (to get tagged in future pings, add yourself in <#{role_channel}>)'
           await channel.send(help_msg)
           cooldown_4v4 = datetime.now()
 

@@ -25,6 +25,7 @@ from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
 from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement, set_settings, ban_account, ban_ip, ban_mac
 #from uya import *
+from uyacomponlinepinger import uyacomppinger
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -762,4 +763,5 @@ tipoftheday(client)
 streamfeed(client)
 youtubefeed(client)
 smoke(client)
+uyacomppinger(client)
 client.run(TOKEN)

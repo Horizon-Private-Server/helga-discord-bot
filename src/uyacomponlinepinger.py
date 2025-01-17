@@ -36,7 +36,6 @@ async def uyacomppingertask(client: discord.Client, config):
       try:
         players = get_players_online("UYA")
         players = comp_players.intersection(set([player['AccountName'].lower().strip() for player in players]))
-        print(players)
 
         if len(players) == 3 and ((datetime.now() - cooldown_2v2).total_seconds() / 60) > ping_cooldown:
           help_msg = f'<@&{role_id_2v2}>, theres 3 online! need 1 for 2v2!\n (to get tagged in future pings, add yourself in <#{role_channel}>)'

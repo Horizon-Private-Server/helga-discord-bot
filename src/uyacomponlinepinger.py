@@ -6,7 +6,7 @@ import urllib.parse
 import random
 import constants
 import traceback
-from datetime import datetime
+from datetime import datetime, timedelta
 from config import *
 from mediusapi import get_active_games, get_players_online, DEADLOCKED_API_NAME, UYA_API_NAME
 from uya_parsers import mapParser, timeParser, gamerulesParser, weaponParserNew
@@ -16,9 +16,9 @@ async def uyacomppingertask(client: discord.Client, config):
   await client.wait_until_ready()
   channel: discord.TextChannel = client.get_channel(config["ChannelId"])
 
-  cooldown_2v2 = datetime.now()
-  cooldown_3v3 = datetime.now()
-  cooldown_4v4 = datetime.now()
+  cooldown_2v2 = datetime.now() - timedelta(hours=1)
+  cooldown_3v3 = datetime.now() - timedelta(hours=1)
+  cooldown_4v4 = datetime.now() - timedelta(hours=1)
 
   ping_cooldown = config['ping_wait_time_minutes']
   role_id_2v2 = config["2v2_role"]

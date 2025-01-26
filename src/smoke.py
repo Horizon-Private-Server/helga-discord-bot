@@ -6,10 +6,12 @@ import urllib.parse
 import random
 import constants
 import traceback
+from copy import deepcopy
 from datetime import datetime
 from config import *
 from mediusapi import get_active_games, get_players_online, DEADLOCKED_API_NAME, UYA_API_NAME
 from uya_parsers import mapParser, timeParser, gamerulesParser, weaponParserNew
+
 
 def parse_icon(icon, object):
   if icon["Emoji"] is not None:
@@ -331,17 +333,20 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
 # background task that polls api and creates/updates respective smoke messages in discord
 async def smoke_task(client: discord.Client, smoke_config, index):
   await client.wait_until_ready()
-  channel: discord.TextChannel = client.get_channel(smoke_config["ChannelId"])
-  message: discord.Message = None
+
+  smoke_channels = deepcopy(smoke_config["Channels"])
+  for smoke in smoke_channels:
+    smoke["Channel"] = client.get_channel(smoke["ChannelId"])
+    smoke["Message"] = None
+    # try and get message to reuse
+    if "MessageId" in smoke and smoke["MessageId"] > 0:
+      smoke["Message"] = await smoke["Channel"].fetch_message(smoke["MessageId"])
+
   embed: discord.Embed = discord.Embed()
   api = smoke_config["API"]
 
   # stagger smokes
   await asyncio.sleep(5 * index)
-
-  # try and get message to reuse
-  if "MessageId" in smoke_config and smoke_config["MessageId"] > 0:
-    message = await channel.fetch_message(smoke_config["MessageId"])
 
   while not client.is_closed():
     if not client.is_ws_ratelimited():
@@ -353,10 +358,11 @@ async def smoke_task(client: discord.Client, smoke_config, index):
         if api == DEADLOCKED_API_NAME: embed = update_embed_DL(smoke_config, players, games, embed)
         elif api == UYA_API_NAME: embed = update_embed_UYA(smoke_config, players, games, embed)
 
-        if message is None:
-          message = await channel.send(content= None, embed= embed)
-        else:
-          await message.edit(content= None, embed= embed)
+        for smoke in smoke_channels:
+          if smoke["Message"] is None:
+            smoke["Message"] = await smoke["Channel"].send(content= None, embed= embed)
+          else:
+            await smoke["Message"].edit(content= None, embed= embed)
 
       except Exception as e:
         print(traceback.format_exc())

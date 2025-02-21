@@ -1,6 +1,5 @@
 Did you know that we have custom maps available for Deadlocked players on PS2 and PCSX2?
 Do you know how many of them there are? If you do, please let us know because we have lost count!
-DL custom maps (along with the many custom game modes) are possible thanks to the tireless work of Badger41, Dnawrkshp, and Agent Moose.
 For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CMAPS.md;
 
 Did you ever dream of making your own custom maps for Ratchet: Deadlocked?
@@ -58,6 +57,13 @@ In short, cycling consists of firing three specific weapons and being able to ra
 For UYA, the three weapons are the Flux Rifle, Gravity Bomb, and Blitz Gun. For DL, the three weapons are the Fusion Rifle, B6-Obliterator, and Magma Cannon.
 In competitive lobbies, it is common for these three weapons to be the only ones enabled.;
 
+What's the difference between "Casual" and "Competitive" gameplay on Up Your Arsenal or Deadlocked?
+Here's the short version: If you're reading this and you don't already know the answer, assume that the "Casual" games are for you! But for more context, read on.
+"Competitive" lobbies are extremely fast-paced and made up of players who have hundreds of games (and in many cases over ten years) worth of experience playing the game at a high level.
+If you're a new player, these lobbies will likely not be fun for you. Many competitive players will kick new players from their lobbies because of this.
+How can you tell which lobbies are competitive? Look at the number of weapons that are enabled. If there are only 1-3 weapons enabled, then it's likely a competitive lobby.
+"Casual" lobbies are basically everything else. These lobbies are much more likely to welcome (and be fun for) new players, and more likely to use 4 or more weapons.;
+
 Lock-strafe mode! You should always use lock-strafe mode for online play. Just do it.;
 
 "How many people are online right now?" This is a question that you will never have to ask when playing either UYA or DL on the Horizon servers.
@@ -77,7 +83,8 @@ Can't get on today? Throw it back and check out the entire DL soundtrack here: h
 Looking for someone to play with? Try tagging one of our opt-in roles!
 All opt-in roles are described in the #roles channel of our Discord server. React to the message there to add yourself to whichever roles you like.
 If you change your mind, simply un-react to the same message to remove the corresponding role.
-To use the role, tag it in an appropriate channel. Others with the role will be pinged and know that you want to play!;
+To use the role, tag it in an appropriate channel. Others with the role will be pinged and know that you want to play!
+One final note - the "Competitive" roles unlock a competitive-only Discord chat channel for each game.;
 
 Horizon is fortunate to have several community members who host regular events on both games. Check the Events list at the top of this Discord server regularly to view all upcoming events. Don't forget to click the "Interested" button on relevant events so that you will receive a reminder when the event starts!;
 
@@ -85,24 +92,19 @@ Both UYA/Ratchet and Clank 3 and DL/Gladiator have a "Save Password" option on t
 - It will prevent you from needing to enter a password each time you log in.
 - It will help prevent other people from accessing your account.
 - It allows you to "transfer" your account between different devices, e.g. from PCSX2 to PS2 and back.
-Write down your password somewhere safe, like you would any other password. If you forget your password, please let us know in the #tech-support channel here on Discord and a staff member should be able to help you reset it.;
+Choose a strong password and write it down somewhere safe, like you would any other password. If you forget your password, please let us know in the #tech-support channel here on Discord and a staff member should be able to help you reset it.;
 
 Beep boop! Thanks to Fourbolt, the Horizon server for UYA/Ratchet and Clank 3 features bots!
 Bots are AI "players" that make great opponents for practice, or when no other human players are online.
 For more information on bots, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/bots.md;
 
-We have dozens of custom maps available for NTSC-U/C and PAL players on UYA/Ratchet and Clank 3!
-These work on both PS2 and PCSX2. Badger41, Nick#1, max7, and others are the creative minds responsible for these maps.
+We have dozens of custom maps available for NTSC-U/C and PAL players on UYA/Ratchet and Clank 3! These work on both PS2 and PCSX2.
 For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/CMAPS.md;
 
 No V2s? V2s all the time? V2s that are eliminated with you? No health boxes?
 All of these are now available in UYA/Ratchet and Clank 3 as configurable mod menu settings, thanks to Agent Moose.
 For the most up-to-date list of available settings, LOG IN AND SEE FOR YOURSELF!
 More information on UYA mods is at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/CMODS.md;
-
-Have you ever played a beta version of a game online? How about a beta version of a 20+ year old game?
-Using our test server, you can play several beta versions of UYA online.
-For more information, check out: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/betas.md;
 
 Heads up! On UYA/Ratchet and Clank 3, if you see "[IG]" at the front of a game lobby name, do not try to join the lobby! "IG" is short for "in-game", meaning that the lobby has already started. UYA does not support joining games that have already started, and if you try to join your PS2 may freeze and/or you may see a network error pop up. If this happens, you will need to reconnect to the server.;
 
@@ -122,7 +124,7 @@ Fun fact! Ratchet & Clank: Up Your Arsenal was first released in North America o
 
 Ever wonder why we chose the name "Horizon"? We wanted to get away from the Ratchet and Clank Online branding, and avoid any potential confusion around the R & C name in general. For example if we named the server "Ratchet and Clank: Horizon" some might have thought it was an upcoming game from Insomniac.;
 
-Why bother boosting the Horizon Discord server? Boosting unlocks Discord features in the server such as better streaming and audio quality. It also allows us to continue using our custom server invite link (https://discord.gg/horizonps), which is shared in about 1,000,000 different places across the Internet. Your support means a lot to us!;
+Why bother boosting the Horizon Discord server? Boosting unlocks Discord features in the server such as better streaming and audio quality. Your support means a lot to us!;
 
 Did you know that running the Horizon game servers for UYA and DL costs money?
 If you want to help chip in, please consider subscribing to our Discord server. All funds go directly towards hosting our private servers. Any additional funds will either be saved for future hosting costs, or used for community-focused content like tournaments/special produced videos/etc.
@@ -132,6 +134,8 @@ Short on cash but want to help out the Horizon community? There are other ways t
 - Hosting regular events on UYA and/or DL to get people online.
 - Answering questions from other community members in the #tech-support Discord channel.
 - Recording gameplay footage and sending it to us to post to the Horizon YouTube channel.
+- Trying out new features to help us beta test.
+- Spreading the word about Horizon to your friends and in other online communities that you're a part of!
 Staff members will award VIP status (Horizon VIP role) to those who consistently help out. Thank you for your support!;
 
 Did you know? Horizon offers both NTSC-U/C and PAL version support for both Ratchet and Clank: Up Your Arsenal (Ratchet and Clank 3) and Ratchet: Deadlocked (Ratchet: Gladiator). There is crossplay between the two versions, meaning that NTSC-U/C players can play in the same game lobby as PAL players. You can connect to our servers from any PS2 with a network adapter, the PCSX2 emulator for PC, or our DreadZone Online client (Deadlocked only).

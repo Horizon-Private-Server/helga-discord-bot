@@ -22,7 +22,7 @@
 !dzoguide|Check out our in-depth setup guide for DZO here: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md
 !setup|Wondering how to get online? Check out our in-depth setup guide here: https://github.com/Horizon-Private-Server/horizon-wiki/tree/main/getting-online/
 !dns|Visit our ⁠https://discord.com/channels/936413500408995850/941146155713187860 channel for the DNS addresses that can be used to access our game servers. Using any of the DNS listed there will get you to the same lobby.
-!skins|There are two secret skins for UYA, and five for DL. You can learn how to unlock them at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/skins.md
+!skin|There are two secret skins for UYA, and five for DL. You can learn how to unlock them at: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/up-your-arsenal/skins.md
 !password| We recommend enabling the "Save Password" option and selecting a strong password for both games. For more info: https://discord.com/channels/936413500408995850/1068297466912444558/1257697478858375208
 !map|You can find the latest custom map downloads at https://www.rac-horizon.com/
 !mapguide|Find out how to install custom maps on PS2: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/ps2/README.md#custom-map-setup or PCSX2 emulator: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/getting-online/pcsx2/detailed_setup.md#custom-map-setup

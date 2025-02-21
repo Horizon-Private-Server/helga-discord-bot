@@ -1,6 +1,5 @@
 Did you know that we have custom maps available for Deadlocked players on PS2 and PCSX2?
 Do you know how many of them there are? If you do, please let us know because we have lost count!
-DL custom maps (along with the many custom game modes) are possible thanks to the tireless work of Badger41, Dnawrkshp, and Agent Moose.
 For more information, please visit: https://github.com/Horizon-Private-Server/horizon-wiki/blob/main/deadlocked/CMAPS.md;
 
 Did you ever dream of making your own custom maps for Ratchet: Deadlocked?
@@ -57,6 +56,13 @@ What is cycling, besides the thing that all the pro players say you don't know h
 In short, cycling consists of firing three specific weapons and being able to rapidly switch between them.
 For UYA, the three weapons are the Flux Rifle, Gravity Bomb, and Blitz Gun. For DL, the three weapons are the Fusion Rifle, B6-Obliterator, and Magma Cannon.
 In competitive lobbies, it is common for these three weapons to be the only ones enabled.;
+
+What's the difference between "Casual" and "Competitive" gameplay on Up Your Arsenal or Deadlocked?
+Here's your first hint: If you're reading this and you don't know the answer, assume that the "Casual" games are for you! But for more context, read on.
+"Competitive" lobbies are extremely fast-paced and made up of players who have hundreds of games (and in many cases over ten years) worth of experience playing the game at a high level.
+If you're a new player, these lobbies will likely not be fun for you. Many competitive players will kick new players from their lobbies because of this.
+How can you tell which lobbies are competitive? Look at the number of weapons that are enabled. If there are only 1-3 weapons enabled, then it's likely a competitive lobby.
+"Casual" lobbies are basically everything else. These lobbies are much more likely to be fun and welcoming for everyone, and more likely to use 4 or more weapons.
 
 Lock-strafe mode! You should always use lock-strafe mode for online play. Just do it.;
 

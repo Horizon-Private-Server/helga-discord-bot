@@ -1015,6 +1015,30 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
       ]
     },
     {
+      'Name': 'Valix Lighthouse',
+      'Inline': True,
+      'Children': [
+        {
+          'Name': 'Rank',
+          'Value': lambda : f'{xp_to_rank(stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP4_XP]) + (10 * stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP4_PRESTIGE]):.2f}',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP4_XP,
+          'Custom': True
+        },
+        {
+          'Name': 'Solo High Score',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP4_SOLO_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP4_SOLO_HIGH_SCORE,
+          'Custom': True
+        },
+        {
+          'Name': 'Coop High Score',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP4_COOP_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP4_COOP_HIGH_SCORE,
+          'Custom': True
+        },
+      ]
+    },
+    {
       'Name': ' ',
       'DefaultValue': ' ',
       'Inline': False
@@ -1054,28 +1078,6 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
         {
           'Name': 'Scorpion Flail Kills',
           'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_SCORPION_FLAIL_KILLS]}'
-        }
-      ]
-    },
-    {
-      'Name': 'Interaction Stats',
-      'Inline': True,
-      'Children': [
-        {
-          'Name': 'Mystery Box Rolls',
-          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_TIMES_ROLLED_MYSTERY_BOX]}'
-        },
-        {
-          'Name': 'Demon Bells Activated',
-          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_TIMES_ACTIVATED_DEMON_BELL]}'
-        },
-        {
-          'Name': 'Power Activations',
-          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_TIMES_ACTIVATED_POWER]}'
-        },
-        {
-          'Name': 'Tokens used on Gates',
-          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_TOKENS_USED_ON_GATES]}'
         }
       ]
     }
@@ -1367,6 +1369,10 @@ DEADLOCKED_STATS = {
     "Veldin Solo 50 Rounds Best Time": 306,
     "Veldin Coop High Score": 296,
     "Veldin Coop 50 Rounds Best Time": 307,
+    "Valix Solo High Score": 292,
+    "Valix Solo 50 Rounds Best Time": 294,
+    "Valix Coop High Score": 293,
+    "Valix Coop 50 Rounds Best Time": 295,
     "Games Played": 272,
     "Time Played": 273,
     "Kills": 274,

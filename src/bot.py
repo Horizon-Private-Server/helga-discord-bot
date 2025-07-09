@@ -134,8 +134,7 @@ async def daily_inactive_check():
     except Exception as e:
       print(f"Error during inactivity check: {e}")
 
-    await asyncio.sleep(300)  # wait 5 minutes before next check
-
+    await asyncio.sleep(86400)  # wait 24 hours (60 * 60 * 24)
 
 @client.event
 async def on_ready():

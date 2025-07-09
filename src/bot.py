@@ -111,11 +111,9 @@ async def daily_inactive_check():
       for member in guild.members:
         if member.bot:
           continue
-        if member.id in verified_ids:
-          continue
-        if not member.joined_at or member.joined_at > since:
-          continue  # joined too recently
-        candidates.append(member)
+        if len(member.roles) <= 1:  # Only has @everyone
+          if member.joined_at and member.joined_at <= since:
+            candidates.append(member)
 
       if candidates:
         chunks = [candidates[i:i+40] for i in range(0, len(candidates), 40)]

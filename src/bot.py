@@ -9,7 +9,9 @@ import base64
 from discord.commands import Option, SlashCommandGroup
 from discord.utils import get
 from io import BytesIO
+import datetime
 from PIL import Image
+import asyncio
 
 from dotenv import load_dotenv
 
@@ -75,9 +77,71 @@ def read_helga_help_messages():
 
 HELGA_HELP_MSG_MAPPING = read_helga_help_messages()
 
+async def has_sent_recently(member, since, guild):
+  for channel in guild.text_channels:
+    if not channel.permissions_for(guild.me).read_message_history:
+      continue
+    try:
+      async for msg in channel.history(after=since, limit=None):
+        if msg.author.id == member.id:
+          return True
+    except:
+      continue
+  return False
+
+async def daily_inactive_check():
+  await client.wait_until_ready()
+  TARGET_GUILD_ID = config_get(['InactiveKicker', 'GuildId'])     # Replace with your guild/server ID
+  VERIFIED_ROLE_ID = config_get(['InactiveKicker', 'VerifiedRoleId'])     # Replace with your Verified role ID
+  REPORT_CHANNEL_ID = config_get(['InactiveKicker', 'ReportChannelId'])    # Replace with your report channel ID
+  
+  while not client.is_closed():
+    try:
+      guild = client.get_guild(TARGET_GUILD_ID)
+      channel = client.get_channel(REPORT_CHANNEL_ID)
+      if not guild or not channel:
+        await asyncio.sleep(300)  # wait 5 minutes and try again
+        continue
+
+      verified_role = guild.get_role(VERIFIED_ROLE_ID)
+      verified_ids = {m.id for m in verified_role.members} if verified_role else set()
+      since = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=30)
+
+      candidates = []
+      for member in guild.members:
+        if member.bot:
+          continue
+        if member.id in verified_ids:
+          continue
+        if not member.joined_at or member.joined_at > since:
+          continue  # joined too recently
+        candidates.append(member)
+
+      if candidates:
+        chunks = [candidates[i:i+40] for i in range(0, len(candidates), 40)]
+        for chunk in chunks:
+          mentions = [m.mention for m in chunk]
+          content = (
+            "🚨 Kick candidates:\n"
+            f"{len(chunk)} users have been unverified for 30+ days.\n"
+            "Reply with `confirm` to kick these users:\n" +
+            "\n".join(f"• {mention}" for mention in mentions)
+          )
+          await channel.send(content)
+      else:
+        await channel.send("✅ No users have been unverified for 30+ days.")
+
+    except Exception as e:
+      print(f"Error during inactivity check: {e}")
+
+    await asyncio.sleep(300)  # wait 5 minutes before next check
+
+
 @client.event
 async def on_ready():
+  client.loop.create_task(daily_inactive_check())
   print(f'{client.user} has connected to Discord!')
+
 
 @client.event
 async def on_raw_reaction_add(payload):
@@ -110,6 +174,38 @@ async def on_message(message):
 
   if message.author == client.user:
     return
+  
+
+  # Process Kick Message 
+  # Is this a reply to a bot message?
+  if message.reference and message.reference.resolved:
+    original = message.reference.resolved
+
+    # Only allow kicking if:
+    if (
+      original.author == client.user and
+      message.content.strip().lower() == "confirm" and
+      original.content.startswith("🚨 Kick candidates:") and
+      "unverified for 30+ days" in original.content
+    ):
+      if not message.author.guild_permissions.kick_members:
+        return await message.channel.send("❌ You don’t have permission to confirm kicks.")
+
+      kicked = []
+      for member in original.mentions:
+        try:
+          await member.kick(reason="Unverified and inactive for 30+ days")
+          kicked.append(f"{member.name}#{member.discriminator}")
+        except Exception as e:
+          print(f"Failed to kick {member}: {e}")
+
+      if kicked:
+        await message.channel.send(f"✅ Kicked {len(kicked)} users:\n" + "\n".join(f"• {name}" for name in kicked))
+      else:
+        await message.channel.send("⚠️ No users could be kicked.")
+    elif message.content.strip().lower() == "confirm":
+      await message.channel.send("⚠️ This confirm message doesn't match a valid kick candidate post.")
+  
   
   # Helga Help Messages
   for inputs, output in HELGA_HELP_MSG_MAPPING:
@@ -763,6 +859,8 @@ async def cmd_weapon_leaderboard(
   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Weapons"].keys()))
   ):
   await get_dl_leaderboard(ctx, "Weapons", stat)
+
+
 
 tipoftheday(client)
 streamfeed(client)

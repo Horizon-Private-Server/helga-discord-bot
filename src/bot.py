@@ -185,8 +185,11 @@ async def on_message(message):
       original.content.startswith("🚨 Kick candidates:") and
       "unverified for 30+ days" in original.content
     ):
-      if not message.author.guild_permissions.kick_members:
-        return await message.channel.send("❌ You don’t have permission to confirm kicks.")
+      
+      MODERATOR_ROLE_ID = config_get(['InactiveKicker', 'ModeratorRoleId'])     # Replace with your Verified role ID
+      if not any(role.id == MODERATOR_ROLE_ID for role in message.author.roles):
+        await message.channel.send("❌ You don’t have permission to confirm kicks.")
+        return
 
       kicked = []
       for member in original.mentions:

@@ -8,6 +8,18 @@ from discord.commands import Option
 # Configuration
 MAP_SERVER_PATH = "/tmp/maps/"
 FINAL_MAP_SERVER_PATH = "/var/www/static/download/maps/"
+MAPCHECKER_ROLE_ID = int(os.getenv("MAPCHECKER_ROLE_ID", "0"))  # Set to 0 if not configured
+
+
+def has_mapchecker_permission(user):
+    """
+    Check if user has permission to use mapchecker commands
+    """
+    if MAPCHECKER_ROLE_ID == 0:
+        print("WARNING: MAPCHECKER_ROLE_ID not set - allowing all users")
+        return True
+    
+    return any(role.id == MAPCHECKER_ROLE_ID for role in user.roles)
 
 
 async def get_ssh_connection():
@@ -202,6 +214,11 @@ async def mapupload_command(ctx, game, files):
     Upload map files to the server for the specified game (supports multiple files)
     Clears the game folder before uploading new files
     """
+    # Check permissions
+    if not has_mapchecker_permission(ctx.author):
+        await ctx.respond("❌ You don't have permission to use mapchecker commands.")
+        return
+    
     try:
         if len(files) == 1:
             await ctx.respond(f"Clearing {game.upper()} folder and uploading map file: {files[0].filename}")
@@ -320,6 +337,11 @@ async def mapupload_confirm_command(ctx, game):
     """
     Confirm and deploy maps from staging to final location
     """
+    # Check permissions
+    if not has_mapchecker_permission(ctx.author):
+        await ctx.respond("❌ You don't have permission to use mapchecker commands.")
+        return
+    
     try:
         await ctx.respond(f"Confirming and deploying {game.upper()} maps...")
         
@@ -464,6 +486,11 @@ async def mapclear_command(ctx, game):
     """
     Clear all files from the game-specific folder
     """
+    # Check permissions
+    if not has_mapchecker_permission(ctx.author):
+        await ctx.respond("❌ You don't have permission to use mapchecker commands.")
+        return
+    
     try:
         await ctx.respond(f"Clearing {game.upper()} folder...")
         
@@ -488,6 +515,13 @@ async def handle_mapchecker_message(message):
     Handle !mapupload and !mapclear messages
     """
     if message.author.bot:
+        return False
+    
+    # Check permissions first
+    if not has_mapchecker_permission(message.author):
+        if message.content.strip().startswith(('!mapupload', '!mapclear')):
+            await message.channel.send("❌ You don't have permission to use mapchecker commands.")
+            return True
         return False
     
     content = message.content.strip()
@@ -597,6 +631,11 @@ def setup_mapchecker(client):
     async def cmd_mapchecker_help(
         ctx: discord.ApplicationContext
     ):
+        # Check permissions
+        if not has_mapchecker_permission(ctx.author):
+            await ctx.respond("❌ You don't have permission to use mapchecker commands.")
+            return
+        
         await ctx.respond(
             "**Map Commands Usage:**\n\n"
             "**Check Server Files:**\n"
@@ -617,7 +656,8 @@ def setup_mapchecker(client):
             "• `!mapupload dl confirm` - Deploy validated maps to production\n"
             "• `!mapclear dl` - Clear staging folder\n\n"
             f"**Staging:** `{MAP_SERVER_PATH}/[game]/` | **Production:** `{FINAL_MAP_SERVER_PATH}/[game]/`\n"
-            "**Note:** Upload validates maps in staging. Use 'confirm' to deploy to production."
+            "**Note:** Upload validates maps in staging. Use 'confirm' to deploy to production.\n"
+            f"**Permissions:** Only users with role ID {MAPCHECKER_ROLE_ID} can use these commands."
         )
     
     return mapchecker

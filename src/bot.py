@@ -28,6 +28,7 @@ from modsshcommands import ModSshCommands
 from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement, set_settings, ban_account, ban_ip, ban_mac
 #from uya import *
 from uyacomponlinepinger import uyacomppinger
+from mapchecker import setup_mapchecker, handle_mapchecker_message
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -170,6 +171,10 @@ async def on_raw_reaction_add(payload):
 async def on_message(message):
 
   if message.author == client.user:
+    return
+  
+  # Handle mapchecker multi-file commands
+  if await handle_mapchecker_message(message):
     return
   
 
@@ -867,4 +872,5 @@ streamfeed(client)
 youtubefeed(client)
 smoke(client)
 uyacomppinger(client)
+setup_mapchecker(client)
 client.run(TOKEN)

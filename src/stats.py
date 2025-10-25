@@ -1039,6 +1039,30 @@ async def get_dl_survival_stats(ctx: discord.ApplicationContext, account):
       ]
     },
     {
+      'Name': 'Torval Ruins',
+      'Inline': True,
+      'Children': [
+        {
+          'Name': 'Rank',
+          'Value': lambda : f'{xp_to_rank(stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP5_XP]) + (10 * stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP5_PRESTIGE]):.2f}',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP5_XP,
+          'Custom': True
+        },
+        {
+          'Name': 'Solo High Score',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP5_SOLO_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP5_SOLO_HIGH_SCORE,
+          'Custom': True
+        },
+        {
+          'Name': 'Coop High Score',
+          'Value': lambda : f'{stats_custom[constants.CUSTOM_STAT_SURVIVAL_MAP5_COOP_HIGH_SCORE]} rounds',
+          'StatId': constants.CUSTOM_STAT_SURVIVAL_MAP5_COOP_HIGH_SCORE,
+          'Custom': True
+        },
+      ]
+    },
+    {
       'Name': ' ',
       'DefaultValue': ' ',
       'Inline': False
@@ -1375,6 +1399,10 @@ DEADLOCKED_STATS = {
     "Valix Solo 50 Rounds Best Time": 294,
     "Valix Coop High Score": 293,
     "Valix Coop 50 Rounds Best Time": 295,
+    "Torval Solo High Score": 351,
+    "Torval Solo 50 Rounds Best Time": 353,
+    "Torval Coop High Score": 352,
+    "Torval Coop 50 Rounds Best Time": 354,
     "Games Played": 272,
     "Time Played": 273,
     "Kills": 274,

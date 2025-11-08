@@ -844,12 +844,19 @@ async def cmd_spleef_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Spleef", stat)
 
-@dl_custom_leaderboard.command(name="survival", description="See the Top 5 in any Survival stat.")
+@dl_custom_leaderboard.command(name="survival-general", description="See the Top 5 in any Survival stat.")
 async def cmd_survival_leaderboard(
   ctx: discord.ApplicationContext,
-  stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Survival"].keys()))
+  stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Survival General"].keys()))
   ):
-  await get_dl_leaderboard(ctx, "Survival", stat)
+  await get_dl_leaderboard(ctx, "Survival General", stat)
+
+@dl_custom_leaderboard.command(name="survival-scores", description="See the Top 5 in any Survival stat.")
+async def cmd_survival_leaderboard(
+  ctx: discord.ApplicationContext,
+  stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Survival High Scores"].keys()))
+  ):
+  await get_dl_leaderboard(ctx, "Survival High Scores", stat)
 
 @dl_custom_leaderboard.command(name="training", description="See the Top 5 in any Training stat.")
 async def cmd_training_leaderboard(

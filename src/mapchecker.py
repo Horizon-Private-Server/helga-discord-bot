@@ -7,9 +7,11 @@ from discord.commands import Option
 
 # Configuration
 MAP_SERVER_PATH = "/tmp/maps/"
-FINAL_MAP_SERVER_PATH = "/var/www/static/download/maps/"
+FINAL_MAP_SERVER_PATH = "/var/www/static/downloads/maps/"
 MAPCHECKER_ROLE_ID = int(os.getenv("MAPCHECKER_ROLE_ID", "0"))  # Set to 0 if not configured
 
+MAIN_COMMAND = 'python3 /home/box/map-uploader-scripts/update.py'
+BUILD_CMD = "bash /home/box/rebuild.sh"
 
 def has_mapchecker_permission(user):
     """
@@ -280,7 +282,7 @@ async def mapupload_command(ctx, game, files):
                     conn = None
                 
                 if conn is not None:
-                    update_cmd = f"python3 /root/map-uploader-scripts/update.py {MAP_SERVER_PATH}/{game} {FINAL_MAP_SERVER_PATH}/{game} check"
+                    update_cmd = f"{MAIN_COMMAND} {MAP_SERVER_PATH}/{game} {FINAL_MAP_SERVER_PATH}/{game} check"
                     print(f"\n=== RUNNING UPDATE SCRIPT - {game.upper()} ===")
                     print(f"Command: {update_cmd}")
                     print("=" * 50)
@@ -356,7 +358,7 @@ async def mapupload_confirm_command(ctx, game):
                 return
             
             if conn is not None:
-                update_cmd = f"python3 /root/map-uploader-scripts/update.py {MAP_SERVER_PATH}/{game} {FINAL_MAP_SERVER_PATH}/{game} update"
+                update_cmd = f"{MAIN_COMMAND} {MAP_SERVER_PATH}/{game} {FINAL_MAP_SERVER_PATH}/{game} update"
                 print(f"\n=== RUNNING DEPLOYMENT SCRIPT - {game.upper()} ===")
                 print(f"Command: {update_cmd}")
                 print("=" * 50)
@@ -409,12 +411,11 @@ async def mapupload_confirm_command(ctx, game):
                                 return
                             
                             if build_conn is not None:
-                                build_cmd = "bash /root/build_all.sh"
                                 print(f"\n=== RUNNING BUILD SCRIPT - {game.upper()} ===")
-                                print(f"Command: {build_cmd}")
+                                print(f"Command: {BUILD_CMD}")
                                 print("=" * 50)
                                 
-                                build_result = await build_conn.run(build_cmd)
+                                build_result = await build_conn.run(BUILD_CMD)
                                 
                                 if build_result is not None:
                                     print(f"Build exit code: {build_result.exit_status}")

@@ -10,7 +10,7 @@ MAP_SERVER_PATH = "/tmp/maps/"
 FINAL_MAP_SERVER_PATH = "/var/www/static/downloads/maps/"
 MAPCHECKER_ROLE_ID = int(os.getenv("MAPCHECKER_ROLE_ID", "0"))  # Set to 0 if not configured
 
-MAIN_COMMAND = 'python3 /home/box/map-uploader-scripts/update.py'
+MAIN_COMMAND = 'python3 /home/box/update.py'
 BUILD_CMD = "bash /home/box/rebuild.sh"
 
 def has_mapchecker_permission(user):

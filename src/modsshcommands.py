@@ -131,8 +131,8 @@ class ModSshCommands:
         results += [
             "Middleware:\n" + await self.uya_restart_middleware(),
             "Server:\n" + await self.uya_restart_server(),
-            "Smokebot:\n" + await self.uya_restart_goldbolt(),
         ]
+        await self.uya_restart_goldbolt()
         return "\n".join(results)
 
     async def uya_hard_reset(self):

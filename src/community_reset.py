@@ -7,6 +7,7 @@ from mediusapi import get_players_online, UYA_API_NAME
 
 THUMBS_UP_EMOJI = '\N{THUMBS UP SIGN}'
 MAX_LOG_LENGTH = 1900
+MAX_MESSAGE_LENGTH = 2000
 
 
 class CommunityResetManager:
@@ -233,6 +234,31 @@ class CommunityResetManager:
             else:
                 self.log(f'Log channel not found: {channel_id}')
 
+    async def _send_command_output(self, channel, output):
+        if not output:
+            return
+        if len(output) <= MAX_MESSAGE_LENGTH:
+            await channel.send(output)
+            return
+
+        for chunk in self._split_long_text(output, MAX_LOG_LENGTH):
+            await channel.send(chunk)
+
+    def _split_long_text(self, text, max_len):
+        chunks = []
+        remaining = text
+        while remaining:
+            if len(remaining) <= max_len:
+                chunks.append(remaining)
+                break
+            split_at = remaining.rfind('\n', 0, max_len)
+            if split_at == -1 or split_at < max_len // 2:
+                split_at = max_len
+            chunk = remaining[:split_at]
+            chunks.append(chunk)
+            remaining = remaining[split_at:].lstrip('\n')
+        return chunks
+
     async def _vote_timeout(self, message_id):
         vote = self.votes.get(message_id)
         if not vote:
@@ -274,13 +300,13 @@ class CommunityResetManager:
         else:
             output = await self.mod_ssh_commands.uya_restart_all()
 
-        await vote_message.channel.send(output)
+        await self._send_command_output(vote_message.channel, output)
 
     async def _schedule_post_hardreset_restart(self, channel):
         await asyncio.sleep(60)
         await channel.send('Running restart_all after the hard reset...')
         output = await self.mod_ssh_commands.uya_restart_all()
-        await channel.send(output)
+        await self._send_command_output(channel, output)
 
     async def _evaluate_vote(self, message_id):
         vote = self.votes.get(message_id)
@@ -389,7 +415,7 @@ class CommunityResetManager:
             asyncio.create_task(self._schedule_post_hardreset_restart(message.channel))
         else:
             output = await self.mod_ssh_commands.uya_restart_all()
-        await message.channel.send(output)
+        await self._send_command_output(message.channel, output)
 
     async def handle_reaction(self, payload):
         vote = self.votes.get(payload.message_id)

@@ -1,4 +1,5 @@
 import os
+import asyncio
 import asyncssh
 
 
@@ -59,6 +60,32 @@ class ModSshCommands:
 
         result = f'Output: \n```{stdout}```\nStandard Error:\n```{stderr}```\nErrors:\n```{error}```\n'
         return result
+
+    async def run_remote_command_raw(self, game, command):
+        stdout = ''
+        stderr = ''
+        error = ''
+
+        if game == 'uya':
+            host = self._uya_host
+            username = self._uya_username
+            keyfile = self._uya_keyfile
+        elif game == 'dl':
+            host = self._dl_host
+            username = self._dl_username
+            keyfile = self._dl_keyfile
+        else:
+            return stdout, stderr, 'Unknown game'
+
+        try:
+            async with asyncssh.connect(host, known_hosts=None, username=username, client_keys=[keyfile]) as conn:
+                result = await conn.run(command, check=True)
+                stdout = result.stdout
+                stderr = result.stderr
+        except Exception as exc:
+            error = str(exc)
+
+        return stdout, stderr, error
     
     async def uya_check_filesystem(self):
         return await self.run_remote_command('uya', 'df -h')
@@ -71,6 +98,14 @@ class ModSshCommands:
 
     async def uya_check_containers(self):
         return await self.run_remote_command('uya', "docker container ls --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}'")
+
+    async def uya_get_container_names(self):
+        stdout, stderr, error = await self.run_remote_command_raw('uya', "docker container ls --format '{{.Names}}'")
+        if error or stderr:
+            combined_error = error or stderr
+            return [], combined_error
+        names = [line.strip() for line in stdout.splitlines() if line.strip()]
+        return names, ''
     
     async def uya_clean_filesystem(self):
         return await self.run_remote_command('uya', 'docker system prune -f')
@@ -86,6 +121,35 @@ class ModSshCommands:
 
     async def uya_restart_goldbolt(self):
         return await self.run_remote_command('uya', 'cd goldboltbot && bash run.sh')
+
+    async def uya_restart_all(self):
+        results = [
+            "Database:\n" + await self.uya_restart_database(),
+            "Waiting 3 seconds before restarting middleware..."
+        ]
+        await asyncio.sleep(3)
+        results += [
+            "Middleware:\n" + await self.uya_restart_middleware(),
+            "Server:\n" + await self.uya_restart_server(),
+            "Smokebot:\n" + await self.uya_restart_goldbolt(),
+        ]
+        return "\n".join(results)
+
+    async def uya_hard_reset(self):
+        stdout, stderr, error = await self.run_remote_command_raw('uya', 'sudo reboot now')
+
+        lines = [
+            'Reboot command sent. SSH connection may drop while the host restarts.'
+        ]
+
+        if stdout.strip():
+            lines.append(f'Output:\n```{get_last_15_lines(stdout)}```')
+        if stderr.strip():
+            lines.append(f'Standard Error:\n```{get_last_15_lines(stderr)}```')
+        if error.strip():
+            lines.append(f'Errors:\n```{get_last_15_lines(error)}```')
+
+        return "\n".join(lines)
 
     async def uya_backup_database_to_cloud(self):
         return await self.run_remote_command('uya', 'cd /root/horizon-uya-prod/horizon-database-backup && bash run_backup.sh')

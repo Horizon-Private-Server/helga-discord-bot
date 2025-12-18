@@ -26,6 +26,7 @@ from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
 from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement, set_settings, ban_account, ban_ip, ban_mac
+from community_reset import CommunityResetManager
 #from uya import *
 from uyacomponlinepinger import uyacomppinger
 from mapchecker import setup_mapchecker, handle_mapchecker_message
@@ -43,6 +44,7 @@ intents.message_content = True
 client = discord.Bot(intents=intents)
 
 MOD_SSH_COMMANDS = ModSshCommands()
+COMMUNITY_RESET_MANAGER = CommunityResetManager(client, config_get, MOD_SSH_COMMANDS)
 
 # create Slash Command group with bot.create_group
 deadlocked = client.create_group("deadlocked", "Commands related to deadlocked.", guild_ids=config_get(['Stats', 'GuildIds']))
@@ -152,29 +154,32 @@ async def on_raw_reaction_add(payload):
   # print("emoji:",emoji)
   # print("emoji_id:",emoji.id)
 
-  if message_id != config_get(["ReactionRoles", "MessageId"]):
-    return
+  if message_id == config_get(["ReactionRoles", "MessageId"]):
+    user = get(client.get_all_members(), id=user_id)
+    if not user:
+      return # no user found
 
-  user = get(client.get_all_members(), id=user_id)
-  if not user:
-    return # no user found
+    for emoji_id, role_id in config_get(["ReactionRoles", "EmojisToRoles"]).items():
+      if '\\u' in emoji_id:
+        emoji_id = emoji_id.encode("utf-8").decode("unicode_escape")
+      
+      if emoji_id == str(emoji):
+        # Add the role
+        await user.add_roles(user.guild.get_role(int(role_id)))
 
-  for emoji_id, role_id in config_get(["ReactionRoles", "EmojisToRoles"]).items():
-    if '\\u' in emoji_id:
-      emoji_id = emoji_id.encode("utf-8").decode("unicode_escape")
-    
-    if emoji_id == str(emoji):
-      # Add the role
-      await user.add_roles(user.guild.get_role(int(role_id)))
+  await COMMUNITY_RESET_MANAGER.handle_reaction(payload)
 
 @client.event
 async def on_message(message):
 
-  if message.author == client.user:
+  if message.author.bot:
     return
   
   # Handle mapchecker multi-file commands
   if await handle_mapchecker_message(message):
+    return
+
+  if await COMMUNITY_RESET_MANAGER.handle_message(message):
     return
   
 
@@ -282,19 +287,19 @@ async def on_raw_reaction_remove(payload):
   # print("emoji:",emoji)
   # print("emoji_id:",emoji.id)
 
-  if message_id != config_get(["ReactionRoles", "MessageId"]):
-    return
+  if message_id == config_get(["ReactionRoles", "MessageId"]):
+    user = get(client.get_all_members(), id=user_id)
+    if not user:
+      return # no user found
 
-  user = get(client.get_all_members(), id=user_id)
-  if not user:
-    return # no user found
+    for emoji_id, role_id in config_get(["ReactionRoles", "EmojisToRoles"]).items():
+      if '\\u' in emoji_id:
+        emoji_id = emoji_id.encode("utf-8").decode("unicode_escape")
+      if emoji_id == str(emoji):
+        # Add the role
+        await user.remove_roles(user.guild.get_role(int(role_id)))
 
-  for emoji_id, role_id in config_get(["ReactionRoles", "EmojisToRoles"]).items():
-    if '\\u' in emoji_id:
-      emoji_id = emoji_id.encode("utf-8").decode("unicode_escape")
-    if emoji_id == str(emoji):
-      # Add the role
-      await user.remove_roles(user.guild.get_role(int(role_id)))
+  await COMMUNITY_RESET_MANAGER.handle_reaction(payload)
 
 @client.event
 async def on_raw_reaction_clear(payload):
@@ -592,53 +597,27 @@ async def cmd_uya_clean_filesystem(
     print(traceback.format_exc())
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
-@mod.command(name="uya-restart-server", description="Restart UYA server")
-async def cmd_uya_restart_server(
+
+@mod.command(name="uya-restart-all", description="Restart UYA database, middleware, server, and Smokebot")
+async def cmd_uya_restart_all(
   ctx: discord.ApplicationContext
   ):
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
-    output = await MOD_SSH_COMMANDS.uya_restart_server()
+    output = await MOD_SSH_COMMANDS.uya_restart_all()
     await ctx.respond(output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
-
-@mod.command(name="uya-restart-middleware", description="Restart UYA middleware")
-async def cmd_uya_restart_middleware(
+@mod.command(name="uya-hard-reset", description="Hard reboot the UYA host (restart the server after it comes back)")
+async def cmd_uya_hard_reset(
   ctx: discord.ApplicationContext
   ):
   try:
-    await ctx.respond(f'Processing request... this may take awhile...')
-    output = await MOD_SSH_COMMANDS.uya_restart_middleware()
-    await ctx.respond(output)
-    #await ctx.respond(lines)
-  except Exception as e:
-    print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
-
-@mod.command(name="uya-restart-database", description="Restart UYA Database")
-async def cmd_uya_restart_database(
-  ctx: discord.ApplicationContext
-  ):
-  try:
-    await ctx.respond(f'Processing request... this may take awhile...')
-    output = await MOD_SSH_COMMANDS.uya_restart_database()
-    await ctx.respond(output)
-    #await ctx.respond(lines)
-  except Exception as e:
-    print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
-
-@mod.command(name="uya-restart-goldbolt", description="Restart UYA Database")
-async def cmd_uya_restart_goldbolt(
-  ctx: discord.ApplicationContext
-  ):
-  try:
-    await ctx.respond(f'Processing request... this may take awhile...')
-    output = await MOD_SSH_COMMANDS.uya_restart_goldbolt()
+    await ctx.respond('Processing request... this may take awhile... Reminder: after the hard reboot, restart the server too.')
+    output = await MOD_SSH_COMMANDS.uya_hard_reset()
     await ctx.respond(output)
     #await ctx.respond(lines)
   except Exception as e:

@@ -167,7 +167,7 @@ class CommunityResetManager:
             return 0
         if online_count < 4:
             return online_count
-        return max(1, math.ceil(online_count * 0.75))
+        return max(1, math.ceil(online_count * 0.70))
 
     def _build_log_message(self, vote, voters, vote_message, players, error):
         reminder = ''

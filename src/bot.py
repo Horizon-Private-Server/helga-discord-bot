@@ -598,7 +598,7 @@ async def cmd_uya_clean_filesystem(
     await ctx.respond(f'Error: {traceback.format_exc()}')
 
 
-@mod.command(name="uya-restart-all", description="Restart UYA database, middleware, server, and Smokebot")
+@mod.command(name="uya-restart-all", description="Restart UYA database, middleware, and server.")
 async def cmd_uya_restart_all(
   ctx: discord.ApplicationContext
   ):

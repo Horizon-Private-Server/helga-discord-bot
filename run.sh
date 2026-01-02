@@ -1,3 +1,4 @@
-docker build . -t helga-discord-bot
+docker build . --network=host -t helga-discord-bot;
 
-docker run -it --rm --name helga-discord-bot helga-discord-bot
+echo "Starting ..."
+docker run -it --rm --network=host --name helga-discord-bot helga-discord-bot

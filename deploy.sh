@@ -10,4 +10,4 @@ echo "Rebuilding ..."
 docker build . --network=host -t helga-discord-bot;
 
 echo "Starting ..."
-docker run -d --rm --network=host --name helga-discord-bot helga-discord-bot
+docker run -d --rm -v $(pwd)/src/config.json:/code/src/config/config.json --network=host --name helga-discord-bot helga-discord-bot

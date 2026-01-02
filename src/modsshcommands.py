@@ -119,9 +119,6 @@ class ModSshCommands:
     async def uya_restart_database(self):
         return await self.run_remote_command('uya', 'cd horizon-uya-prod && bash run.sh -d')
 
-    async def uya_restart_goldbolt(self):
-        return await self.run_remote_command('uya', 'cd goldboltbot && bash run.sh')
-
     async def uya_restart_all(self):
         results = [
             "Database:\n" + await self.uya_restart_database(),
@@ -132,7 +129,6 @@ class ModSshCommands:
             "Middleware:\n" + await self.uya_restart_middleware(),
             "Server:\n" + await self.uya_restart_server(),
         ]
-        await self.uya_restart_goldbolt()
         return "\n".join(results)
 
     async def uya_hard_reset(self):

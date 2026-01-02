@@ -857,6 +857,7 @@ tipoftheday(client)
 streamfeed(client)
 youtubefeed(client)
 smoke(client)
-uyacomppinger(client)
+#uyacomppinger(client)
 setup_mapchecker(client)
 client.run(TOKEN)
+

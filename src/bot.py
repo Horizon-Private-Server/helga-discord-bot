@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 
 from scavengerhunt import activate_scavenger_hunt, print_scavenger_hunt, reset_leaderboard_scavenger_hunt, kill_scavenger_hunt, set_spawn_rate_scavenger_hunt
 from dl import set_dl_banner_image
+from views.dl_survival_leaderboard import DLSurvivalLeaderboardForm, DLSurvivalStatsForm
 from config import *
 from smoke import smoke
 from tipoftheday import tipoftheday
@@ -823,19 +824,21 @@ async def cmd_spleef_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Spleef", stat)
 
-@dl_custom_leaderboard.command(name="survival-general", description="See the Top 5 in any Survival stat.")
-async def cmd_survival_leaderboard(
-  ctx: discord.ApplicationContext,
-  stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Survival General"].keys()))
-  ):
-  await get_dl_leaderboard(ctx, "Survival General", stat)
+# migrated to custom leaderboard endpoint
+# @dl_custom_leaderboard.command(name="survival-general", description="See the Top 5 in any Survival stat.")
+# async def cmd_survival_leaderboard(
+#   ctx: discord.ApplicationContext,
+#   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Survival General"].keys()))
+#   ):
+#   await get_dl_leaderboard(ctx, "Survival General", stat)
 
-@dl_custom_leaderboard.command(name="survival-scores", description="See the Top 5 in any Survival stat.")
-async def cmd_survival_leaderboard(
-  ctx: discord.ApplicationContext,
-  stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Survival High Scores"].keys()))
-  ):
-  await get_dl_leaderboard(ctx, "Survival High Scores", stat)
+# migrated to custom leaderboard endpoint
+# @dl_custom_leaderboard.command(name="survival-scores", description="See the Top 5 in any Survival stat.")
+# async def cmd_survival_leaderboard(
+#   ctx: discord.ApplicationContext,
+#   stat: Option(str, "Choose a stat", choices=list(DEADLOCKED_STATS["Survival High Scores"].keys()))
+#   ):
+#   await get_dl_leaderboard(ctx, "Survival High Scores", stat)
 
 @dl_custom_leaderboard.command(name="training", description="See the Top 5 in any Training stat.")
 async def cmd_training_leaderboard(
@@ -851,6 +854,17 @@ async def cmd_weapon_leaderboard(
   ):
   await get_dl_leaderboard(ctx, "Weapons", stat)
 
+@client.slash_command(name="deadlocked-survival-stats", description="See your account's Survival stats.")
+async def cmd_survival_stats(
+  ctx: discord.ApplicationContext,
+  name: Option(str, "Enter the username")):
+    view = DLSurvivalStatsForm(author=ctx.author, name=name)
+    await ctx.respond("Please select the category:", view=view)
+
+@client.slash_command(name="deadlocked-survival-leaderboard", description="See the Top 10 in any Survival Leaderboard.")
+async def cmd_survival_leaderboard(ctx):
+    view = DLSurvivalLeaderboardForm(author=ctx.author)
+    await ctx.respond("Please select the leaderboard:", view=view)
 
 
 tipoftheday(client)

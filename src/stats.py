@@ -46,6 +46,9 @@ def seconds_tostr(seconds):
   return f'{hours}h {minutes % 60}m {seconds % 60}s'
 
 def ms_tostr(milliseconds):
+  if milliseconds is None:
+    return None
+  
   seconds = milliseconds // 1000
   minutes = seconds // 60
 
@@ -56,6 +59,9 @@ def int_topercent(value, precision):
   return f'{ratio:.2%}'
 
 def int_totime(ms):
+  if ms is None:
+    return None
+  
   dt = timedelta(milliseconds= ms)
   return str(dt)
 
@@ -1243,7 +1249,7 @@ DEADLOCKED_GET_STATS_CHOICES = {
   "Search and Destroy": get_dl_snd_stats,
   "Juggernaut": get_dl_juggy_stats,
   "Spleef": get_dl_spleef_stats,
-  "Survival": get_dl_survival_stats,
+  #"Survival": get_dl_survival_stats,
   "Training": get_dl_training_stats,
   "Weapons": get_dl_weapons_stats
 }

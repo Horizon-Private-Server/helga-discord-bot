@@ -24,7 +24,7 @@ API_MAP_LEADERBOARDS = {
 API_TOTAL_LEADERBOARDS = {
     "Completion": "Completion",
     "Games Played": "GamesPlayed",
-    "TimePlayed": "TimePlayed",
+    "Time Played": "TimePlayed",
     "Kills": "Kills",
     "Deaths": "Deaths",
     "Revives": "Revives",
@@ -444,7 +444,7 @@ async def survival_build_leaderboard(stat, leaderboard, page, page_size, additio
   count = len(leaderboard)
   index = (page-1)*page_size
 
-  if 'Time' in stat:
+  if 'Time Played' in stat or 'Best Time' in stat:
     transform_value = lambda x : int_totime(x)
   if 'Completion' in stat:
      transform_value = lambda x : f'{x}%'

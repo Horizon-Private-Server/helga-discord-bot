@@ -9,7 +9,7 @@ import traceback
 from copy import deepcopy
 from datetime import datetime
 from config import *
-from mediusapi import get_active_games, get_players_online, DEADLOCKED_API_NAME, UYA_API_NAME
+from mediusapi import get_active_games, get_players_online, DEADLOCKED_API_NAME, UYA_API_NAME, UYA_TEST_API_NAME
 from uya_parsers import mapParser, timeParser, gamerulesParser, weaponParserNew
 
 
@@ -356,7 +356,7 @@ async def smoke_task(client: discord.Client, smoke_config, index):
 
         # update embed by game
         if api == DEADLOCKED_API_NAME: embed = update_embed_DL(smoke_config, players, games, embed)
-        elif api == UYA_API_NAME: embed = update_embed_UYA(smoke_config, players, games, embed)
+        elif api == UYA_API_NAME or api == UYA_TEST_API_NAME: embed = update_embed_UYA(smoke_config, players, games, embed)
 
         for smoke in smoke_channels:
           if smoke["Message"] is None:

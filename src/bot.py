@@ -81,6 +81,35 @@ def read_helga_help_messages():
 
 HELGA_HELP_MSG_MAPPING = read_helga_help_messages()
 
+DISCORD_MESSAGE_LIMIT = 2000
+
+def split_long_message(content, max_length=DISCORD_MESSAGE_LIMIT):
+  text = '' if content is None else str(content)
+  if not text:
+    return ['(no output)']
+  if len(text) <= max_length:
+    return [text]
+
+  chunks = []
+  remaining = text
+  while remaining:
+    if len(remaining) <= max_length:
+      chunks.append(remaining)
+      break
+
+    split_at = remaining.rfind('\n', 0, max_length + 1)
+    if split_at <= 0:
+      split_at = max_length
+
+    chunks.append(remaining[:split_at])
+    remaining = remaining[split_at:].lstrip('\n')
+
+  return chunks
+
+async def respond_in_chunks(ctx: discord.ApplicationContext, content):
+  for chunk in split_long_message(content):
+    await ctx.respond(chunk)
+
 async def has_sent_recently(member, since, guild):
   for channel in guild.text_channels:
     if not channel.permissions_for(guild.me).read_message_history:
@@ -539,11 +568,11 @@ async def cmd_uya_check_filesystem(
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_check_filesystem()
-    await ctx.respond(output)
+    await respond_in_chunks(ctx, output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
+    await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-check-memory", description="Check memory status")
 async def cmd_uya_check_memory(
@@ -552,11 +581,11 @@ async def cmd_uya_check_memory(
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_check_memory()
-    await ctx.respond(output)
+    await respond_in_chunks(ctx, output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
+    await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-check-cpu", description="Check CPU status")
 async def cmd_uya_check_cpu(
@@ -565,11 +594,11 @@ async def cmd_uya_check_cpu(
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_check_cpu()
-    await ctx.respond(output)
+    await respond_in_chunks(ctx, output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
+    await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-check-containers", description="Check which containers are running")
 async def cmd_uya_check_containers(
@@ -578,11 +607,11 @@ async def cmd_uya_check_containers(
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_check_containers()
-    await ctx.respond(output)
+    await respond_in_chunks(ctx, output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
+    await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')
 
 
 @mod.command(name="uya-clean-filesystem", description="Clean filesystem")
@@ -592,11 +621,11 @@ async def cmd_uya_clean_filesystem(
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_clean_filesystem()
-    await ctx.respond(output)
+    await respond_in_chunks(ctx, output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
+    await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')
 
 
 @mod.command(name="uya-restart-all", description="Restart UYA database, middleware, and server.")
@@ -606,11 +635,11 @@ async def cmd_uya_restart_all(
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_restart_all()
-    await ctx.respond(output)
+    await respond_in_chunks(ctx, output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
+    await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-hard-reset", description="Hard reboot the UYA host (restart the server after it comes back)")
 async def cmd_uya_hard_reset(
@@ -619,11 +648,11 @@ async def cmd_uya_hard_reset(
   try:
     await ctx.respond('Processing request... this may take awhile... Reminder: after the hard reboot, restart the server too.')
     output = await MOD_SSH_COMMANDS.uya_hard_reset()
-    await ctx.respond(output)
+    await respond_in_chunks(ctx, output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
+    await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')
 
 @mod.command(name="uya-backup-database", description="Backup a copy of the UYA database at this point in time to the cloud")
 async def cmd_uya_backup_database(
@@ -632,11 +661,11 @@ async def cmd_uya_backup_database(
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_backup_database_to_cloud()
-    await ctx.respond(output)
+    await respond_in_chunks(ctx, output)
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())
-    await ctx.respond(f'Error: {traceback.format_exc()}')
+    await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')
 
 
 @mod.command(name="dl-set-menu-banner", description="Sets the current Deadlocked main menu banner image.")

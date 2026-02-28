@@ -634,9 +634,17 @@ async def cmd_uya_restart_all(
   ):
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
-    output = await MOD_SSH_COMMANDS.uya_restart_all()
-    await respond_in_chunks(ctx, output)
-    #await ctx.respond(lines)
+    database_output = await MOD_SSH_COMMANDS.uya_restart_database()
+    await ctx.respond(f'Database:\n{database_output}')
+
+    await ctx.respond('Waiting 3 seconds before restarting middleware...')
+    await asyncio.sleep(3)
+
+    middleware_output = await MOD_SSH_COMMANDS.uya_restart_middleware()
+    await ctx.respond(f'Middleware:\n{middleware_output}')
+
+    server_output = await MOD_SSH_COMMANDS.uya_restart_server()
+    await ctx.respond(f'Server:\n{server_output}')
   except Exception as e:
     print(traceback.format_exc())
     await respond_in_chunks(ctx, f'Error: {traceback.format_exc()}')

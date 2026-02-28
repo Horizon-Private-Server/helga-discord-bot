@@ -244,6 +244,19 @@ class CommunityResetManager:
         for chunk in self._split_long_text(output, MAX_LOG_LENGTH):
             await channel.send(chunk)
 
+    async def _run_restart_all_with_updates(self, channel):
+        database_output = await self.mod_ssh_commands.uya_restart_database()
+        await self._send_command_output(channel, f'Database:\n{database_output}')
+
+        await channel.send('Waiting 3 seconds before restarting middleware...')
+        await asyncio.sleep(3)
+
+        middleware_output = await self.mod_ssh_commands.uya_restart_middleware()
+        await self._send_command_output(channel, f'Middleware:\n{middleware_output}')
+
+        server_output = await self.mod_ssh_commands.uya_restart_server()
+        await self._send_command_output(channel, f'Server:\n{server_output}')
+
     def _split_long_text(self, text, max_len):
         chunks = []
         remaining = text
@@ -297,16 +310,14 @@ class CommunityResetManager:
             output = await self.mod_ssh_commands.uya_hard_reset()
             await vote_message.channel.send('Hard reset issued. Restarting services in 1 minute.')
             asyncio.create_task(self._schedule_post_hardreset_restart(vote_message.channel))
+            await self._send_command_output(vote_message.channel, output)
         else:
-            output = await self.mod_ssh_commands.uya_restart_all()
-
-        await self._send_command_output(vote_message.channel, output)
+            await self._run_restart_all_with_updates(vote_message.channel)
 
     async def _schedule_post_hardreset_restart(self, channel):
         await asyncio.sleep(60)
         await channel.send('Running restart_all after the hard reset...')
-        output = await self.mod_ssh_commands.uya_restart_all()
-        await self._send_command_output(channel, output)
+        await self._run_restart_all_with_updates(channel)
 
     async def _evaluate_vote(self, message_id):
         vote = self.votes.get(message_id)
@@ -389,8 +400,7 @@ class CommunityResetManager:
         await message.channel.send(
             'Detected missing containers. Skipping the vote and restarting services now.'
         )
-        output = await self.mod_ssh_commands.uya_restart_all()
-        await message.channel.send(output)
+        await self._run_restart_all_with_updates(message.channel)
 
     async def _handle_auto_approve_no_players(self, message, settings, command, players, error):
         players_line = self._build_players_line(players, error)
@@ -413,9 +423,9 @@ class CommunityResetManager:
             output = await self.mod_ssh_commands.uya_hard_reset()
             await message.channel.send('Hard reset issued. Restarting services in 1 minute.')
             asyncio.create_task(self._schedule_post_hardreset_restart(message.channel))
+            await self._send_command_output(message.channel, output)
         else:
-            output = await self.mod_ssh_commands.uya_restart_all()
-        await self._send_command_output(message.channel, output)
+            await self._run_restart_all_with_updates(message.channel)
 
     async def handle_reaction(self, payload):
         vote = self.votes.get(payload.message_id)

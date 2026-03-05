@@ -11,7 +11,6 @@ import urllib3
 from discord.ext import commands
 from scavengerhunt import get_scavenger_hunt_dates, get_discord_string_from_date
 from mediusapi import *
-from datetime import timedelta
 
 #
 def get_dl_skill_level(rank):
@@ -58,12 +57,30 @@ def int_topercent(value, precision):
   ratio = value / precision
   return f'{ratio:.2%}'
 
+def int_toreadable(value):
+  if value is None:
+    return None
+  
+  return f'{int(value):,}'.replace(',', ' ')
+
 def int_totime(ms):
   if ms is None:
     return None
-  
-  dt = timedelta(milliseconds= ms)
-  return str(dt)
+
+  total_seconds = int(ms) // 1000
+  hours = total_seconds // 3600
+  minutes = (total_seconds % 3600) // 60
+  seconds = total_seconds % 60
+
+  parts = []
+  if hours > 0:
+    parts.append(f'{hours}hr')
+  if minutes > 0:
+    parts.append(f'{minutes}m')
+  if seconds > 0 or len(parts) == 0:
+    parts.append(f'{seconds}s')
+
+  return ' '.join(parts)
 
 def create_embed(account, fields):
   account_id = account["AccountId"]

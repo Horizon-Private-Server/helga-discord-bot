@@ -6,7 +6,7 @@ import traceback
 import constants
 from datetime import timedelta
 from discord.ext import commands
-from stats import create_embed, get_phrase, int_totime, int_topercent
+from stats import create_embed, get_phrase, int_totime, int_topercent, int_toreadable
 from mediusapi import authenticate, get_account, APPID_DEADLOCKED, DEADLOCKED_API_NAME, headers
 
 TOTAL_NAME = "Total"
@@ -282,7 +282,7 @@ class DLSurvivalStatsForm(discord.ui.View):
               },
               {
                 'Name': 'Games Played',
-                'Value': lambda : f'{stats["GamesPlayed"]}'
+                'Value': lambda : f'{int_toreadable(stats["GamesPlayed"])}'
               },
               {
                 'Name': 'Time Played',
@@ -290,19 +290,19 @@ class DLSurvivalStatsForm(discord.ui.View):
               },
               {
                 'Name': 'Kills',
-                'Value': lambda : f'{stats["Kills"]}'
+                'Value': lambda : f'{int_toreadable(stats["Kills"])}'
               },
               {
                 'Name': 'Deaths',
-                'Value': lambda : f'{stats["Deaths"]}'
+                'Value': lambda : f'{int_toreadable(stats["Deaths"])}'
               },
               {
                 'Name': 'Revives',
-                'Value': lambda : f'{stats["Revives"]}'
+                'Value': lambda : f'{int_toreadable(stats["Revives"])}'
               },
               {
                 'Name': 'Revived',
-                'Value': lambda : f'{stats["TimesRevived"]}'
+                'Value': lambda : f'{int_toreadable(stats["TimesRevived"])}'
               }
             ]
           },
@@ -313,39 +313,39 @@ class DLSurvivalStatsForm(discord.ui.View):
             'Children': [
               {
                 'Name': 'Wrench Kills',
-                'Value': lambda : f'{stats["WrenchKills"]}'
+                'Value': lambda : f'{int_toreadable(stats["WrenchKills"])}'
               },
               {
                 'Name': 'Dual Viper Kills',
-                'Value': lambda : f'{stats["DualViperKills"]}'
+                'Value': lambda : f'{int_toreadable(stats["DualViperKills"])}'
               },
               {
                 'Name': 'Magma Cannon Kills',
-                'Value': lambda : f'{stats["MagmaCannonKills"]}'
+                'Value': lambda : f'{int_toreadable(stats["MagmaCannonKills"])}'
               },
               {
                 'Name': 'Arbiter Kills',
-                'Value': lambda : f'{stats["ArbiterKills"]}'
+                'Value': lambda : f'{int_toreadable(stats["ArbiterKills"])}'
               },
               {
                 'Name': 'Fusion Rifle Kills',
-                'Value': lambda : f'{stats["FusionRifleKills"]}'
+                'Value': lambda : f'{int_toreadable(stats["FusionRifleKills"])}'
               },
               {
                 'Name': 'Mine Launcher Kills',
-                'Value': lambda : f'{stats["MineLauncherKills"]}'
+                'Value': lambda : f'{int_toreadable(stats["MineLauncherKills"])}'
               },
               {
                 'Name': 'B6 Obliterator Kills',
-                'Value': lambda : f'{stats["B6Kills"]}'
+                'Value': lambda : f'{int_toreadable(stats["B6Kills"])}'
               },
               {
                 'Name': 'Holoshield Kills',
-                'Value': lambda : f'{stats["HoloshieldKills"]}'
+                'Value': lambda : f'{int_toreadable(stats["HoloshieldKills"])}'
               },
               {
                 'Name': 'Scorpion Flail Kills',
-                'Value': lambda : f'{stats["ScorpionFlailKills"]}'
+                'Value': lambda : f'{int_toreadable(stats["ScorpionFlailKills"])}'
               }
             ]
           }
@@ -446,8 +446,10 @@ async def survival_build_leaderboard(stat, leaderboard, page, page_size, additio
 
   if 'Time Played' in stat or 'Best Time' in stat:
     transform_value = lambda x : int_totime(x)
-  if 'Completion' in stat:
-     transform_value = lambda x : f'{x}%'
+  elif 'Completion' in stat:
+    transform_value = lambda x : f'{x}%'
+  else:
+    transform_value = lambda x : int_toreadable(x)
 
   for i in range(0, count):
     s = f'{leaderboard[i]["Index"]}. {leaderboard[i]["AccountName"]}'
@@ -476,18 +478,16 @@ async def survival_build_map_leaderboard(group, stat, leaderboard, page, page_si
 
   if 'Best Time' in stat:
     transform_value = lambda x : int_totime(x)
-  if 'Completion' in stat:
-     transform_value = lambda x : f'{x}%'
+  elif 'Completion' in stat:
+    transform_value = lambda x : f'{x}%'
+  else:
+    transform_value = lambda x : int_toreadable(x)
 
   for i in range(0, count):
-    s = f'{leaderboard[i]["Index"]}. {leaderboard[i]["AccountNames"]}'
-    while len(s) < 20:
-      s += pad_str
-    lb_str += f'{s}{transform_value(leaderboard[i]["StatValue"])}\n'
-
+    lb_str += f'**#{leaderboard[i]["Index"]}** {pad_str} • {pad_str} **{transform_value(leaderboard[i]["StatValue"])}** {pad_str} • {pad_str} {leaderboard[i]["AccountNames"]}\n'
 
   embed = discord.Embed()
-  embed.add_field(name= f'Top {index+1} - {index+page_size}', value=f'```\n{lb_str}```', inline=True)
+  embed.add_field(name= f'Top {index+1} - {index+page_size}', value=f'\n{lb_str}', inline=True)
   embed.set_thumbnail(url=constants.DEADLOCKED_DREADZONE_ICON_URL)
   embed.title = f'{group} {stat}'
   if additional_embed_title is not None and additional_embed_message is not None:
@@ -562,4 +562,6 @@ def survival_get(endpoint):
     return f"{api} survival_get {route} not found"
   else:
     raise ValueError(f"{route} returned {response.status_code}")
+
+
 

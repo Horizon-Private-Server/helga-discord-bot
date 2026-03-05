@@ -4,7 +4,7 @@ import requests
 import urllib.parse
 import traceback
 import constants
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 from discord.ext import commands
 from stats import create_embed, get_phrase, int_totime, int_topercent, int_toreadable
 from mediusapi import authenticate, get_account, APPID_DEADLOCKED, DEADLOCKED_API_NAME, headers
@@ -40,7 +40,9 @@ API_TOTAL_LEADERBOARDS = {
     "Scorpion Flail Kills": "FlailKills",
 }
 
+SURVIVAL_MAPS_CACHE_TTL = timedelta(minutes=30)
 survival_maps = []
+survival_maps_cached_at = None
 
 class DLSurvivalLeaderboardForm(discord.ui.View):
     def __init__(self, author: discord.Member):
@@ -496,13 +498,37 @@ async def survival_build_map_leaderboard(group, stat, leaderboard, page, page_si
   return embed
 
 #
-def survival_get_maps():
+def survival_get_maps(force_refresh = False):
   global survival_maps
-  if len(survival_maps) > 0:
-     return survival_maps
-  
-  survival_maps = survival_get("getMaps")
-  return survival_maps
+  global survival_maps_cached_at
+
+  now = datetime.now(timezone.utc)
+  cache_is_fresh = (
+    len(survival_maps) > 0
+    and survival_maps_cached_at is not None
+    and (now - survival_maps_cached_at) < SURVIVAL_MAPS_CACHE_TTL
+  )
+
+  if force_refresh is False and cache_is_fresh:
+    return survival_maps
+
+  try:
+    maps = survival_get("getMaps")
+
+    if isinstance(maps, list):
+      survival_maps = maps
+      survival_maps_cached_at = now
+      return survival_maps
+
+    # Unexpected/non-list response. Keep serving stale cache if available.
+    if len(survival_maps) > 0:
+      return survival_maps
+
+    return maps
+  except Exception:
+    if len(survival_maps) > 0:
+      return survival_maps
+    raise
 
 #
 def survival_get_map_leaderboard(map_name, leaderboard, page = 1, page_size = 10):
@@ -562,6 +588,7 @@ def survival_get(endpoint):
     return f"{api} survival_get {route} not found"
   else:
     raise ValueError(f"{route} returned {response.status_code}")
+
 
 
 

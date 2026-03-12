@@ -654,9 +654,11 @@ async def cmd_uya_hard_reset(
   ctx: discord.ApplicationContext
   ):
   try:
-    await ctx.respond('Processing request... this may take awhile... Reminder: after the hard reboot, restart the server too.')
-    output = await MOD_SSH_COMMANDS.uya_hard_reset()
-    await respond_in_chunks(ctx, output)
+    await ctx.respond('Processing request... this may take awhile...')
+    if ctx.channel:
+      await COMMUNITY_RESET_MANAGER.run_hard_reset_with_scheduled_restart(ctx.channel)
+    else:
+      await ctx.respond('Unable to resolve channel for follow-up messages.')
     #await ctx.respond(lines)
   except Exception as e:
     print(traceback.format_exc())

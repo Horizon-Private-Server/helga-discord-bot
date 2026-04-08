@@ -26,7 +26,7 @@ from stats import get_dl_stats, get_dl_leaderboard, get_dl_scavenger_hunt_leader
 from skins import get_dl_skins, get_uya_skins
 from youtubefeed import youtubefeed
 from modsshcommands import ModSshCommands
-from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement, set_settings, ban_account, ban_ip, ban_mac
+from mediusapi import reset_account_password, change_account_name, combine_account_stats, post_announcement, set_settings, ban_account, ban_ip, ban_mac, clear_ip, clear_mac
 from community_reset import CommunityResetManager
 #from uya import *
 from uyacomponlinepinger import uyacomppinger
@@ -34,6 +34,8 @@ from mapchecker import setup_mapchecker, handle_mapchecker_message
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+MODERATOR_ROLE_ID = int(os.getenv("MODERATOR_ROLE_ID", "0"))
+MOD_COMMAND_CHANNEL_ID = int(os.getenv("MOD_COMMAND_CHANNEL_ID", "0"))
 
 config_load()
 
@@ -109,6 +111,28 @@ def split_long_message(content, max_length=DISCORD_MESSAGE_LIMIT):
 async def respond_in_chunks(ctx: discord.ApplicationContext, content):
   for chunk in split_long_message(content):
     await ctx.respond(chunk)
+
+def has_mod_permission(user):
+  if MODERATOR_ROLE_ID == 0:
+    print("WARNING: MODERATOR_ROLE_ID not set - denying /mod commands")
+    return False
+
+  return any(role.id == MODERATOR_ROLE_ID for role in getattr(user, "roles", []))
+
+async def ensure_mod_access(ctx: discord.ApplicationContext):
+  if MOD_COMMAND_CHANNEL_ID == 0:
+    await ctx.respond("❌ MOD_COMMAND_CHANNEL_ID is not configured.", ephemeral=True)
+    return False
+
+  if ctx.channel is None or ctx.channel.id != MOD_COMMAND_CHANNEL_ID:
+    await ctx.respond(f"❌ This command can only be used in <#{MOD_COMMAND_CHANNEL_ID}>.", ephemeral=True)
+    return False
+
+  if not has_mod_permission(ctx.author):
+    await ctx.respond("❌ You don't have permission to use mod commands.", ephemeral=True)
+    return False
+
+  return True
 
 async def has_sent_recently(member, since, guild):
   for channel in guild.text_channels:
@@ -429,6 +453,8 @@ async def cmd_admin_abort_scavenger_hunt(
 async def cmd_admin_find_matching_nicknames(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     lines = 'Results:\n'
@@ -456,6 +482,8 @@ async def cmd_reset_password(
   game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
   username: Option(str, "Username to reset") # type: ignore
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     result = reset_account_password(game, username)
     await ctx.respond(result)
@@ -470,6 +498,8 @@ async def cmd_change_account_name(
   current_account_name: Option(str, "Current Account Name"), # type: ignore
   new_account_name: Option(str, "New Account Name") # type: ignore
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     result = change_account_name(game, current_account_name, new_account_name)
     await ctx.respond(result)
@@ -484,6 +514,8 @@ async def cmd_combine_account_stats(
   account_name_from: Option(str, "Account to pull stats from"), # type: ignore
   account_name_to: Option(str, "Account to add stats to") # type: ignore
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     result = combine_account_stats(game, account_name_from, account_name_to)
     await ctx.respond(result)
@@ -496,6 +528,8 @@ async def cmd_combine_account_stats(
   ctx: discord.ApplicationContext,
   agg_time: Option(int, "Agg time to use (UYA Default: 30)"), # type: ignore
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     for app_id in (10683, 10684):
       result = set_settings("UYA", app_id, {"DefaultClientWorldAggTime": agg_time})
@@ -511,6 +545,8 @@ async def cmd_post_announcement(
   ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
   announcement: Option(str, "Announcement"), # type: ignore
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     result = post_announcement(game, ntsc_or_pal, announcement)
     await ctx.respond(result)
@@ -525,6 +561,8 @@ async def cmd_ban_account(
   ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
   account_name: Option(str, "Account Name"), # type: ignore
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     result = ban_account(game, ntsc_or_pal, account_name)
     await ctx.respond(result)
@@ -539,6 +577,8 @@ async def cmd_ban_ip(
   ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
   account_name: Option(str, "Account Name"), # type: ignore
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     result = ban_ip(game, ntsc_or_pal, account_name)
     await ctx.respond(result)
@@ -553,8 +593,44 @@ async def cmd_ban_mac(
   ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
   account_name: Option(str, "Account Name"), # type: ignore
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     result = ban_mac(game, ntsc_or_pal, account_name)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+
+@mod.command(name="clear-ip", description="Clear saved IP for an account (moderator only)")
+async def cmd_clear_ip(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
+  account_name: Option(str, "Account Name"), # type: ignore
+  ):
+  if not await ensure_mod_access(ctx):
+    return
+  try:
+    result = clear_ip(game, ntsc_or_pal, account_name)
+    await ctx.respond(result)
+  except Exception as e:
+    print(traceback.format_exc())
+    await ctx.respond(f'Error: {traceback.format_exc()}')
+
+
+@mod.command(name="clear-mac", description="Clear saved MAC for an account (moderator only)")
+async def cmd_clear_mac(
+  ctx: discord.ApplicationContext,
+  game: Option(str, "Choose a game", choices=["DL", "UYA"]), # type: ignore
+  ntsc_or_pal: Option(str, "NTSC or PAL", choices=["NTSC", "PAL"]), # type: ignore
+  account_name: Option(str, "Account Name"), # type: ignore
+  ):
+  if not await ensure_mod_access(ctx):
+    return
+  try:
+    result = clear_mac(game, ntsc_or_pal, account_name)
     await ctx.respond(result)
   except Exception as e:
     print(traceback.format_exc())
@@ -565,6 +641,8 @@ async def cmd_ban_mac(
 async def cmd_uya_check_filesystem(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_check_filesystem()
@@ -578,6 +656,8 @@ async def cmd_uya_check_filesystem(
 async def cmd_uya_check_memory(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_check_memory()
@@ -591,6 +671,8 @@ async def cmd_uya_check_memory(
 async def cmd_uya_check_cpu(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_check_cpu()
@@ -604,6 +686,8 @@ async def cmd_uya_check_cpu(
 async def cmd_uya_check_containers(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_check_containers()
@@ -618,6 +702,8 @@ async def cmd_uya_check_containers(
 async def cmd_uya_clean_filesystem(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_clean_filesystem()
@@ -632,6 +718,8 @@ async def cmd_uya_clean_filesystem(
 async def cmd_uya_restart_all(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     database_output = await MOD_SSH_COMMANDS.uya_restart_database()
@@ -653,6 +741,8 @@ async def cmd_uya_restart_all(
 async def cmd_uya_hard_reset(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond('Processing request... this may take awhile...')
     if ctx.channel:
@@ -668,6 +758,8 @@ async def cmd_uya_hard_reset(
 async def cmd_uya_backup_database(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
     await ctx.respond(f'Processing request... this may take awhile...')
     output = await MOD_SSH_COMMANDS.uya_backup_database_to_cloud()
@@ -683,6 +775,8 @@ async def cmd_admin_dl_set_menu_banner(
   ctx: discord.ApplicationContext,
   image: discord.Attachment
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
 
     # send to db
@@ -713,6 +807,8 @@ async def cmd_admin_dl_set_menu_banner(
   ctx: discord.ApplicationContext,
   image: discord.Attachment
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
 
     # load image from url
@@ -745,6 +841,8 @@ async def cmd_admin_dl_set_menu_banner(
 async def cmd_admin_dl_set_menu_banner(
   ctx: discord.ApplicationContext
   ):
+  if not await ensure_mod_access(ctx):
+    return
   try:
 
     # send to db

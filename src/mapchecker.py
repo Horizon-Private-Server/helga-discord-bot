@@ -1,17 +1,96 @@
 import discord
-import asyncio
 import aiohttp
 import asyncssh
 import os
-from discord.commands import Option
+from dataclasses import dataclass
+from typing import Optional
 
 # Configuration
-MAP_SERVER_PATH = "/tmp/maps/"
-FINAL_MAP_SERVER_PATH = "/var/www/static/downloads/maps/"
 MAPCHECKER_ROLE_ID = int(os.getenv("MAPCHECKER_ROLE_ID", "0"))  # Set to 0 if not configured
+
+MAP_SERVER_PATH = "/tmp/maps"
+MAP_DOWNLOADS_SERVER_PATH = "/var/www/static/downloads"
+STANDARD_MAPS_SERVER_PATH = f"{MAP_DOWNLOADS_SERVER_PATH}/maps"
+DL_REPOSITORY_PATHS = {
+    "standard": f"{STANDARD_MAPS_SERVER_PATH}/dl",
+    "survival": f"{MAP_DOWNLOADS_SERVER_PATH}/unofficial_maps/horizon_survival/dl",
+    "dzo-only": f"{MAP_DOWNLOADS_SERVER_PATH}/unofficial_maps/horizon_dzo/dl",
+    "party": f"{MAP_DOWNLOADS_SERVER_PATH}/unofficial_maps/horizon_party/dl",
+    "retired": f"{MAP_DOWNLOADS_SERVER_PATH}/unofficial_maps/horizon_retired/dl",
+    #"collectathon": f"{SERVER_DOWNLOADS_DIRECTORY}/unofficial_maps/collectathon/dl"
+}
 
 MAIN_COMMAND = 'python3 /home/box/update.py'
 BUILD_CMD = "bash /home/box/rebuild.sh"
+
+@dataclass
+class MapUploadCommand:
+    game: str
+    repository: Optional[str]
+    is_confirm: bool
+
+class MockContext:
+    def __init__(self, message):
+        self.message = message
+        self.channel = message.channel
+        self.guild = message.guild
+        self.author = message.author
+
+    async def respond(self, content):
+        await self.channel.send(content)
+
+    async def followup(self):
+        return self
+
+    async def send(self, content):
+        await self.channel.send(content)
+
+def build_server_path(game, repository):
+    if game == 'dl' and repository is not None:
+        return DL_REPOSITORY_PATHS.get(repository)
+    else:
+        return f"{STANDARD_MAPS_SERVER_PATH}/{game}"
+
+def build_staging_path(game: str, repository: Optional[str]) -> str:
+    base = f"{MAP_SERVER_PATH}/{game}"
+
+    if game == "dl":
+        repo = repository or "standard"
+        return f"{base}/{repo}"
+
+    return base
+
+def parse_mapupload_command(content: str) -> MapUploadCommand:
+    tokens = content.strip().split()
+
+    if len(tokens) < 2:
+        raise ValueError("❌ Usage: `!mapupload <game> [repository]` with file attachments OR `!mapupload <game> [repository] confirm`\nExamples: `!mapupload dl` (attach files) or `!mapupload uya confirm` or `!mapupload dl survival confirm`")
+
+    game = tokens[1].lower()
+    if game not in ("dl", "uya"):
+        raise ValueError("❌ Invalid game. Use 'dl' or 'uya'.")
+
+    is_confirm = tokens[-1].lower() == "confirm"
+    # grab the middle argument which could be a repository for DL
+    args = tokens[2:-1] if is_confirm else tokens[2:]
+
+    repository = None
+
+    if game == "dl":
+        if len(args) > 1:
+            raise ValueError("❌ Too many arguments.")
+
+        if len(args) == 1:
+            repository = args[0].lower()
+            if repository not in DL_REPOSITORY_PATHS:
+                raise ValueError(f"❌ Invalid repository. Options: {', '.join(DL_REPOSITORY_PATHS.keys())}.")
+        else:
+            repository = "standard"
+    else:
+        if args:
+            raise ValueError("❌ Too many arguments.")
+
+    return MapUploadCommand(game=game, repository=repository, is_confirm=is_confirm)
 
 def has_mapchecker_permission(user):
     """
@@ -105,7 +184,7 @@ async def list_version_files(game):
                 pass
 
 
-async def clear_game_folder(game):
+async def clear_game_folder(game, repository):
     """
     Clear all files from the game-specific folder
     """
@@ -117,8 +196,8 @@ async def clear_game_folder(game):
             raise Exception("SSH connection returned None")
         
         # Create game-specific path
-        game_path = f"{MAP_SERVER_PATH}/{game}"
-        
+        game_path = build_staging_path(game, repository)
+
         print(f"\n=== MAP CLEAR - {game.upper()} ===")
         print(f"Clearing directory: {game_path}")
         print("=" * 50)
@@ -145,7 +224,7 @@ async def clear_game_folder(game):
                 pass
 
 
-async def upload_single_file(session, game, file, file_index=None):
+async def upload_single_file(session, game, repository, file, file_index=None):
     """
     Download and upload a single file to the server
     """
@@ -161,8 +240,8 @@ async def upload_single_file(session, game, file, file_index=None):
             file_content = await response.read()
         
         # Create game-specific path
-        game_path = f"{MAP_SERVER_PATH}/{game}"
-        
+        game_path = build_staging_path(game, repository)
+
         # Print upload info to console
         file_prefix = f"File {file_index}: " if file_index is not None else ""
         print(f"\n=== MAP UPLOAD - {game.upper()} ===")
@@ -211,7 +290,7 @@ async def upload_single_file(session, game, file, file_index=None):
                 pass
 
 
-async def mapupload_command(ctx, game, files):
+async def mapupload_command(ctx, game, files, repository):
     """
     Upload map files to the server for the specified game (supports multiple files)
     Clears the game folder before uploading new files
@@ -228,7 +307,7 @@ async def mapupload_command(ctx, game, files):
             await ctx.respond(f"Clearing {game.upper()} folder and uploading {len(files)} map files...")
         
         # Clear the game folder first
-        clear_success, clear_msg = await clear_game_folder(game)
+        clear_success, clear_msg = await clear_game_folder(game, repository)
         if not clear_success:
             await ctx.followup.send(f"❌ Failed to clear {game.upper()} folder: {clear_msg}")
             return
@@ -240,7 +319,7 @@ async def mapupload_command(ctx, game, files):
         async with aiohttp.ClientSession() as session:
             for index, file in enumerate(files, 1):
                 file_index = index if len(files) > 1 else None
-                success, result_msg = await upload_single_file(session, game, file, file_index)
+                success, result_msg = await upload_single_file(session, game, repository, file, file_index)
                 
                 if success:
                     successful_files.append(result_msg)
@@ -266,7 +345,7 @@ async def mapupload_command(ctx, game, files):
                     summary_parts.append(f"  • {error_msg}")
         
         summary_parts.append(f"\n**Game:** {game.upper()}")
-        summary_parts.append(f"**Server Path:** `{MAP_SERVER_PATH}/{game}`")
+        summary_parts.append(f"**Server Path:** `{build_staging_path(game, repository)}`")
         
         # Run the update script if there were successful uploads
         if successful_files:
@@ -282,7 +361,9 @@ async def mapupload_command(ctx, game, files):
                     conn = None
                 
                 if conn is not None:
-                    update_cmd = f"{MAIN_COMMAND} {MAP_SERVER_PATH}/{game} {FINAL_MAP_SERVER_PATH}/{game} check"
+                    final_directory = build_server_path(game, repository)
+                    staging_path = build_staging_path(game, repository)
+                    update_cmd = f"{MAIN_COMMAND} {staging_path} {final_directory} check"
                     print(f"\n=== RUNNING UPDATE SCRIPT - {game.upper()} ===")
                     print(f"Command: {update_cmd}")
                     print("=" * 50)
@@ -335,7 +416,7 @@ async def mapupload_command(ctx, game, files):
         await ctx.followup.send(f"❌ Error uploading files: {str(e)}")
 
 
-async def mapupload_confirm_command(ctx, game):
+async def mapupload_confirm_command(ctx, game, repository):
     """
     Confirm and deploy maps from staging to final location
     """
@@ -358,7 +439,9 @@ async def mapupload_confirm_command(ctx, game):
                 return
             
             if conn is not None:
-                update_cmd = f"{MAIN_COMMAND} {MAP_SERVER_PATH}/{game} {FINAL_MAP_SERVER_PATH}/{game} update"
+                final_directory = build_server_path(game, repository)
+                staging_path = build_staging_path(game, repository)
+                update_cmd = f"{MAIN_COMMAND} {staging_path} {final_directory} update"
                 print(f"\n=== RUNNING DEPLOYMENT SCRIPT - {game.upper()} ===")
                 print(f"Command: {update_cmd}")
                 print("=" * 50)
@@ -374,9 +457,9 @@ async def mapupload_confirm_command(ctx, game):
                     
                     # Add script results to response
                     summary_parts = [f"**Game:** {game.upper()}"]
-                    summary_parts.append(f"**Source:** `{MAP_SERVER_PATH}/{game}`")
-                    summary_parts.append(f"**Destination:** `{FINAL_MAP_SERVER_PATH}/{game}`")
-                    
+                    summary_parts.append(f"**Source:** `{staging_path}`")
+                    summary_parts.append(f"**Destination:** `{final_directory}`")
+
                     # Send update results first
                     if result.exit_status == 0:
                         summary_parts.append("\n✅ **Deployment completed successfully:**")
@@ -483,7 +566,7 @@ async def mapupload_confirm_command(ctx, game):
         await ctx.followup.send(f"❌ Error during deployment: {str(e)}")
 
 
-async def mapclear_command(ctx, game):
+async def mapclear_command(ctx, game, repository):
     """
     Clear all files from the game-specific folder
     """
@@ -495,14 +578,14 @@ async def mapclear_command(ctx, game):
     try:
         await ctx.respond(f"Clearing {game.upper()} folder...")
         
-        success, result_msg = await clear_game_folder(game)
+        success, result_msg = await clear_game_folder(game, repository)
         
         if success:
             response = f"✅ {result_msg}"
         else:
             response = f"❌ {result_msg}"
         
-        response += f"\n\n**Game:** {game.upper()}\n**Server Path:** `{MAP_SERVER_PATH}/{game}`"
+        response += f"\n\n**Game:** {game.upper()}\n**Server Path:** `{build_staging_path(game, repository)}`"
         
         await ctx.followup.send(response)
                     
@@ -517,100 +600,64 @@ async def handle_mapchecker_message(message):
     """
     if message.author.bot:
         return False
-    
+
     # Check permissions first
     if not has_mapchecker_permission(message.author):
         if message.content.strip().startswith(('!mapupload', '!mapclear')):
             await message.channel.send("❌ You don't have permission to use mapchecker commands.")
             return True
         return False
-    
+
     content = message.content.strip()
-    
+
     # Handle !mapclear command (no file attachments needed)
     if content.startswith('!mapclear'):
         parts = content.split()
-        if len(parts) >= 2:
-            game = parts[1].lower()
-            if game in ['dl', 'uya']:
-                # Create a mock context for the message-based command
-                class MockContext:
-                    def __init__(self, message):
-                        self.message = message
-                        self.channel = message.channel
-                        self.guild = message.guild
-                        self.author = message.author
-                    
-                    async def respond(self, content):
-                        await self.channel.send(content)
-                    
-                    async def followup(self):
-                        return self
-                    
-                    async def send(self, content):
-                        await self.channel.send(content)
-                
-                # Add followup method to mock context
-                mock_ctx = MockContext(message)
-                mock_ctx.followup = mock_ctx
-                
-                await mapclear_command(mock_ctx, game)
-                return True
-            else:
-                await message.channel.send("❌ Invalid game. Use 'dl' or 'uya'.")
-                return True
-        else:
-            await message.channel.send("❌ Usage: `!mapclear <game>`\nExample: `!mapclear dl`")
+        if len(parts) < 2:
+            await message.channel.send("❌ Usage: `!mapclear <game> [repository]`\nExample: `!mapclear uya` or `!mapclear dl standard`")
             return True
-    
+
+        game = parts[1].lower()
+        if game not in ['dl', 'uya']:
+            await message.channel.send("❌ Invalid game. Use 'dl' or 'uya'.")
+            return True
+
+        repository = None
+        if game == 'dl':
+            repository = 'standard'
+            if len(parts) >= 3:
+                repository = parts[2].lower()
+            if repository not in DL_REPOSITORY_PATHS:
+                await message.channel.send(f"❌ Invalid repository. Options: {', '.join(DL_REPOSITORY_PATHS.keys())}.")
+                return True
+
+        # Add followup method to mock context
+        mock_ctx = MockContext(message)
+        mock_ctx.followup = mock_ctx
+        await mapclear_command(mock_ctx, game, repository)
+        return True
+
+
     # Handle !mapupload command (supports both upload and confirm modes)
     elif content.startswith('!mapupload'):
-        parts = content.split()
-        if len(parts) >= 2:
-            game = parts[1].lower()
-            is_confirm = len(parts) >= 3 and parts[2].lower() == 'confirm'
-            
-            if game in ['dl', 'uya']:
-                # Create a mock context for the message-based command
-                class MockContext:
-                    def __init__(self, message):
-                        self.message = message
-                        self.channel = message.channel
-                        self.guild = message.guild
-                        self.author = message.author
-                    
-                    async def respond(self, content):
-                        await self.channel.send(content)
-                    
-                    async def followup(self):
-                        return self
-                    
-                    async def send(self, content):
-                        await self.channel.send(content)
-                
-                # Add followup method to mock context
-                mock_ctx = MockContext(message)
-                mock_ctx.followup = mock_ctx
-                
-                if is_confirm:
-                    # Handle confirm command (no file attachments needed)
-                    await mapupload_confirm_command(mock_ctx, game)
-                else:
-                    # Handle regular upload command (requires file attachments)
-                    if not message.attachments:
-                        await message.channel.send("❌ No files attached! Use `!mapupload <game>` with file attachments.")
-                        return True
-                    await mapupload_command(mock_ctx, game, message.attachments)
-                return True
-            else:
-                await message.channel.send("❌ Invalid game. Use 'dl' or 'uya'.")
-                return True
-        else:
-            await message.channel.send("❌ Usage: `!mapupload <game>` with file attachments OR `!mapupload <game> confirm`\nExamples: `!mapupload dl` (attach files) or `!mapupload dl confirm`")
+        try:
+            command = parse_mapupload_command(message.content)
+        except ValueError as error:
+            await message.channel.send(str(error))
             return True
-    
+        mock_ctx = MockContext(message)
+        mock_ctx.followup = mock_ctx
+        if command.is_confirm:
+            # Handle confirm command (no file attachments needed)
+            await mapupload_confirm_command(mock_ctx, command.game, command.repository)
+        else:
+            # Handle regular upload command (requires file attachments)
+            if not message.attachments:
+                await message.channel.send( "❌ No files attached! Use `!mapupload <game>` with file attachments.")
+                return True
+            await mapupload_command(mock_ctx, command.game, message.attachments, command.repository)
+        return True
     return False
-
 
 def setup_mapchecker(client):
     """
@@ -639,24 +686,28 @@ def setup_mapchecker(client):
         
         await ctx.respond(
             "**Map Commands Usage:**\n\n"
-            "**Check Server Files:**\n"
-            "• `!mapchecker dl` - List *.version files on DL server\n"
-            "• `!mapchecker uya` - List *.version files on UYA server\n\n"
+            #"**Check Server Files:**\n"
+            #"• `!mapchecker dl` - List *.version files on DL server\n"
+            #"• `!mapchecker uya` - List *.version files on UYA server\n\n"
             "**Upload Files to Server (Staging):**\n"
-            "• `!mapupload dl` - Clear DL folder and upload files (attach files)\n"
+            "• `!mapupload dl` - Clear DL folder and upload files (main / standard repository if not specified) (attach files)\n"
             "• `!mapupload uya` - Clear UYA folder and upload files (attach files)\n\n"
+            "• `!mapupload dl survival` - Clear DL folder and upload files for the survival repository (attach files)\n\n"
             "**Deploy Maps to Production:**\n"
             "• `!mapupload dl confirm` - Deploy DL maps from staging to production\n"
+            "• `!mapupload dl party confirm` - Deploy DL maps from staging to production for the party repository\n"
             "• `!mapupload uya confirm` - Deploy UYA maps from staging to production\n\n"
             "**Clear Server Folders:**\n"
             "• `!mapclear dl` - Remove all files from DL staging folder\n"
+            "• `!mapclear dl standard` - Remove all files from DL staging folder for the main / standard repository\n"
             "• `!mapclear uya` - Remove all files from UYA staging folder\n\n"
             "**Examples:**\n"
-            "• `!mapchecker dl` - Lists server files via SSH\n"
+            #"• `!mapchecker dl` - Lists server files via SSH\n"
             "• `!mapupload uya` with files attached - Upload to staging and validate\n"
             "• `!mapupload dl confirm` - Deploy validated maps to production\n"
             "• `!mapclear dl` - Clear staging folder\n\n"
-            f"**Staging:** `{MAP_SERVER_PATH}/[game]/` | **Production:** `{FINAL_MAP_SERVER_PATH}/[game]/`\n"
+            f"**Staging:** `{MAP_SERVER_PATH}/[game]/` | **Production:** `{STANDARD_MAPS_SERVER_PATH}/[game]/`\n"
+            f"**Available repositories for DL:** {', '.join(DL_REPOSITORY_PATHS.keys())}.\n"
             "**Note:** Upload validates maps in staging. Use 'confirm' to deploy to production.\n"
             f"**Permissions:** Only users with role ID {MAPCHECKER_ROLE_ID} can use these commands."
         )

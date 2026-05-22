@@ -193,8 +193,9 @@ async def daily_inactive_check():
 
 @client.event
 async def on_ready():
-  client.loop.create_task(daily_inactive_check())
-  print(f'{client.user} has connected to Discord!')
+    if not hasattr(client, "inactive_task"):
+        client.inactive_task = client.loop.create_task(daily_inactive_check())
+    print(f'{client.user} has connected to Discord!')
 
 
 @client.event

@@ -1,6 +1,6 @@
-FROM python:3.9-slim-buster as build-image
+FROM python:3.11-slim-bookworm AS build-image
 
-ENV IN_DOCKER Yes
+ENV IN_DOCKER=Yes
 
 ARG FUNCTION_DIR=/code
 RUN mkdir -p ${FUNCTION_DIR}
@@ -18,4 +18,4 @@ RUN cp ${FUNCTION_DIR}/ssh_keys/* /root/.ssh/ || true
 RUN chmod 600 /root/.ssh/* || true
 
 WORKDIR ${FUNCTION_DIR}/src
-CMD python -u bot.py
+CMD ["python", "-u", "bot.py"]

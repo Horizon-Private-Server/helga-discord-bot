@@ -351,8 +351,11 @@ async def smoke_task(client: discord.Client, smoke_config, index):
   while not client.is_closed():
     if not client.is_ws_ratelimited():
       try:
-        games = get_active_games(api)
-        players = get_players_online(api)
+        # Run the blocking (synchronous requests) calls off the event loop so a
+        # slow/unreachable server can't freeze the whole bot. Combined with the
+        # timeout in mediusapi, a dead server only fails this smoke, not all of them.
+        games = await asyncio.to_thread(get_active_games, api)
+        players = await asyncio.to_thread(get_players_online, api)
 
         # update embed by game
         if api == DEADLOCKED_API_NAME: embed = update_embed_DL(smoke_config, players, games, embed)

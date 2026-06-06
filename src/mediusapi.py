@@ -24,6 +24,11 @@ APPID_UYA = 10684
 
 load_dotenv()
 
+# Timeout (seconds) for all middleware HTTP calls. Without this, requests has no
+# default timeout and an unreachable server will hang the caller (and, for calls
+# made from the asyncio event loop, freeze the whole bot) until the OS gives up.
+REQUEST_TIMEOUT = 10
+
 headers = {}
 
 #
@@ -34,7 +39,7 @@ def authenticate(api):
     "Password": os.getenv(f'MIDDLEWARE_PASSWORD_{api}')
   }
 
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + "Account/authenticate", json=data, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + "Account/authenticate", json=data, verify=False, timeout=REQUEST_TIMEOUT)
   if response.status_code == 200:
     #print(f"Authenticated: {response}")
     #print(response.json())
@@ -54,7 +59,7 @@ def get_account(api, app_id, account_name):
     authenticate(api)
 
   route = f"Account/searchAccountByName?AccountName={account_name}&AppId={app_id}"
-  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return response.json()
@@ -73,7 +78,7 @@ def get_leaderboard(api, app_id, account_id, stat_id, custom = False):
   optional_custom = 'Custom' if custom else ''
 
   route =  f"Stats/getPlayerLeaderboardIndex{optional_custom}?AccountId={account_id}&{optional_custom}StatId={stat_id+1}&AppId={app_id}"
-  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return response.json()
@@ -92,7 +97,7 @@ def get_leaderboard_top(api, app_id, stat_id, count, custom = False, orderAsc = 
   optional_custom = 'Custom' if custom else ''
 
   route =  f"Stats/getLeaderboard{optional_custom}?{optional_custom}StatId={stat_id}&StartIndex={0}&Size={count}&AppId={app_id}&orderAsc={orderAsc}"
-  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return response.json()
@@ -113,7 +118,7 @@ def get_players_online(api):
     authenticate(api)
   
   route =  f"Account/getOnlineAccounts"
-  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return response.json()
@@ -131,7 +136,7 @@ def get_active_games(api):
   
   #print("HEADERS:", headers)
   route =  f"api/Game/list"
-  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return response.json()
@@ -148,7 +153,7 @@ def get_settings(api, appId):
     authenticate(api)
   
   route =  f"api/Keys/getSettings?appId={appId}"
-  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return response.json()
@@ -165,7 +170,7 @@ def set_settings(api, appId, settings):
     authenticate(api)
   
   route =  f"api/Keys/setSettings?appId={appId}"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=settings, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=settings, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return "Success"
@@ -187,7 +192,7 @@ def reset_custom_leaderboard(api, appId, statId):
     'StatId': statId
   }
   route =  f"Stats/resetLeaderboardCustom"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return
@@ -213,7 +218,7 @@ def reset_account_password(api, accountName):
     'AppId': appId
   }
   route =  f"Account/resetAccountPassword"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! Reset {api} account for {accountName}"
@@ -243,7 +248,7 @@ def change_account_name(api, current_account_name, new_account_name):
     'AppId': appId
   }
   route =  f"Account/changeAccountName"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! {api} Changed account name changed from {current_account_name} to {new_account_name}"
@@ -274,7 +279,7 @@ def combine_account_stats(api, account_name_from, account_name_to):
     'AppId': appId
   }
   route =  f"Stats/combineAccountStat"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! {api} Added stats from {account_name_from} to {account_name_to}"
@@ -297,7 +302,7 @@ def get_announcements(api, app_id):
     authenticate(api)
 
   route = f"api/Keys/getAnnouncementsList?AppId={app_id}"
-  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return response.json()
@@ -316,7 +321,7 @@ def delete_announcements(api, app_id, id):
     authenticate(api)
 
   route = f"api/Keys/deleteAnnouncement?Id={id}"
-  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False)
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return "Success"
@@ -359,7 +364,7 @@ def post_announcement(api, ntsc_or_pal, announcement):
     'AppId': appId
   }
   route =  f"api/Keys/postAnnouncement"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! Added announcement {announcement}"
@@ -395,7 +400,7 @@ def ban_account(api, ntsc_or_pal, account_name):
     'AppId': appId
   }
   route =  f"Account/banAccount"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! Banned {account_name}"
@@ -432,7 +437,7 @@ def ban_ip(api, ntsc_or_pal, account_name):
     'AppId': appId
   }
   route =  f"Account/banIpByAccountName"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! Banned {account_name}"
@@ -469,7 +474,7 @@ def ban_mac(api, ntsc_or_pal, account_name):
     'AppId': appId
   }
   route =  f"Account/banMacByAccountName"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! Banned {account_name}"
@@ -506,7 +511,7 @@ def clear_ip(api, ntsc_or_pal, account_name):
     'AppId': appId
   }
   route =  f"Account/clearIpByAccountName"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! Cleared IP for {account_name}"
@@ -543,7 +548,7 @@ def clear_mac(api, ntsc_or_pal, account_name):
     'AppId': appId
   }
   route =  f"Account/clearMacByAccountName"
-  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False)
+  response = requests.post(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], json=request, verify=False, timeout=REQUEST_TIMEOUT)
 
   if response.status_code == 200:
     return f"Success! Cleared MAC for {account_name}"

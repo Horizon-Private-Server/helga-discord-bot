@@ -111,13 +111,13 @@ class ModSshCommands:
         return await self.run_remote_command('uya', 'docker system prune -f')
     
     async def uya_restart_server(self):
-        return await self.run_remote_command('uya', 'cd horizon-uya-prod && bash run.sh -s')
-    
+        return await self.run_remote_command('uya', 'source /root/.env && cd horizon-uya-prod && bash run.sh -s')
+
     async def uya_restart_middleware(self):
-        return await self.run_remote_command('uya', 'cd horizon-uya-prod && bash run.sh -m')
-    
+        return await self.run_remote_command('uya', 'source /root/.env && cd horizon-uya-prod && bash run.sh -m')
+
     async def uya_restart_database(self):
-        return await self.run_remote_command('uya', 'cd horizon-uya-prod && bash run.sh -d')
+        return await self.run_remote_command('uya', 'source /root/.env && cd horizon-uya-prod && bash run.sh -d')
 
     async def uya_restart_all(self):
         results = [
@@ -148,4 +148,4 @@ class ModSshCommands:
         return "\n".join(lines)
 
     async def uya_backup_database_to_cloud(self):
-        return await self.run_remote_command('uya', 'cd /root/horizon-uya-prod/horizon-database-backup && bash run_backup.sh')
+        return await self.run_remote_command('uya', 'source /root/.env && cd /root/horizon-uya-prod/horizon-database-backup && bash run_backup.sh')

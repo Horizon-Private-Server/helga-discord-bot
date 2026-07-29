@@ -10,7 +10,7 @@ from copy import deepcopy
 from datetime import datetime
 from config import *
 from mediusapi import get_active_games, get_players_online, DEADLOCKED_API_NAME, UYA_API_NAME, UYA_TEST_API_NAME
-from uya_parsers import mapParser, timeParser, gamerulesParser, weaponParserNew
+from uya_parsers import mapParser, timeParser, gamerulesParser, weaponParserNew, advancedRulesParser
 
 
 def parse_icon(icon, object):
@@ -57,6 +57,23 @@ def get_player_region(smoke_config, app_id):
     return f'[{smoke_config["AppIds"][app_id_key]}]'.ljust(6, ' ')
 
   return None
+
+def get_player_region_uya(smoke_config, player):
+  app_region = get_player_region(smoke_config, player["AppId"]) or ''
+  client_region = ''
+  if 'Metadata' in player and player['Metadata'] is not None:
+    try:
+      metadata = json.loads(player['Metadata'])
+      if 'LastLoginClientType' in metadata and metadata['LastLoginClientType'] == 1:
+        client_region = '[HZN] '
+      elif 'LastLoginClientType' in metadata and metadata['LastLoginClientType'] == 2:
+        client_region = '[EMU] '
+      else:
+        client_region = '[PS2] '
+    except:
+      pass
+
+  return f'{app_region}{client_region}'
 
 def get_game_location(smoke_config, location_id):
   if "Locations" in smoke_config and smoke_config["Locations"] is not None and location_id < len(smoke_config["Locations"]):
@@ -203,8 +220,121 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
   return embed
 
 # creates a discord embed from a twitch stream
+def clean_uya_game_name(game_name, map_name):
+  clean_name = str(game_name or '')
+  clean_name = clean_name.split('\x00', 1)[0]
+  padding_marker = '000000280000'
+  if padding_marker in clean_name:
+    clean_name = clean_name.split(padding_marker, 1)[0]
+
+  clean_name = clean_name.strip()
+  if map_name and clean_name.endswith(map_name):
+    clean_name = clean_name[:-len(map_name)].rstrip(' -0')
+
+  return clean_name.strip() or 'UYA Game'
+
+def get_uya_rank_icons(smoke_config, player_skill_level):
+  try:
+    rank = int(player_skill_level)
+  except:
+    return ''
+
+  if rank < 1:
+    return ''
+
+  bolt_icon = None
+  max_rank = 0
+  for icon in smoke_config["Icons"]:
+    if icon.get("Field") != "PlayerSkillLevel":
+      continue
+    if icon.get("Emoji") is not None and bolt_icon is None:
+      bolt_icon = icon["Emoji"]
+    try:
+      max_rank = max(max_rank, int(icon.get("Value")))
+    except:
+      pass
+
+  if bolt_icon is None:
+    return ''
+
+  if max_rank > 0:
+    rank = min(rank, max_rank)
+
+  return ''.join([f'{bolt_icon} \u200B ' for _ in range(rank)])
+
+def get_uya_weapon_icons(player_skill_level):
+  weapon_icons = {
+    0: '<:uyaweplava:>',
+    1: '<:uyawepmorph:>',
+    2: '<:uyawepmines:>',
+    3: '<:uyawepgbomb:>',
+    4: '<:uyaweprockets:>',
+    5: '<:uyawepblitz:>',
+    6: '<:uyawepn60:>',
+    7: '<:uyawepflux:>'
+  }
+
+  try:
+    bits = format(int(player_skill_level), '#010b')[-8:]
+  except:
+    return []
+
+  icons = []
+  for index in range(len(bits) - 1, -1, -1):
+    if bits[index] == '0' and index in weapon_icons:
+      icons.append(f'{weapon_icons[index]} \u200B ')
+
+  return icons
+
+
+def get_uya_advanced_rule_icons(smoke_config, generic_field_3):
+  try:
+    advanced_rules = advancedRulesParser(generic_field_3)
+  except:
+    return []
+
+  icons = []
+  if advanced_rules.get('vehicles'):
+    vehicle_masks = {1, 2}
+    icons += [f'{icon["Emoji"]} \u200B ' for icon in smoke_config["SubIcons"] if icon.get("Emoji") is not None and icon.get("Mask") in vehicle_masks]
+
+  if advanced_rules.get('spawn_charge_boots'):
+    icons += [f'{icon["Emoji"]} \u200B ' for icon in smoke_config["SubIcons"] if icon.get("Emoji") is not None and icon.get("Mask") == 2097152]
+
+  return icons
+
+# creates a discord embed from a twitch stream
+def append_uya_player_list(embed_value, metadata, game_players_online):
+  embed_value += '```\n'
+
+  teams = None
+  if metadata is not None:
+    game_state = metadata.get('GameState')
+    if game_state is not None and game_state.get('TeamsEnabled') and game_state.get('Teams') is not None:
+      teams = game_state['Teams']
+
+  if teams is not None:
+    teams.sort(key=lambda x: x.get('Id', 0))
+    for team in teams:
+      team_name = team.get('Name', 'Team')
+      team_players = team.get('Players') if team.get('Players') is not None else []
+      team_players = [player for player in team_players if not player.lower().startswith('cpu-')]
+      team_players.sort(key=lambda x: x.lower())
+      if team_players:
+        embed_value += f'\n{team_name}'
+        for player in team_players:
+          embed_value += f'\n  {player}'
+  else:
+    if len(game_players_online) > 0:
+      names = [x["AccountName"] for x in game_players_online]
+      names.sort(key=lambda x: x.lower())
+      for name in names:
+        embed_value += f'\n  {name}'
+
+  embed_value += '```'
+  return embed_value
+
 def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
-  
   # base
   embed.color = int(smoke_config["Color"], 0)
   embed.title = f'{smoke_config["Name"]} Server'
@@ -217,11 +347,12 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
   # filter players by appid and server
   players = list(filter(lambda x: filter_by_config(smoke_config, x), players))
   games = list(filter(lambda x: filter_by_config(smoke_config, x), games))
+
   # description
-  if len(players) > 0:
-    players_online = [player for player in players if not player["AccountName"].lower().startswith("cpu-")]
+  players_online = [player for player in players if not player["AccountName"].lower().startswith("cpu-")]
+  if len(players_online) > 0:
     players_online.sort(key=lambda x: x["AccountName"])
-    names = [f'\n{get_player_region(smoke_config, player["AppId"])}  {player["AccountName"]}  ' for player in players_online]
+    names = [f'\n{get_player_region_uya(smoke_config, player)}  {player["AccountName"]}  ' for player in players_online]
     embed_value = '```'
     for name in names:
       embed_value += name
@@ -234,8 +365,10 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
 
   # active games
   games.sort(key=lambda x: x["GameName"])
+  active_games_count = 0
   for game in games:
     if game["WorldStatus"] == 'WorldActive' or game["WorldStatus"] == 'WorldStaging':
+      active_games_count += 1
       metadata = None
       if game["Metadata"] is not None:
         metadata = json.loads(game["Metadata"])
@@ -243,100 +376,84 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
       time_started: datetime = datetime.strptime(game["GameStartDt"][:26], '%Y-%m-%dT%H:%M:%S.%f') if in_game and game["GameStartDt"] is not None else None
       seconds_since_started: datetime = (datetime.utcnow() - time_started).total_seconds() if time_started is not None else None
       game_players = list(filter(lambda x: x["GameId"] is not None and x["GameId"] == game["GameId"], players))
+      game_players_online = [player for player in game_players if not player["AccountName"].lower().startswith("cpu-")]
+
+      game_mode, game_type = gamerulesParser(game['GenericField3'])
+      mode_text = f'{game_mode} ({game_type})'
+      if metadata is not None and metadata.get("CustomGameMode") is not None:
+        mode_text = metadata["CustomGameMode"]
+
+      map_name = metadata["CustomMap"] if metadata is not None and metadata.get("CustomMap") is not None else mapParser(game['GenericField3'])
+      game_name = clean_uya_game_name(game["GameName"], map_name)
 
       embed_name = ''
-      embed_value = '\u200B'
-
-      # in game tag
       if in_game:
-        embed_name += '\u200B '
-      
-      # icons
-      for icon in smoke_config["Icons"]:
-        icon_value = parse_icon(icon, game)
-        if icon_value is not None:
-          embed_name += icon_value
+        embed_name += '[IG] \u200B '
+
+      embed_name += get_uya_rank_icons(smoke_config, game['PlayerSkillLevel'])
 
       # game name
-      game['GameName'] = game['GameName'].strip('000000280000').strip()
-      embed_name += f'{game["GameName"]} - ({len(game_players)}/8)'
+      embed_name += f'{game_name} - ({len(game_players_online)}/8)'
 
       # in game timer
-      if in_game:
+      if in_game and seconds_since_started is not None:
         embed_name += f' @{int(seconds_since_started//3600):02}:{int(seconds_since_started//60)%60:02}:{int(seconds_since_started%60):02}'
 
-      # sub icons
-      for icon in smoke_config["SubIcons"]:
+      embed_value = '\u200B'
+
+      # UYA icon row, matching the Deadlocked field layout.
+      icon_values = []
+      for icon in smoke_config["Icons"]:
+        if icon.get("Field") == "PlayerSkillLevel":
+          continue
         icon_value = parse_icon(icon, game)
         if icon_value is not None:
-          embed_value += icon_value
+          icon_values.append(icon_value)
+      icon_values += get_uya_advanced_rule_icons(smoke_config, game['GenericField3'])
+      icon_values += get_uya_weapon_icons(game['PlayerSkillLevel'])
+      if icon_values:
+        embed_value += ''.join(icon_values)
 
-      #print("Game:", game)
-      #print("Metadata:", metadata)
-      
-      # game mode
       embed_value += '```\n'
-      # if metadata is not None and metadata["CustomGameMode"] is not None:
-      #   embed_value += metadata["CustomGameMode"] + ' at '
-      # elif str(game["RuleSet"]) in smoke_config["Rulesets"]:
-      #   embed_value += smoke_config["Rulesets"][str(game["RuleSet"])] + ' at '
-      game_mode, game_type = gamerulesParser(game['GenericField3'])
-      embed_value += f'{game_mode} ({game_type}) at '
-
-      # level
-      if metadata is not None and metadata["CustomMap"] is not None:
-        embed_value += metadata["CustomMap"]
+      embed_value += f'{mode_text} at {map_name}'
+      if metadata is not None and metadata.get("GameInfo") is not None:
+        embed_value += '\n' + metadata["GameInfo"]
       else:
-        embed_value += mapParser(game['GenericField3'])
-
-      # game info
-      timelimit = timeParser(game['GenericField3'])
-      embed_value += "\n" + timelimit
-      embed_value += '\n' + weaponParserNew(game['PlayerSkillLevel'])
-
-      # if metadata is not None and metadata["GameInfo"] is not None:
-      #   embed_value += "\n" + metadata["GameInfo"]
-
+        embed_value += "\n" + timeParser(game['GenericField3'])
       embed_value += '\n```\n'
-      embed_value += '```\n'
-      # if metadata is not None and "GameState" in metadata and "Teams" in metadata["GameState"] and metadata["GameState"]["Teams"] is not None:
-      #   teams = metadata["GameState"]["Teams"]
-      #   teams.sort(key= lambda x: x["Score"], reverse= True)
-      #   teams_enabled = metadata["GameState"]["TeamsEnabled"]
-      #   for team in teams:
-      #     score = team["Score"]
-      #     team_players = team["Players"] if team["Players"] is not None else []
-      #     team_players.sort()
-      #     if not teams_enabled and len(team_players) > 0:
-      #       embed_value += f'\n{team_players[0]}{(f" - {score}" if in_game else "")}'
-      #     else:
-      #       embed_value += f'\n{team["Name"]}{(f" - {score}" if in_game else "")}'
-      #       for player in team_players:
-      #         embed_value += f'\n  {player}  '
-            
-      if len(game_players) > 0:
-        names = [x["AccountName"] for x in game_players]
-        names.sort()
-        names = [f'\n  {x}  ' for x in names]
-        for name in names:
-          embed_value += name
-      embed_value += '```'
+
+      embed_value = append_uya_player_list(embed_value, metadata, game_players_online)
 
       embed.add_field(name= embed_name, value= embed_value, inline= False)
-  
+
   # no games
-  if len(games) < 1:
+  if active_games_count < 1:
     embed.add_field(name= 'No Games', value= '\u200B', inline= False)
-  
+
   return embed
 
 # background task that polls api and creates/updates respective smoke messages in discord
 async def smoke_task(client: discord.Client, smoke_config, index):
   await client.wait_until_ready()
 
-  smoke_channels = deepcopy(smoke_config["Channels"])
+  if "Channels" in smoke_config:
+    smoke_channels = deepcopy(smoke_config["Channels"])
+  else:
+    smoke_channels = [{
+      "ChannelId": smoke_config.get("ChannelId", 0),
+      "MessageId": smoke_config.get("MessageId", 0)
+    }]
+
+  smoke_channels = [smoke for smoke in smoke_channels if smoke.get("ChannelId", 0) > 0]
+  if not smoke_channels:
+    print(f'Smoke {smoke_config["Name"]} is enabled but has no channels configured')
+    return
+
   for smoke in smoke_channels:
     smoke["Channel"] = client.get_channel(smoke["ChannelId"])
+    if smoke["Channel"] is None:
+      print(f'Smoke {smoke_config["Name"]} channel not found: {smoke["ChannelId"]}')
+      return
     smoke["Message"] = None
     # try and get message to reuse
     if "MessageId" in smoke and smoke["MessageId"] > 0:

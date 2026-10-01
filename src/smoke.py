@@ -58,6 +58,25 @@ def get_player_region(smoke_config, app_id):
 
   return None
 
+def get_player_region_uya(smoke_config, player):
+  region = get_player_region(smoke_config, player["AppId"])
+
+  # client type is saved to the account metadata by the uya plugin when the patch sends it
+  # same values as deadlocked (0 = PS2, 2 = PCSX2)
+  try:
+    client_type = json.loads(player["Metadata"])["LastLoginClientType"]
+  except (TypeError, ValueError, KeyError):
+    client_type = None
+
+  # players on an older patch only show their region
+  platform = ''
+  if client_type == 2:
+    platform = '[EMU]'
+  elif client_type == 0:
+    platform = '[PS2]'
+
+  return f'{region}{platform}'
+
 def get_game_location(smoke_config, location_id):
   if "Locations" in smoke_config and smoke_config["Locations"] is not None and location_id < len(smoke_config["Locations"]):
     return smoke_config["Locations"][location_id]
@@ -221,7 +240,10 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
   if len(players) > 0:
     players_online = [player for player in players if not player["AccountName"].lower().startswith("cpu-")]
     players_online.sort(key=lambda x: x["AccountName"])
-    names = [f'\n{get_player_region(smoke_config, player["AppId"])}  {player["AccountName"]}  ' for player in players_online]
+    tags = [get_player_region_uya(smoke_config, player) for player in players_online]
+    # pad to the longest tag so names line up, without adding a gap when nobody has a client type yet
+    tag_width = max((len(tag) for tag in tags), default=0)
+    names = [f'\n{tag.ljust(tag_width)}  {player["AccountName"]}  ' for tag, player in zip(tags, players_online)]
     embed_value = '```'
     for name in names:
       embed_value += name

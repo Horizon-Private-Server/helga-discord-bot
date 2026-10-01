@@ -243,7 +243,7 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
     tags = [get_player_region_uya(smoke_config, player) for player in players_online]
     # pad to the longest tag so names line up, without adding a gap when nobody has a client type yet
     tag_width = max((len(tag) for tag in tags), default=0)
-    names = [f'\n{tag.ljust(tag_width)}  {player["AccountName"]}  ' for tag, player in zip(tags, players_online)]
+    names = [f'\n{tag.ljust(tag_width)} {player["AccountName"]}  ' for tag, player in zip(tags, players_online)]
     embed_value = '```'
     for name in names:
       embed_value += name

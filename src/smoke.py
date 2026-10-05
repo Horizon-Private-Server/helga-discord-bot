@@ -237,8 +237,8 @@ def update_embed_UYA(smoke_config, players, games, embed: discord.Embed):
   players = list(filter(lambda x: filter_by_config(smoke_config, x), players))
   games = list(filter(lambda x: filter_by_config(smoke_config, x), games))
   # description
-  if len(players) > 0:
-    players_online = [player for player in players if not player["AccountName"].lower().startswith("cpu-")]
+  players_online = [player for player in players if not player["AccountName"].lower().startswith("cpu-")]
+  if len(players_online) > 0:
     players_online.sort(key=lambda x: x["AccountName"])
     tags = [get_player_region_uya(smoke_config, player) for player in players_online]
     # pad to the longest tag so names line up, without adding a gap when nobody has a client type yet

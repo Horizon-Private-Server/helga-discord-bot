@@ -18,7 +18,7 @@ from datetime import timedelta
 
 load_dotenv()
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
-YOUTUBEFEED_POLL_DELAY = int(os.getenv('YOUTUBEFEED_POLL_DELAY'))
+YOUTUBEFEED_POLL_DELAY = int(os.getenv('YOUTUBEFEED_POLL_DELAY', '3600'))
 YOUTUBEFEED_CHANNEL_ID = os.getenv('YOUTUBEFEED_CHANNEL_ID')
 #
 last_query_date = datetime.utcnow()
@@ -27,14 +27,15 @@ youtube = None
 # API information
 api_service_name = "youtube"
 api_version = "v3"
-try:
-  # API client
-  youtube = googleapiclient.discovery.build(
-    api_service_name, api_version, developerKey = YOUTUBE_API_KEY)
-except Exception as e:
-  print('unable to authenticate with youtube')
-  logging.error(traceback.format_exc())
-  pass
+if YOUTUBE_API_KEY:
+  try:
+    # API client
+    youtube = googleapiclient.discovery.build(
+      api_service_name, api_version, developerKey = YOUTUBE_API_KEY)
+  except Exception as e:
+    print('unable to authenticate with youtube')
+    logging.error(traceback.format_exc())
+    pass
 
 #
 def parse_gamename(string):

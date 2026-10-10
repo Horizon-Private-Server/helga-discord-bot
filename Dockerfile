@@ -4,6 +4,7 @@ ENV IN_DOCKER=Yes
 
 ARG FUNCTION_DIR=/code
 RUN mkdir -p ${FUNCTION_DIR}
+RUN mkdir -p ${FUNCTION_DIR}/src/config
 WORKDIR ${FUNCTION_DIR}
 
 COPY src/requirements.txt ${FUNCTION_DIR}/src/requirements.txt

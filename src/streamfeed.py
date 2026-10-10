@@ -16,8 +16,8 @@ load_dotenv()
 TWITCH_APPKEY = os.getenv('TWITCH_APPKEY')
 TWITCH_SECRET = os.getenv('TWITCH_SECRET')
 STREAMFEED_CHANNEL_ID = os.getenv('STREAMFEED_CHANNEL_ID')
-STREAMFEED_POLL_DELAY = int(os.getenv('STREAMFEED_POLL_DELAY'))
-STREAMFEED_UPDATE_EXISTING_DELAY = int(os.getenv('STREAMFEED_UPDATE_EXISTING_DELAY'))
+STREAMFEED_POLL_DELAY = int(os.getenv('STREAMFEED_POLL_DELAY', '60'))
+STREAMFEED_UPDATE_EXISTING_DELAY = int(os.getenv('STREAMFEED_UPDATE_EXISTING_DELAY', '300'))
 
 SupportedGames = [
   "Ratchet: Deadlocked",
@@ -171,4 +171,7 @@ async def streamfeed_task(client: discord.Client):
 
 #
 def streamfeed(client):
+  if not TWITCH_APPKEY or not TWITCH_SECRET or STREAMFEED_CHANNEL_ID is None:
+    return
+
   client.loop.create_task(streamfeed_task(client))

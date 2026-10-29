@@ -189,7 +189,9 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
 
       embed_value += '\n```\n'
       embed_value += '```\n'
-      if metadata is not None and "GameState" in metadata and "Teams" in metadata["GameState"] and metadata["GameState"]["Teams"] is not None:
+      if metadata is not None and metadata.get("PlayerInfo"):
+        embed_value += metadata["PlayerInfo"] + '\n'
+      elif metadata is not None and "GameState" in metadata and "Teams" in metadata["GameState"] and metadata["GameState"]["Teams"] is not None:
         teams = metadata["GameState"]["Teams"]
         teams.sort(key= lambda x: x["Score"], reverse= True)
         teams_enabled = metadata["GameState"]["TeamsEnabled"]

@@ -170,21 +170,24 @@ def update_embed_DL(smoke_config, players, games, embed: discord.Embed):
         if icon_value is not None:
           embed_value += icon_value
       
-      # game mode
+      # game title
       embed_value += '```\n'
-      if metadata is not None and metadata["CustomGameMode"] is not None:
-        embed_value += metadata["CustomGameMode"] + ' at '
-      elif str(game["RuleSet"]) in smoke_config["Rulesets"]:
-        embed_value += smoke_config["Rulesets"][str(game["RuleSet"])] + ' at '
+      if metadata is not None and metadata.get("GameTitle"):
+        embed_value += metadata["GameTitle"]
+      else:
+        if metadata is not None and metadata["CustomGameMode"] is not None:
+          embed_value += metadata["CustomGameMode"] + ' at '
+        elif str(game["RuleSet"]) in smoke_config["Rulesets"]:
+          embed_value += smoke_config["Rulesets"][str(game["RuleSet"])] + ' at '
 
-      # level
-      if metadata is not None and metadata["CustomMap"] is not None:
-        embed_value += metadata["CustomMap"]
-      elif str(game["GameLevel"]) in smoke_config["Levels"]:
-        embed_value += smoke_config["Levels"][str(game["GameLevel"])]
+        # level
+        if metadata is not None and metadata["CustomMap"] is not None:
+          embed_value += metadata["CustomMap"]
+        elif str(game["GameLevel"]) in smoke_config["Levels"]:
+          embed_value += smoke_config["Levels"][str(game["GameLevel"])]
       
       # game info
-      if metadata is not None and metadata["GameInfo"] is not None:
+      if metadata is not None and metadata.get("GameInfo"):
         embed_value += "\n" + metadata["GameInfo"]
 
       embed_value += '\n```\n'

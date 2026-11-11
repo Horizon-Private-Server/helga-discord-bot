@@ -30,7 +30,9 @@ from mediusapi import reset_account_password, change_account_name, combine_accou
 from community_reset import CommunityResetManager
 #from uya import *
 from uyacomponlinepinger import uyacomppinger
+from uyagamehistoryfeed import uyagamehistoryfeed
 from mapchecker import setup_mapchecker, handle_mapchecker_message
+from altchecker import handle_alt_message
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -232,6 +234,9 @@ async def on_message(message):
   
   # Handle mapchecker multi-file commands
   if await handle_mapchecker_message(message):
+    return
+
+  if await handle_alt_message(message):
     return
 
   if await COMMUNITY_RESET_MANAGER.handle_message(message):
@@ -1011,5 +1016,6 @@ youtubefeed(client)
 smoke(client)
 #uyacomppinger(client)
 setup_mapchecker(client)
+uyagamehistoryfeed(client)
 client.run(TOKEN)
 

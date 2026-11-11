@@ -7,6 +7,7 @@ import datetime
 import traceback
 import constants
 import urllib3
+import urllib.parse
 from discord.ext import commands
 from dotenv import load_dotenv
 from typing import List
@@ -140,6 +141,100 @@ def get_active_games(api):
 
   if response.status_code == 200:
     return response.json()
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
+#
+def get_recent_games(api, app_id, minutes):
+  global headers
+  if api not in headers:
+    authenticate(api)
+
+  route = f"api/Game/history/getRecentGames?appId={app_id}&minutes={minutes}"
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
+
+  if response.status_code == 200:
+    return response.json()
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
+# Returns {"Games": [...100 games ending before last_game_end_dt, newest first...], "NextCursor": "<iso>"}
+# or None when there are no more games.
+def get_game_history_by_date(api, app_id, last_game_end_dt):
+  global headers
+  if api not in headers:
+    authenticate(api)
+
+  route = f"api/Game/historyByDate/{app_id}?lastGameEndDt={last_game_end_dt}"
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
+
+  if response.status_code == 200:
+    return response.json()
+  elif response.status_code == 404:
+    return None
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
+#
+def get_account_basic(api, account_id):
+  global headers
+  if api not in headers:
+    authenticate(api)
+
+  route = f"Account/getAccountBasic?AccountId={account_id}"
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
+
+  if response.status_code == 200:
+    return response.json()
+  elif response.status_code == 404:
+    return None
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
+# Full alt lookup (moderator role). Returns None if the account doesn't exist.
+def get_alts(api, account_name):
+  global headers
+  if api not in headers:
+    authenticate(api)
+
+  route = f"Account/getAlts?AccountName={urllib.parse.quote(account_name)}"
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
+
+  if response.status_code == 200:
+    return response.json()
+  elif response.status_code == 404:
+    return None
+  elif response.status_code == 401:
+    print("Got 401 Unauthorized. Repulling token")
+    authenticate(api)
+  else:
+    raise ValueError(f"{route} returned {response.status_code}")
+
+# Reduced alt lookup for public channels. Returns None if the account doesn't exist.
+def get_alts_public(api, account_name):
+  global headers
+  if api not in headers:
+    authenticate(api)
+
+  route = f"Account/getAltsPublic?AccountName={urllib.parse.quote(account_name)}"
+  response = requests.get(os.getenv(f'MIDDLEWARE_ENDPOINT_{api}') + route, headers=headers[api], verify=False, timeout=REQUEST_TIMEOUT)
+
+  if response.status_code == 200:
+    return response.json()
+  elif response.status_code == 404:
+    return None
   elif response.status_code == 401:
     print("Got 401 Unauthorized. Repulling token")
     authenticate(api)

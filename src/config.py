@@ -35,6 +35,15 @@ _config_default = {
     "Color": "0xAA0000",
     "Thumbnail": None
   },
+  "AltChecker": {
+    "PublicChannelIds": [],
+    "PrivateChannelIds": [],
+    "PrivateRoleId": 0
+  },
+  "UyaGameHistoryFeed": {
+    "WebhookUrl": None,
+    "StartDate": None
+  },
   "Smoke": [
     {
       "Enabled": False,

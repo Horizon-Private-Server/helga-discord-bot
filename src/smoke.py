@@ -69,11 +69,11 @@ def get_player_region_uya(smoke_config, player):
     client_type = None
 
   # players on an older patch only show their region
-  platform = ''
+  platform = '[PS2]'
   if client_type == 2:
     platform = '[EMU]'
-  elif client_type == 0:
-    platform = '[PS2]'
+  elif client_type == 1:
+    platform = '[HZN]'
 
   return f'{region}{platform}'
 
